@@ -7,16 +7,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const pages = document.querySelectorAll(".admin-page");
     const pageTitle = document.getElementById("pageTitle");
 
+    // menuItems.forEach(item => {
+    //     item.addEventListener("click", () => {
+    //         menuItems.forEach(i => i.classList.remove("active"));
+    //         item.classList.add("active");
+    //
+    //         const pageName = item.getAttribute("data-page");
+    //         pages.forEach(p => p.classList.remove("admin-page--active"));
+    //         document.getElementById(pageName).classList.add("admin-page--active");
+    //
+    //         pageTitle.innerText = item.innerText.trim();
+    //     });
+    // });
     menuItems.forEach(item => {
-        item.addEventListener("click", () => {
-            menuItems.forEach(i => i.classList.remove("active"));
-            item.classList.add("active");
+        item.addEventListener('click', function() {
+            // Bước 1: Duyệt qua tất cả, xóa class active hiện có
+            menuItems.forEach(i => i.classList.remove('active'));
 
-            const pageName = item.getAttribute("data-page");
-            pages.forEach(p => p.classList.remove("admin-page--active"));
-            document.getElementById(pageName).classList.add("admin-page--active");
-
-            pageTitle.innerText = item.innerText.trim();
+            // Bước 2: Thêm class active vào chính item vừa được click (this)
+            this.classList.add('active');
         });
     });
 

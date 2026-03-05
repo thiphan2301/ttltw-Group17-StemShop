@@ -1,6 +1,3 @@
-//import { listProduct } from "./data.js";
-
-
 // -------------------------kiểu xem (view type) ----------------------
 const type1 = document.getElementById('head__type1');
 const type2 = document.getElementById('head__type2');
@@ -63,95 +60,114 @@ document.addEventListener("DOMContentLoaded", () => {
                 window.location.href = url;
             } else {
                 // Thông báo nếu sản phẩm chưa có trang demo (tùy chọn)
-                alert("Sản phẩm này đang cập nhật nội dung!");
+                //alert("Sản phẩm này đang cập nhật nội dung!");
             }
         });
     });
 });
 
-
-// ------------chức năng tìm kiếm sp-------------
-//lấy ra tất cả các sp
-const products = document.querySelectorAll('.list-product__body__card__container')
-//lấy ra tên của tất cả các sp
-const productName = document.querySelectorAll('.name-product');
-//element input
+// ===================== DATA =====================
+const productCards = document.querySelectorAll('.list-product__body__card__container');
+const categoryCheckboxes = document.querySelectorAll('.checkbox-category');
+const priceCheckboxes = document.querySelectorAll('.checkbox-price');
 const searchInput = document.getElementById('search-product');
 
-searchInput.addEventListener('input', (e) => {
-    const keyword = e.target.value.toLowerCase(); //lấy ra dữ liệu nhập trog input
-    productName.forEach((nameElement, index) => {
-        const name = nameElement.textContent.toLowerCase(); // Lấy tên sp
+// ===================== EVENTS =====================
+categoryCheckboxes.forEach(cb => cb.addEventListener('change', applyFilters));
+priceCheckboxes.forEach(cb => cb.addEventListener('change', applyFilters));
 
-        if (name.includes(keyword)) {
-            products[index].style.display = "block"; // Hiện sp phù hợp
-        } else {
-            products[index].style.display = "none";  // Ẩn sp không khớp
-        }
+searchInput.addEventListener('input', applyFilters);
+
+// ===================== CORE FILTER =====================
+function applyFilters() {
+    const selectedCategories = Array.from(categoryCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+    const selectedPrices = Array.from(priceCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+    const keyword = searchInput.value.toLowerCase();
+
+    productCards.forEach(card => {
+        const categoryId = card.dataset.category;
+        const price = parseInt(card.dataset.price);
+        const name = card.dataset.name; // bạn đã có data-name
+
+        let matchCategory =
+            selectedCategories.length === 0 ||
+            selectedCategories.includes(categoryId);
+
+        let matchPrice =
+            selectedPrices.length === 0 ||
+            selectedPrices.some(range =>
+                (range === "duoi200" && price < 200000) ||
+                (range === "200-1tr" && price >= 200000 && price <= 1000000) ||
+                (range === "1tr-2tr" && price > 1000000 && price <= 2000000) ||
+                (range === "2tr-4tr" && price > 2000000 && price <= 4000000) ||
+                (range === "tren4tr" && price > 4000000)
+            );
+
+        let matchSearch =
+            keyword === "" || name.includes(keyword);
+
+        card.style.display =
+            matchCategory && matchPrice && matchSearch
+                ? "block"
+                : "none";
     });
-})
+}
 
-// -------------------------CHỨC NĂNG LỌC TỔNG HỢP (5 BỘ LỌC)-------------------
-const cards = document.querySelectorAll(
-    ".list-product__body__card__container"
-);
+// --------------SẮP XẾP SĂN PHẨM-----------------------
+const sortSelect = document.getElementById("sort-select");
+const productContainer = document.querySelector(".list-product__body__card");
 
-// ================= CATEGORY FILTER =================
-document.querySelectorAll(".checkbox-category").forEach(cb => {
-    cb.addEventListener("change", filterProducts);
-});
+if (sortSelect) {
+    sortSelect.addEventListener("change", () => {
+        const type = sortSelect.value;
 
-// ================= PRICE FILTER =================
-document.querySelectorAll(".checkbox-price").forEach(cb => {
-    cb.addEventListener("change", filterProducts);
-});
+        // Lấy danh sách sản phẩm hiện tại
+        const items = Array.from(
+            productContainer.querySelectorAll(".list-product__body__card__container")
+        );
 
-// ================= SEARCH =================
-document.getElementById("search-product").addEventListener("input", filterProducts);
+        let sortedItems = [...items];
 
-function filterProducts() {
-    const checkedCategories = Array.from(
-        document.querySelectorAll(".checkbox-category:checked")
-    ).map(cb => cb.value);
+        switch (type) {
+            case "az":
+                sortedItems.sort((a, b) =>
+                    a.dataset.name.localeCompare(b.dataset.name)
+                );
+                break;
 
-    const checkedPrices = Array.from(
-        document.querySelectorAll(".checkbox-price:checked")
-    ).map(cb => cb.value);
+            case "za":
+                sortedItems.sort((a, b) =>
+                    b.dataset.name.localeCompare(a.dataset.name)
+                );
+                break;
 
-    const keyword = document
-        .getElementById("search-product")
-        .value.toLowerCase();
+            case "price-asc":
+                sortedItems.sort((a, b) =>
+                    parseInt(a.dataset.price) - parseInt(b.dataset.price)
+                );
+                break;
 
-    cards.forEach(card => {
-        let show = true;
+            case "price-desc":
+                sortedItems.sort((a, b) =>
+                    parseInt(b.dataset.price) - parseInt(a.dataset.price)
+                );
+                break;
 
-        const category = card.dataset.category;
-        const price = Number(card.dataset.price);
-        const name = card.dataset.name;
-
-        // ===== CATEGORY =====
-        if (checkedCategories.length > 0) {
-            show = checkedCategories.includes(category);
+            default:
+                // Mặc định => reload trang để lấy thứ tự ban đầu từ server (DB)
+                window.location.reload();
+                return;
         }
 
-        // ===== PRICE =====
-        if (show && checkedPrices.length > 0) {
-            show = false;
-            checkedPrices.forEach(p => {
-                if (p === "duoi200" && price < 200000) show = true;
-                if (p === "200-1tr" && price >= 200000 && price <= 1000000) show = true;
-                if (p === "1tr-2tr" && price > 1000000 && price <= 2000000) show = true;
-                if (p === "2tr-4tr" && price > 2000000 && price <= 4000000) show = true;
-                if (p === "tren4tr" && price > 4000000) show = true;
-            });
-        }
-
-        // ===== SEARCH =====
-        if (show && keyword) {
-            show = name.includes(keyword);
-        }
-
-        card.style.display = show ? "block" : "none";
+        // Xóa và append lại
+        productContainer.innerHTML = "";
+        sortedItems.forEach(item => productContainer.appendChild(item));
     });
 }
 

@@ -74,13 +74,13 @@
                         <ul class="nav__list">
 
                             <li class="nav__item">
-                                <a href="${pageContext.request.contextPath}/">Trang chủ</a>
+                                <a href="${pageContext.request.contextPath}/"><i class="fa-solid fa-house"></i> Trang chủ</a>
                             </li>
 
                             <!-- Giới thiệu -->
                             <li class="nav__item dropdown">
                                 <a href="${pageContext.request.contextPath}/view/main/about.jsp">
-                                    Giới thiệu <i class="fa-solid fa-chevron-down"></i>
+                                    Giới thiệu <i class="fa-solid fa-angle-up"></i>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a href="${pageContext.request.contextPath}/view/about_info/about-stem.jsp">Về STEMSHOP</a></li>
@@ -92,32 +92,22 @@
                             <!-- SHOP -->
                             <li class="nav__item dropdown">
                                 <a href="${pageContext.request.contextPath}/shop">
-                                    Cửa hàng <i class="fa-solid fa-chevron-down"></i>
+                                    Cửa hàng <i class="fa-solid fa-angle-up"></i>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="${pageContext.request.contextPath}/view/shop/cart.jsp">Giỏ hàng</a></li>
-                                    <li><a href="${pageContext.request.contextPath}/wishlist">Yêu thích</a></li>
-                                    <li><a href="${pageContext.request.contextPath}/view/shop/checkout.jsp">Thanh toán</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/view/shop/cart.jsp"><i class="fa-solid fa-cart-arrow-down"></i> Giỏ hàng</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/wishlist"><i class="fa-solid fa-heart"></i> Yêu thích</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/view/shop/checkout.jsp"><i class="fa-regular fa-credit-card"></i> Thanh toán</a></li>
+                                    <li>
+                                        <a href="${pageContext.request.contextPath}/my-orders">
+                                            <i class="fa-solid fa-box"></i>  Đơn hàng
+                                        </a>
+                                    </li>
                                 </ul>
-                            </li>
-
-                            <!-- BLOG -->
-                            <li class="nav__item dropdown">
-                                <a href="${pageContext.request.contextPath}/view/content/blog.jsp">
-                                    Bài viết <i class="fa-solid fa-chevron-down"></i>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="${pageContext.request.contextPath}/view/content/blog-category.jsp">Danh mục bài viết</a></li>
-                                </ul>
-                            </li>
-
-                            <!-- DỰ ÁN WORKSHOP -->
-                            <li class="nav__item ">
-                                <a href="${pageContext.request.contextPath}/view/workshop/materials.jsp">Dự Án WorkShops</a>
                             </li>
 
                             <li class="nav__item">
-                                <a href="${pageContext.request.contextPath}/view/main/contact.jsp">Liên hệ</a>
+                                <a href="${pageContext.request.contextPath}/view/main/contact.jsp"><i class="fa-solid fa-envelope"></i> Liên hệ</a>
                             </li>
                         </ul>
                     </nav>

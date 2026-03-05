@@ -91,3 +91,66 @@ document.addEventListener("DOMContentLoaded", () => {
     updateGrandTotal();
 
 });
+
+function addToCart(productId) {
+    fetch(`${contextPath}/add-to-cart?id=` + productId)
+        .then(() => updateCartCount());
+}
+function updateCartCount() {
+    fetch(`${contextPath}/cart-count`)
+        .then(res => res.json())
+        .then(data => {
+            const badge = document.getElementById("cart-count");
+            if (badge) {
+                badge.innerText = data.count;
+            }
+        });
+}
+function updateQuantity(productId, action) {
+    fetch(`${contextPath}/update-cart?id=${productId}&action=${action}`)
+        .then(() => {
+            updateCartCount();   // cập nhật số trên icon giỏ hàng
+            location.reload();   // reload lại cart.jsp (nếu muốn)
+        });
+}
+function toggleWishlist(productId, icon) {
+    fetch(`${contextPath}/toggle-wishlist?id=` + productId)
+        .then(res => {
+            if (res.status === 401) {
+                window.location.href = contextPath + "/view/user/sign-in.jsp";
+                return;
+            }
+            updateWishlistCount();
+            icon.classList.toggle("active-heart");
+        });
+}
+
+function updateWishlistCount() {
+    fetch(`${contextPath}/wishlist-count`)
+        .then(res => res.json())
+        .then(data => {
+            const badge = document.getElementById("wishlist-count");
+            if (badge) {
+                badge.innerText = data.count;
+            }
+        });
+}
+function removeFromWishlist(productId) {
+    fetch(`${contextPath}/toggle-wishlist?id=` + productId)
+        .then(res => {
+            if (!res.ok) return;
+
+            // XÓA LUÔN DÒNG SẢN PHẨM
+            const row = document.getElementById("wishlist-item-" + productId);
+            if (row) row.remove();
+
+            // CẬP NHẬT SỐ LƯỢNG ICON TIM
+            updateWishlistCount();
+
+            // Nếu không còn sản phẩm nào → hiện text
+            const remain = document.querySelectorAll(".wishlist-item");
+            if (remain.length === 0) {
+                location.reload(); // đơn giản nhất
+            }
+        });
+}

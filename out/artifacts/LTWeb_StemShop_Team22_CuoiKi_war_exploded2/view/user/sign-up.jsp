@@ -7,6 +7,7 @@
     <!--LINK CSS-->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/sign-in_sign-up.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/cart.css">
 
 
     <!-- Font Awesome 6 -->
@@ -15,7 +16,12 @@
   <body>
   <!--HEADER-->
   <%@ include file="/WEB-INF/components/header.jsp" %>
-
+  <!-- breadcrumb -->
+  <div class="back">
+    <a href="${pageContext.request.contextPath}/">Trang Chủ</a>
+    <span>/</span>
+    <a href="#">Đăng Ký</a>
+  </div>
   <main class="auth">
     <section class="auth__container">
       <h1 class="auth__title">Đăng ký tài khoản</h1>
@@ -23,9 +29,7 @@
         <p style="color:red">${error}</p>
       </c:if>
 
-      <form class="auth__form"
-            action="${pageContext.request.contextPath}/dang-ky"
-            method="post">
+      <form class="auth__form" action="${pageContext.request.contextPath}/dang-ky" method="post">
         <div class="auth__group">
           <label for="username" class="auth__label">Tên người dùng</label>
           <input type="text" id="username" name="username" class="auth__input" placeholder="Nhập tên đăng nhập của bạn">
@@ -33,7 +37,7 @@
 
         <div class="auth__group">
           <label for="email" class="auth__label">Email</label>
-          <input type="email" id="email" name="email" class="auth__input" placeholder="Nhập email của bạn">
+          <input type="text" id="email" name="email" class="auth__input" placeholder="Nhập email của bạn">
         </div>
 
         <div class="auth__group">

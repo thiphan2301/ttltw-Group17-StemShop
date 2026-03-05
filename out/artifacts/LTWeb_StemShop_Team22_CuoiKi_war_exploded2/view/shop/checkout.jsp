@@ -2,22 +2,19 @@
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
 
-<%-- 2. CODE BẢO VỆ: Nếu truy cập trực tiếp file JSP hoặc thiếu dữ liệu tiền -> Đẩy về Servlet --%>
-<c:if test="${empty requestScope.total}">
-    <c:redirect url="/checkout"/>
-</c:if>
-
+<!DOCTYPE html>
 <html>
 <head>
     <title>Thanh toán</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/checkout.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/checkout2.css">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
 </head>
 <body>
+    <jsp:include page="/WEB-INF/components/header.jsp"/>
     <main>
-        <jsp:include page="/WEB-INF/components/header.jsp" />;
         <!-- breadcrumb -->
         <div class="back">
             <a href="${pageContext.request.contextPath}/">Trang Chủ</a>
@@ -29,150 +26,196 @@
             <a href="#">Thanh toán</a>
         </div>
 
-        <div class="checkout-container">
-            <h1 style="margin: 40px 0">Thanh toán đơn hàng</h1>
+        <div class="checkout-page">
+            <div class="checkout-container">
 
-            <!-- form gửi về servlet -->
-            <form class="checkout-container__main"
-                  action="${pageContext.request.contextPath}/checkout"
-                  method="post">
+                <h2 class="checkout-title">Thanh toán đơn hàng</h2>
 
-                <!-- THÔNG TIN KHÁCH HÀNG -->
-                <div class="checkout-container__main__infor-customer">
+                <form class="checkout-form"
+                      action="${pageContext.request.contextPath}/checkout"
+                      method="post">
 
-                    <div class="checkout-container__main__infor-customer__title margin-top-bottom">
-                        <h2>Thông tin khách hàng</h2>
-                        <p style="color: #877575">Vui lòng điền thông tin để hoàn tất đơn hàng</p>
-                    </div>
+                    <div class="checkout-layout">
 
-                    <div class="checkout-container__main__infor-customer__name-phone margin-top-bottom">
-                        <div class="infor-customer__name">
-                            <label>Họ và tên*</label>
-                            <input type="text" name="fullname" required
-                                   value="${user.fullName}" class="style-input" placeholder="Nguyễn Văn A">
+                        <!-- LEFT: CUSTOMER INFO -->
+                        <div class="checkout-left">
+
+                            <h3 class="section-title">Thông tin người nhận</h3>
+
+                            <div class="form-group">
+                                <label for="receiverName">Họ và tên</label>
+                                <input id="receiverName"
+                                       name="receiverName"
+                                       class="input-text"
+                                       value="${user.fullName}"
+                                       required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="receiverPhone">Số điện thoại</label>
+                                <input id="receiverPhone"
+                                       name="receiverPhone"
+                                       class="input-text"
+                                       value="${user.phoneNumber}"
+                                       placeholder="0123456789"
+                                       required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input class="input-text input-disabled"
+                                       value="${user.email}"
+                                       palceholder="demo123@gmail.com"
+                                       disabled>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address">Địa chỉ</label>
+                                <input id="address"
+                                       name="address"
+                                       class="input-text"
+                                       value="${user.address}"
+                                       plaveholder="Tên đường, số nhà"
+                                       required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="city">Thành phố</label>
+                                <input id="city"
+                                       name="city"
+                                       class="input-text"
+                                       placeholder="TP.Hồ Chí Minh"
+                                       required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="note">Ghi chú</label>
+                                <textarea id="note"
+                                          name="note"
+                                          placeholder="Ghi chú về đơn hàng của bạn"
+                                          class="input-textarea"></textarea>
+                            </div>
+
                         </div>
-                        <div class="infor-customer__phone">
-                            <label>Số điện thoại*</label>
-                            <input type="text" name="phonenumber" required
-                                   value="${user.phone}" class="style-input" placeholder="0123456789">
-                        </div>
-                    </div>
 
-                    <div class="checkout-container__main__infor-customer__email margin-top-bottom">
-                        <label>Email*</label>
-                        <input type="email" name="email" required
-                               value="${user.email}" class="style-input" placeholder="demo123@gmail.com">
-                    </div>
+                        <!-- RIGHT: ORDER SUMMARY -->
+                        <div class="checkout-right">
 
-                    <div class="checkout-container__main__infor-customer__address margin-top-bottom">
-                        <label>Địa chỉ*</label>
-                        <input type="text" name="address" required class="style-input" placeholder="Số nhà, tên đường">
-                    </div>
+                            <h3 class="section-title">Đơn hàng của bạn</h3>
 
-                    <div class="checkout-container__main__infor-customer__city margin-top-bottom">
-                        <label>Thành phố*</label>
-                        <input type="text" name="city" required class="style-input" placeholder="TP. Hồ Chí Minh">
-                    </div>
+                            <table class="order-table">
+                                <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>SL</th>
+                                    <th>Thành tiền</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="item" items="${cart.items}">
+                                    <tr>
+                                        <td class="product-name">
+                                                ${item.product.productName}
+                                        </td>
+                                        <td class="product-qty">
+                                                ${item.quantity}
+                                        </td>
+                                        <td class="product-price">
+                                            <fmt:formatNumber value="${item.totalPrice}"
+                                                              type="currency"
+                                                              currencySymbol="₫"/>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
 
-                    <div class="checkout-container__main__infor-customer__note margin-top-bottom">
-                        <label>Ghi chú đơn hàng</label>
-                        <textarea name="note" class="style-input" placeholder="Ghi chú về dơn hàng của bạn"></textarea>
-                    </div>
-                </div>
+                            <!-- VOUCHER -->
+                            <div class="voucher-section">
+                                <h4 class="sub-title">Mã giảm giá</h4>
+                                <div class="voucher_container">
+                                    <input name="voucherCode"
+                                           class="input-text"
+                                           value="${voucherCode}"
+                                           placeholder="Nhập mã giảm giá">
 
-                <!-- THANH TOÁN -->
-                <div class="checkout-container__main__pay" style="height: auto">
-
-                    <div class="order-items-review" style="margin-bottom: 20px; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">
-                        <h3>Đơn hàng của bạn (${cart.items.size()} sản phẩm)</h3>
-                        <div style="max-height: 300px; overflow-y: auto; margin-top: 10px;">
-                            <c:forEach var="item" items="${cart.items}">
-                                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                                    <div style="width: 60px; height: 60px;">
-                                        <img src="${pageContext.request.contextPath}/${item.product.imageUrl}"
-                                             style="width: 100%; height: 100%; object-fit: cover; border-radius: 5px;">
-                                    </div>
-                                    <div style="flex: 1;">
-                                        <p style="margin: 0; font-weight: bold; font-size: 14px;">${item.product.productName}</p>
-                                        <p style="margin: 5px 0 0; font-size: 13px; color: #666;">
-                                            x${item.quantity}
-                                            <span style="float: right; color: #E91E63;">
-                                <fmt:formatNumber value="${item.totalPrice}" type="currency" currencySymbol="₫"/>
-                            </span>
-                                        </p>
-                                    </div>
+                                    <button type="submit"
+                                            name="action"
+                                            value="applyVoucher"
+                                            class="btn-apply-voucher">
+                                        Áp dụng
+                                    </button>
                                 </div>
-                            </c:forEach>
-                        </div>
-                    </div>
 
-                    <div class="total-order">
-                        <h2>Tổng đơn hàng</h2>
-                        <div class="tamp-pay">
-                            <p>Tạm tính</p>
-                            <span>
-                                <fmt:formatNumber value="${subTotal}" type="currency" currencySymbol="₫"/>
-                            </span>
-                        </div>
-                        <div class="ship">
-                            <p>Phí vận chuyển</p>
-                            <span>
-                                <fmt:formatNumber value="${shipFee}" type="currency" currencySymbol="₫"/>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="voucher">
-                        <h3><i class="fa-solid fa-ticket"></i> Mã giảm giá</h3>
-                        <div class="voucher__add">
-                            <input type="text" name="voucherCode" placeholder="Nhập mã giảm giá">
-                            <button type="submit" name="action" value="applyVoucher">Áp dụng</button>
-                        </div>
-                    </div>
-
-                    <div class="payment-method">
-                        <h3>Phương thức thanh toán</h3>
-
-                        <div class="payment-method__select__option">
-                            <input type="radio" name="paymentMethod" value="COD" checked>
-                            <div class="content">
-                                <h3>Tiền mặt</h3>
-                                <p>Thanh toán khi nhận được hàng</p>
+                                <c:if test="${not empty voucherError}">
+                                    <p class="voucher-error">${voucherError}</p>
+                                </c:if>
                             </div>
-                        </div>
 
-                        <div class="payment-method__select__option">
-                            <input type="radio" name="paymentMethod" value="BANKING">
-                            <div class="content">
-                                <h3>Chuyển khoản</h3>
-                                <p>Thanh toán qua ngân hàng</p>
+                            <!-- PAYMENT METHOD -->
+                            <div class="payment-section">
+                                <h4 class="sub-title">Phương thức thanh toán</h4>
+
+                                <label class="payment-option">
+                                    <input type="radio"
+                                           name="paymentMethod"
+                                           value="COD"
+                                           checked>
+                                    Thanh toán khi nhận hàng (COD)
+                                </label>
+
+                                <label class="payment-option">
+                                    <input type="radio"
+                                           name="paymentMethod"
+                                           value="BANKING">
+                                    Chuyển khoản ngân hàng
+                                </label>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="order">
-                        <div class="total">
-                            <h2>Tổng cộng</h2>
-                            <span>
-                                <fmt:formatNumber value="${total}" type="currency" currencySymbol="₫"/>
+                            <!-- SUMMARY -->
+                            <div class="order-summary">
+                                <div class="summary-row">
+                                    <span>Tạm tính</span>
+                                    <span>
+                                <fmt:formatNumber value="${totalAmount}"
+                                                  type="currency"
+                                                  currencySymbol="₫"/>
                             </span>
-                        </div>
+                                </div>
 
-                        <button type="submit" name="action" value="order">
-                            Đặt hàng ngay
-                        </button>
-                        <p>Bằng việc đặt hàng, bạn đòng ý với</p>
-                        <a href="${pageContext.request.contextPath}/view/main/terms.jsp" target="_blank">Điều khoản và Chính sách của 3T STEMSHOP</a>
+                                <div class="summary-row">
+                                    <span>Phí vận chuyển</span>
+                                    <span>30.000 ₫</span>
+                                </div>
+
+                                <div class="summary-row summary-total">
+                                    <span>Tổng cộng</span>
+                                    <span>
+                                <fmt:formatNumber value="${totalAmount + 30000}"
+                                                  type="currency"
+                                                  currencySymbol="₫"/>
+                            </span>
+                                </div>
+                            </div>
+
+                            <button type="submit"
+                                    value="order"
+                                    class="btn-order">
+                                ĐẶT HÀNG
+                            </button>
+
+                        </div>
                     </div>
 
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
+
     </main>
 
-    <jsp:include page="/WEB-INF/components/footer.jsp" />;
+    <jsp:include page="/WEB-INF/components/footer.jsp"/>
 
 <script src="${pageContext.request.contextPath}/assets/js/components.js"></script>
-<script src="${pageContext.request.contextPath}/assets/js/pages/checkout.js"></script>
+<%--<script src="${pageContext.request.contextPath}/assets/js/pages/checkout.js"></script>--%>
 </body>
 </html>

@@ -85,33 +85,6 @@
             </div>
         </div>
     </section>
-<%--    <!-- SECTION: SẢN PHẨM MỚI NHẤT -->--%>
-<%--    <section class="section-featured-products">--%>
-<%--        <div class="container">--%>
-<%--            <h3 class="subtitle">SẢN PHẨM MỚI NHẤT</h3>--%>
-<%--            <h1 class="featured-products-title">--%>
-<%--                Khám phá các sản phẩm mới nhất--%>
-<%--                <br>giúp bé học qua làm và phát triển kỹ năng tương lai--%>
-<%--            </h1>--%>
-<%--            <p class="featured-products-subtitle">--%>
-<%--                Xem chi tiết từng bộ, so sánh và chọn kit phù hợp với độ tuổi —--%>
-<%--                mua ngay, trải nghiệm ngay hôm nay!--%>
-<%--            </p>--%>
-<%--            <div class="feature-products-grid">--%>
-<%--                <!-- Hàng trên: 3 sản phẩm đầu -->--%>
-<%--                <div class="products-top">--%>
-<%--                    <!-- Product 1 -->--%>
-<%--                    <div class="product-card">--%>
-<%--                        <img src="${pageContext.request.contextPath}/assets/images/products/Kit%20STEM%20Arduino%20cơ%20bản.png" alt="Arduino Uno R3">--%>
-<%--                        <h2 class="product-name">Arduino Uno R3</h2>--%>
-<%--                        <p class="product-desc">Board vi điều khiển lý tưởng cho người mới bắt đầu học lập trình và robotics</p>--%>
-<%--                        <span class="product-price">450,000 VNĐ</span>--%>
-<%--                        <button class="btn-add-cart">--%>
-<%--                            <a href="${pageContext.request.contextPath}/add-to-cart?id=1">--%>
-<%--                                Thêm vào giỏ hàng <i class="fa fa-plus"></i>--%>
-<%--                            </a>--%>
-<%--                        </button>--%>
-<%--                    </div>--%>
     <style>
         /* Override CSS để fix kích thước ảnh sản phẩm */
         .product-card__image {

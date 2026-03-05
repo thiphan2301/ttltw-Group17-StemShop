@@ -15,7 +15,6 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            max-width: 800px;
         }
         .form-group {
             margin-bottom: 20px;
@@ -115,7 +114,7 @@
 
                 <div class="form-group">
                     <label>Mô tả:</label>
-                    <textarea name="description" rows="4">${product.description}</textarea>
+                    <textarea name="description" rows="4" style="height:300px; ">${product.description}</textarea>
                 </div>
 
                 <div class="form-group">
@@ -128,15 +127,6 @@
                     <input type="number" name="quantity" value="${product.quantity}" required>
                 </div>
 
-<%--                <div class="form-group">--%>
-<%--                    <label>Category ID:</label>--%>
-<%--                    <input type="number" name="categoryID" value="${product.categoriesID}" required>--%>
-<%--                </div>--%>
-
-<%--                <div class="form-group">--%>
-<%--                    <label>Brand ID:</label>--%>
-<%--                    <input type="number" name="brandID" value="${product.brandID}" required>--%>
-<%--                </div>--%>
                 <div class="form-group">
                     <label>Danh mục:</label>
                     <select name="categoryID" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
@@ -170,7 +160,7 @@
             <div style="display:flex; gap:12px; flex-wrap:wrap;">
                 <c:forEach var="img" items="${images}">
                     <div style="position:relative;">
-                        <img src="${pageContext.request.contextPath}${img}"
+                        <img src="${pageContext.request.contextPath}/${img}"
                              style="width:120px;height:120px;object-fit:cover;border-radius:8px">
                     </div>
                 </c:forEach>
@@ -178,7 +168,7 @@
         </div>
 
         <!-- Upload ảnh mới -->
-        <div class="form-group">
+        <div class="form-group" style="margin: 20px;">
             <label>Ảnh sản phẩm (chọn nhiều)</label>
             <input type="file" name="productImages" multiple accept="image/*">
             <small>Chọn ảnh mới sẽ thay thế toàn bộ ảnh cũ</small>
