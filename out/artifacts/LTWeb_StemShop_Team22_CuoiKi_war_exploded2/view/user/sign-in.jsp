@@ -7,13 +7,19 @@
     <!--LINK CSS-->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/sign-in_sign-up.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/cart.css">
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
 <!--HEADER-->
 <%@ include file="/WEB-INF/components/header.jsp" %>
-
+<!-- breadcrumb -->
+<div class="back">
+    <a href="${pageContext.request.contextPath}/">Trang Chủ</a>
+    <span>/</span>
+    <a href="#">Đăng nhập</a>
+</div>
 <main class="auth">
     <section class="auth__container">
         <h1 class="auth__title">Đăng  nhập!</h1>
@@ -49,7 +55,7 @@
             <button type="submit" class="auth__button">Đăng nhập</button>
 
             <div class="auth__link">
-                <a href="forgot-password.html" class="auth__link--highlight">Quên mật khẩu?</a>
+                <a href="forgot-password.jsp" class="auth__link--highlight">Quên mật khẩu?</a>
                 <a href="sign-up.jsp" class="auth__link--highlight">Đăng ký</a>
             </div>
         </form>

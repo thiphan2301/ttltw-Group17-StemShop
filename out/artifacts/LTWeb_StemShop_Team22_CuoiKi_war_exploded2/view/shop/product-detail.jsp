@@ -390,6 +390,9 @@
     .average-stars span i{
         color: #FFC107;
     }
+    .active-heart {
+        color: red !important;
+    }
 
 </style>
 
@@ -448,14 +451,17 @@
             </div>
 
             <div class="product-actions">
-                <a href="${pageContext.request.contextPath}/add-to-cart?id=${product.id}">
-                    <button class="add-to-cart">
-                        Thêm vào giỏ hàng <i class="fa-solid fa-cart-plus"></i>
-                    </button>
-                </a>
+                <button class="add-to-cart"
+                        type="button"
+                        onclick="addToCart(${product.id})">
+                    Thêm vào giỏ hàng
+                    <i class="fa-solid fa-cart-plus"></i>
+                </button>
 
-                <button class="wishlist-btn">
-                    <i class="fa-solid fa-heart" style="color:#FF6C80"></i>
+                <button type="button"
+                        class="wishlist-btn"
+                        onclick="toggleWishlist(${product.id}, this)">
+                    <i class="fa-solid fa-heart ${isWishlisted ? 'active-heart' : ''}"></i>
                 </button>
             </div>
 
@@ -577,7 +583,7 @@
                         </form>
 
                         <% } else { %>
-                        <p>Vui lòng <a href="login.jsp">đăng nhập</a> để đánh giá.</p>
+                        <p>Vui lòng <a href="${pageContext.request.contextPath}/view/user/sign-in.jsp">đăng nhập</a> để đánh giá.</p>
                         <% } %>
                     </div>
 

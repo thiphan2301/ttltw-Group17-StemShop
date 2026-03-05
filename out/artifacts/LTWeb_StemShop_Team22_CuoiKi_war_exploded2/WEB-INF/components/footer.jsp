@@ -15,7 +15,7 @@
     <!-- LOGO + ICON -->
     <div class="footer__col footer__logo">
       <div class="logo">
-        <a href="${pageContext.request.contextPath}/index.jsp">
+        <a href="${pageContext.request.contextPath}/">
           <img src="${pageContext.request.contextPath}/assets/images/logo.png" alt="logo">
         </a>
       </div>
@@ -37,7 +37,7 @@
     <div class="footer__col footer__quickLinks">
       <h3>Liên kết nhanh</h3>
       <ul>
-        <li><a href="${pageContext.request.contextPath}/index.jsp">Trang chủ</a></li>
+        <li><a href="${pageContext.request.contextPath}/">Trang chủ</a></li>
         <li><a href="${pageContext.request.contextPath}/view/main/about.jsp">Giới thiệu</a></li>
         <li><a href="${pageContext.request.contextPath}/view/shop/shop.jsp">Cửa hàng</a></li>
         <li><a href="${pageContext.request.contextPath}/view/content/blog.jsp">Bài viết</a></li>

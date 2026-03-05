@@ -340,6 +340,7 @@ public class ProductDAO {
         String sql ="SELECT p.ID, p.ProductName, p.Price, p.CategoryID, p.BrandID, "+
                 "(SELECT ImageURL FROM product_image WHERE ProductID = p.ID LIMIT 1) AS image_url "+
                 "FROM products p "+
+                "WHERE p.status = 1 "+
                 "ORDER BY p.ID "+
                 "LIMIT ? OFFSET ?";
 

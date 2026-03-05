@@ -99,3 +99,25 @@ document.addEventListener("DOMContentLoaded", () => {
   loadComponent("footer", `${basePath}components/footer.html`);
 });
 
+function toggleWishlist(productId, icon) {
+    fetch(`${contextPath}/toggle-wishlist?id=` + productId)
+        .then(res => {
+            if (res.status === 401) {
+                window.location.href = contextPath + "/view/user/sign-in.jsp";
+                return;
+            }
+            updateWishlistCount();
+            icon.classList.toggle("active-heart");
+        });
+}
+
+function updateWishlistCount() {
+    fetch(`${contextPath}/wishlist-count`)
+        .then(res => res.json())
+        .then(data => {
+            const badge = document.getElementById("wishlist-count");
+            if (badge) {
+                badge.innerText = data.count;
+            }
+        });
+}

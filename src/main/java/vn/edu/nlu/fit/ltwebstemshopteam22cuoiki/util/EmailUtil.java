@@ -9,7 +9,7 @@ public class EmailUtil {
         // xác thực email
     public static void sendVerifyEmail(String toEmail, String verifyLink) {
 
-        final String fromEmail = "nhoktizike@gmail.com";
+        final String fromEmail = "thipv52@gmail.com";
         final String password = "ibym uosw rize kbjh"; // mật khẩu ứng dụng
 
         Properties props = new Properties();
@@ -41,7 +41,7 @@ public class EmailUtil {
 
     // gửi mật khẩu mới
     public static void sendResetPasswordEmail(String toEmail, String newPassword) {
-        final String fromEmail = "nhoktizike@gmail.com";
+        final String fromEmail = "thipv52@gmail.com";
         final String password = "ibym uosw rize kbjh";
 
         Properties props = new Properties();
@@ -76,7 +76,7 @@ public class EmailUtil {
     // gửi email xác nhận đã gửi liên hệ
     public static void sendContactSuccessEmail(String toEmail, String fullName, String subject) {
 
-        final String fromEmail = "nhoktizike@gmail.com";
+        final String fromEmail = "thipv52@gmail.com";
         final String password = "ibym uosw rize kbjh"; // mật khẩu ứng dụng Gmail
 
         Properties props = new Properties();
