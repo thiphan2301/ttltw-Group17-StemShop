@@ -2,6 +2,7 @@ package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao;
 
 
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.config.ConnectionDB;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.GoogleUserDTO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.User;
 
 import java.sql.Connection;
@@ -290,5 +291,42 @@ public class UserDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+    public User loginWithGoogle(GoogleUserDTO googleUser) {
+        User user = getUserByEmail(googleUser.getEmail());
+
+        if (user == null) {
+            // Nếu chưa có, INSERT mới (Password để null vì login qua Google)
+            String sql = "INSERT INTO users (FullName, Email, Role, Status, avatar, isVerified) VALUES (?, ?, 'USER', 'ACTIVE', ?, 1)";
+            try (Connection conn = ConnectionDB.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, googleUser.getName());
+                ps.setString(2, googleUser.getEmail());
+                ps.setString(3, googleUser.getPicture());
+                ps.executeUpdate();
+                return getUserByEmail(googleUser.getEmail());
+            } catch (Exception e) { e.printStackTrace(); }
+        }
+        return user;
+    }
+
+    public User getUserByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE Email = ?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("ID"));
+                u.setFullName(rs.getString("FullName"));
+                u.setEmail(rs.getString("Email"));
+                u.setRole(rs.getString("Role"));
+                u.setStatus(rs.getString("Status"));
+                u.setAvatar(rs.getString("avatar"));
+                return u;
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
     }
 }
