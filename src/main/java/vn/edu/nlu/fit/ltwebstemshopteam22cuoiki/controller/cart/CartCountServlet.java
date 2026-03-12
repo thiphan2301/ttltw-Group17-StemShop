@@ -1,7 +1,6 @@
-package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.controller;
+package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.controller.cart;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

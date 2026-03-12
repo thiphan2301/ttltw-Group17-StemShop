@@ -10,6 +10,38 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        .btn-edit{
+            padding: 5px 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            background-color: #FFC107;
+            font-size: 12px;
+            margin-left: 5px;
+            text-decoration: none;
+        }
+        .btn-edit:hover{
+            background-color: #FFC107;
+            color: white;
+        }
+        .btn-delete{
+            padding: 5px 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            background-color: #BA1424;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        .btn-delete:hover{
+            background-color: #ba1424;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 
@@ -79,8 +111,13 @@
                             <td>${user.phoneNumber}</td>
                             <td>${user.role}</td>
                             <td>
+                                <button type="submit" class="btn-action btn-delete">
+                                    <i class="fas fa-trash"></i> Xóa
+                                </button>
+                                <a href="" class="btn-action btn-edit">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
                                 <button class="btn-small delete" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-user-detail?id=${user.id}'">Chi tiết</button>
-
                             </td>
                         </tr>
                     </c:forEach>

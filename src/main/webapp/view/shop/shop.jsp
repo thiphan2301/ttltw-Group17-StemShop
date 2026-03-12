@@ -199,6 +199,7 @@
 
                                 <!-- NÚT THÊM GIỎ -->
                                 <div class="product-actions">
+                                    <a href="${pageContext.request.contextPath}/checkout">Mua ngay</a>
                                     <button type="button"
                                             class="add-to-cart"
                                             onclick="addToCart(${p.id})">
