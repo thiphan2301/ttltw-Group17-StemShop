@@ -54,6 +54,13 @@
 
             <button type="submit" class="auth__button">Đăng nhập</button>
 
+            <div class="another-login">
+                <p>Hoặc đăng nhập với</p>
+                <a href="https://accounts.google.com/o/oauth2/auth?scope=email%20profile&redirect_uri=http://localhost:8080/login-google&response_type=code&client_id=393823825163-e07kcqa0degfafb68obr3sda553uordj.apps.googleusercontent.com&approval_prompt=force">
+                    <img src="${pageContext.request.contextPath}/assets/images/user/logo-google.png" alt="logo google">
+                </a>
+            </div>
+
             <div class="auth__link">
                 <a href="forgot-password.jsp" class="auth__link--highlight">Quên mật khẩu?</a>
                 <a href="sign-up.jsp" class="auth__link--highlight">Đăng ký</a>

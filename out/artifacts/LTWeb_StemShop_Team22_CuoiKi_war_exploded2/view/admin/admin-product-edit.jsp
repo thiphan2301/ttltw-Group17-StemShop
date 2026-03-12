@@ -168,7 +168,7 @@
         </div>
 
         <!-- Upload ảnh mới -->
-        <div class="form-group">
+        <div class="form-group" style="margin: 20px;">
             <label>Ảnh sản phẩm (chọn nhiều)</label>
             <input type="file" name="productImages" multiple accept="image/*">
             <small>Chọn ảnh mới sẽ thay thế toàn bộ ảnh cũ</small>
