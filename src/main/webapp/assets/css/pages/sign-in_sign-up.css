@@ -93,3 +93,14 @@
 .auth__link--highlight:hover {
     text-decoration: underline;
 }
+
+.another-login{
+    margin: 2rem;
+}
+.another-login img{
+    width: 4rem;
+    margin: 1.5rem;
+}
+.another-login img:hover{
+    cursor: pointer;
+}
