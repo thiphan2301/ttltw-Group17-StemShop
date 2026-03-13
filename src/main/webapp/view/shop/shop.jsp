@@ -176,20 +176,18 @@
             <div class="list-product__body">
                 <div class="list-product__body__card">
                     <c:forEach var="p" items="${products}">
-                        <a href="${pageContext.request.contextPath}/product-detail?id=${p.id}"
-                           class="product-link">
                             <div class="list-product__body__card__container"
                                  data-category="${p.categoriesID}"
                                  data-brand="${p.brandID}"
                                  data-price="${p.price}"
                                  data-name="${fn:toLowerCase(p.productName)}">
 
-                                <!-- CLICK VÀO ĐÂY MỚI ĐI CHI TIẾT -->
                                 <a href="${pageContext.request.contextPath}/product-detail?id=${p.id}"
                                    class="product-link">
 
                                     <img src="${pageContext.request.contextPath}/${p.imageUrl}"
-                                         alt="${p.productName}" style="display: flex">
+                                         alt="${p.productName}"
+                                         style="width: 100%; height: 200px; object-fit: contain;">
 
                                     <div class="list-product__body__card__content">
                                         <h5>${p.productName}</h5>
@@ -199,7 +197,6 @@
 
                                 <!-- NÚT THÊM GIỎ -->
                                 <div class="product-actions">
-                                    <a href="${pageContext.request.contextPath}/checkout">Mua ngay</a>
                                     <button type="button"
                                             class="add-to-cart"
                                             onclick="addToCart(${p.id})">
@@ -208,30 +205,7 @@
                                     </button>
                                 </div>
                             </div>
-                        </a>
                     </c:forEach>
-                </div>
-                <div class="pagination" style="text-align:center;margin:40px 0">
-
-                    <c:if test="${currentPage > 1}">
-                        <a href="${pageContext.request.contextPath}/shop?page=${currentPage - 1}">
-                            &laquo;
-                        </a>
-                    </c:if>
-
-                    <c:forEach begin="1" end="${totalPages}" var="i">
-                        <a href="${pageContext.request.contextPath}/shop?page=${i}"
-                           class="${i == currentPage ? 'active' : ''}">
-                                ${i}
-                        </a>
-                    </c:forEach>
-
-                    <c:if test="${currentPage < totalPages}">
-                        <a href="${pageContext.request.contextPath}/shop?page=${currentPage + 1}">
-                            &raquo;
-                        </a>
-                    </c:if>
-
                 </div>
             </div>
 

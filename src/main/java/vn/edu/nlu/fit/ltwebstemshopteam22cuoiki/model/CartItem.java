@@ -6,7 +6,7 @@ public class CartItem {
 
     public CartItem(Product product, int i) {
         this.product = product;
-        this.quantity = 1;
+        this.quantity = i;
     }
 
     public Product getProduct() {

@@ -15,41 +15,22 @@ import java.util.List;
 @WebServlet("/shop")
 public class ShopServlet extends HttpServlet {
 
-    private static final int PAGE_SIZE = 16; // số sp / trang
+    //private static final int PAGE_SIZE = 16;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        int page = 1;
-        String pageParam = request.getParameter("page");
-        if (pageParam != null) {
-            page = Integer.parseInt(pageParam);
-        }
-
         ProductDAO productDAO = new ProductDAO();
-        CategoryDAO categoriDao = new CategoryDAO();
 
-        int totalProducts = productDAO.countProducts();
-        int totalPages = (int) Math.ceil((double) totalProducts / PAGE_SIZE);
+        // Lấy tất cả danh sách sản phẩm
+        List<Product> products = productDAO.getAll();
 
-        // 1. Lấy danh sách sản phẩm từ DB
-        int offset = (page - 1) * PAGE_SIZE;
-        List<Product> products = productDAO.getProductsByPage(offset, PAGE_SIZE);
-
-        System.out.println("ShopServlet DOGET chạy");
-        System.out.println("Products size = " + products.size());
- /*       System.out.println("Categories size = " + CategoryDAO.getAll().size());*/
-
-        // 2. Gửi sang JSP
+        //  Gửi sang JSP
         request.setAttribute("products", products);
         request.setAttribute("categories", CategoryDAO.getAll());
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
 
-        // 3. Forward sang shop.jsp
-        request.getRequestDispatcher("/view/shop/shop.jsp")
-                .forward(request, response);
+        // Forward sang shop.jsp
+        request.getRequestDispatcher("/view/shop/shop.jsp").forward(request, response);
     }
 
     @Override

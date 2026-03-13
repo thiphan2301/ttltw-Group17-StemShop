@@ -96,6 +96,7 @@ function addToCart(productId) {
     fetch(`${contextPath}/add-to-cart?id=` + productId)
         .then(() => updateCartCount());
 }
+
 function updateCartCount() {
     fetch(`${contextPath}/cart-count`)
         .then(res => res.json())

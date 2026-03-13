@@ -1,10 +1,4 @@
-<<<<<<<< HEAD:src/main/java/vn/edu/nlu/fit/ltwebstemshopteam22cuoiki/controller/user/CartVsCheckout/cart/AddToCartServlet.java
 package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.controller.user.CartVsCheckout.cart;
-========
-package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.controller.cart;
-
-import java.io.IOException;
->>>>>>>> main:src/main/java/vn/edu/nlu/fit/ltwebstemshopteam22cuoiki/controller/cart/AddToCartServlet.java
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,24 +17,31 @@ public class AddToCartServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try{
+            int productId = Integer.parseInt(request.getParameter("id"));
 
-        int productId = Integer.parseInt(request.getParameter("id"));
+            ProductDAO productDAO = new ProductDAO();
+            Product product = productDAO.findByIdWithImage(productId);
 
-        ProductDAO productDAO = new ProductDAO();
-        Product product = productDAO.findByIdWithImage(productId);
+            if(product == null){
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Không tìm thấy sản phẩm");
+                return;
+            }
 
-        HttpSession session = request.getSession();
-        Cart cart = (Cart) session.getAttribute("cart");
+            HttpSession session = request.getSession();
+            Cart cart = (Cart) session.getAttribute("cart");
+            if (cart == null) {
+                cart = new Cart();
+                session.setAttribute("cart", cart);
+            }
 
-        if (cart == null) {
-            cart = new Cart();
-            session.setAttribute("cart", cart);
+            cart.add(product);
+
+            response.setStatus(HttpServletResponse.SC_OK);
+        }catch(Exception e){
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
-        cart.add(product);
-
-        // khôgn senRedirect Chỉ trả status OK để JS xử lý tiếp
-        /*response.sendRedirect(request.getContextPath() + "/cart");*/
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

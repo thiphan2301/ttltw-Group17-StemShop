@@ -1,10 +1,4 @@
-<<<<<<<< HEAD:src/main/java/vn/edu/nlu/fit/ltwebstemshopteam22cuoiki/controller/user/CartVsCheckout/cart/CartCountServlet.java
 package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.controller.user.CartVsCheckout.cart;
-========
-package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.controller.cart;
-
-import java.io.IOException;
->>>>>>>> main:src/main/java/vn/edu/nlu/fit/ltwebstemshopteam22cuoiki/controller/cart/CartCountServlet.java
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

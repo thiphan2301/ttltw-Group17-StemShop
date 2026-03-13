@@ -415,21 +415,20 @@
 
         <!-- LEFT: IMAGES -->
         <div class="product-images">
-            <!-- MAIN IMAGE -->
-            <c:if test="${not empty images}">
-                <img class="main-image"
-                     src="${pageContext.request.contextPath}/${images[0].imageUrl}"
-                     alt="${product.productName}">
-            </c:if>
+            <img class="main-image"
+                 id="main-product-img"
+                 src="${pageContext.request.contextPath}/${product.imageUrl}"
+                 alt="${product.productName}">
 
-            <!-- THUMBNAILS -->
-            <div class="thumbnail-images">
-                <c:forEach var="img" items="${images}">
-                    <img src="${pageContext.request.contextPath}/${img.imageUrl}"
-                         alt="${product.productName}">
+            <div class="thumbnail-images" style="display: flex; gap: 10px; margin-top: 15px;">
+
+                <c:forEach var="imgItem" items="${images}">
+                    <img src="${pageContext.request.contextPath}/${imgItem.imageUrl}"
+                         class="thumb-item"
+                         onclick="changeImage(this.src)"
+                         style="width: 80px; height: 80px; object-fit: contain; cursor: pointer; border: 1px solid #ddd;">
                 </c:forEach>
             </div>
-
         </div>
 
         <!-- RIGHT: INFO -->
@@ -646,14 +645,9 @@
 <jsp:include page="/WEB-INF/components/footer.jsp"/>
 <%--hàm đổi ản khi click vào thumbnail--%>
 <script>
-    const mainImage = document.querySelector('.main-image');
-    const thumbnails = document.querySelectorAll('.thumbnail-images img');
-
-    thumbnails.forEach(img => {
-        img.addEventListener('click', () => {
-            mainImage.src = img.src;
-        });
-    });
+    function changeImage(newSrc) {
+        document.getElementById('main-product-img').src = newSrc;
+    }
 </script>
 
 <script>
