@@ -486,19 +486,19 @@
     <div class="trust-badge__container">
         <ul>
             <li>
-                <img src="${pageContext.request.contextPath}/assets/images/product-detail/chinh-hang.png">
+                <img src="${pageContext.request.contextPath}/assets/images/trust-badge/chinh-hang.png">
                 <p>Sản phẩm chính hãng 100%</p>
             </li>
             <li>
-                <img src="${pageContext.request.contextPath}/assets/images/product-detail/an-toan.png">
+                <img src="${pageContext.request.contextPath}/assets/images/trust-badge/an-toan.png">
                 <p>Nhựa an toàn cho trẻ em</p>
             </li>
             <li>
-                <img src="${pageContext.request.contextPath}/assets/images/product-detail/giao-hang.png">
-                <p>Miễn phí giao hàng từ 500K</p>
+                <img src="${pageContext.request.contextPath}/assets/images/trust-badge/giao-hang.png">
+                <p>Miễn phí giao hàng khi có Voucher FreeShip</p>
             </li>
             <li>
-                <img src="${pageContext.request.contextPath}/assets/images/product-detail/hoa-toc.png">
+                <img src="${pageContext.request.contextPath}/assets/images/trust-badge/hoa-toc.png">
                 <p>Giao hàng hỏa tốc 4 tiếng</p>
             </li>
         </ul>
