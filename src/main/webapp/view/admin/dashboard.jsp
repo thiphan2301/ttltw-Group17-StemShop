@@ -129,7 +129,9 @@
                     </div>--%>
                 </div>
             </div>
+        <jsp:include page="/view/admin/statistic.jsp" />
         </div>
+
     </main>
 </div>
 
