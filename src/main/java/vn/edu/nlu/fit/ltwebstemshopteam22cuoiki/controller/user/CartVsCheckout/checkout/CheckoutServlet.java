@@ -34,7 +34,6 @@ public class CheckoutServlet extends HttpServlet {
             return;
         }
 
-        // --- CẬP NHẬT DO-GET ĐỂ HIỂN THỊ ĐÚNG LẦN ĐẦU TIÊN VÀO TRANG ---
         double subTotal = cart.getTotalPrice();
         double baseShippingFee = 30000;
 
@@ -84,15 +83,12 @@ public class CheckoutServlet extends HttpServlet {
             String action = req.getParameter("action");
             if (action == null) action = "order";
 
-            // ========================================================
             // ÁP DỤNG MÃ SẢN PHẨM
-            // ========================================================
             if ("applyVoucherProduct".equals(action)) {
                 String codeProduct = req.getParameter("voucherCodeProduct");
                 double productDiscount = 0;
 
                 if (promotionDAO.getCode().contains(codeProduct)) {
-                    // ĐÃ SỬA Ở ĐÂY: Dùng getDiscountType thay vì getVoucherType
                     String discountType = promotionDAO.getDiscountType(codeProduct);
                     double val = promotionDAO.getDiscountValue(codeProduct, discountType);
 
@@ -101,15 +97,12 @@ public class CheckoutServlet extends HttpServlet {
                 session.setAttribute("savedVoucherProduct", codeProduct);
                 session.setAttribute("savedProductDiscount", productDiscount);
 
-                // ========================================================
                 // ÁP DỤNG MÃ VẬN CHUYỂN
-                // ========================================================
             } else if ("applyVoucherShip".equals(action)) {
                 String codeShip = req.getParameter("voucherCodeShip");
                 double shipDiscount = 0;
 
                 if (promotionDAO.getCode().contains(codeShip)) {
-                    // ĐÃ SỬA Ở ĐÂY
                     String discountType = promotionDAO.getDiscountType(codeShip);
                     double val = promotionDAO.getDiscountValue(codeShip, discountType);
                     double baseShippingFee = 30000;
@@ -121,9 +114,7 @@ public class CheckoutServlet extends HttpServlet {
                 session.setAttribute("savedShipDiscount", shipDiscount);
             }
 
-            // ========================================================
-            // TÍNH TOÁN TIỀN BẠC CHUNG
-            // ========================================================
+            // TÍNH TOÁN TIỀN
             Double pd = (Double) session.getAttribute("savedProductDiscount");
             double finalProductDiscount = (pd != null) ? pd : 0;
 
@@ -136,9 +127,7 @@ public class CheckoutServlet extends HttpServlet {
 
             double finalTotalAmount = (subTotal - finalProductDiscount) + finalShippingFee;
 
-            // ========================================================
             // ĐẶT HÀNG
-            // ========================================================
             if ("order".equals(action)) {
                 Order order = new Order();
                 order.setUserId(user.getId());

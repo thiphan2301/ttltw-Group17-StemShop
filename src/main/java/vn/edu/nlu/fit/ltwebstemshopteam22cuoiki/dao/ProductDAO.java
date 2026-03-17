@@ -78,7 +78,7 @@ public class ProductDAO {
 
         // Lấy các ảnh phụ (is_main = 0)
         if (p != null) {
-            String sqlImages = "SELECT ImageURL FROM product_images WHERE ProductID = ? AND is_main = 0";
+            String sqlImages = "SELECT ImageURL FROM product_image WHERE ProductID = ? AND is_main = 0";
             try (Connection con = ConnectionDB.getConnection();
                  PreparedStatement ps = con.prepareStatement(sqlImages)) {
 

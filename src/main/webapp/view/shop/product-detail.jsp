@@ -597,18 +597,35 @@
                         <div class="review-item">
                             <div class="review-header">
                                 <div class="reviewer-info">
+                                    <%
+                                        // 1. Xử lý tên người dùng (Nếu NULL thì đổi thành "Khách hàng")
+                                        String displayName = r.getUserName();
+                                        if (displayName == null || displayName.trim().isEmpty()) {
+                                            displayName = "Khách hàng"; // Hoặc bạn có thể lấy r.getFullName() nếu class Reviews có lưu
+                                        }
+
+                                        // 2. Xử lý chữ cái trong Avatar (Đảm bảo an toàn không bị sập)
+                                        String avatarText = "KH";
+                                        if (displayName.length() >= 2) {
+                                            avatarText = displayName.substring(0, 2).toUpperCase();
+                                        } else {
+                                            avatarText = displayName.toUpperCase(); // Nếu tên chỉ có 1 chữ thì lấy 1 chữ
+                                        }
+                                    %>
+
                                     <div class="reviewer-avatar">
-                                        <%= r.getUserName().substring(0, 2).toUpperCase() %>
+                                        <%= avatarText %>
                                     </div>
+
                                     <div class="reviewer-details">
-                                        <span class="reviewer-name"><%= r.getUserName() %></span>
+                                        <span class="reviewer-name"><%= displayName %></span>
+
                                         <%
-                                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                                            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
                                         %>
                                         <span class="review-date">
-                                            <%= sdf.format(r.getCreateDate()) %>
-                                        </span>
-
+            <%= sdf.format(r.getCreateDate()) %>
+        </span>
                                     </div>
                                 </div>
 

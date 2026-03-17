@@ -20,27 +20,43 @@ public class AddReviewServlet extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session =  request.getSession();
-        //
+        // check xem người dùng đã đăng nhập chưa, nếu chưa chuyển sang trang đăng nhập luôn
         if(session == null || session.getAttribute("user") == null){
-            response.sendRedirect("sign-in.jsp");
+            response.sendRedirect(request.getContextPath() + "/view/user/sign-in.jsp");
             return;
         }
         User user  = (User)session.getAttribute("user");
 
-        int productId = Integer.parseInt(request.getParameter("productId"));
-        double rating =  Double.parseDouble(request.getParameter("rating"));
-        String comment  = request.getParameter("comment");
+        try{
+            int productId = Integer.parseInt(request.getParameter("productId"));
+            String comment  = request.getParameter("comment");
+            //không nên chuyển ratting về double vội gì khi dl tưf client gửi qua là String mà
+            //nếu người dùng chỉ comment mà không rating thì lúc này nó "" mà mình add kiểu sang double
+            //thì sẽ lỗi
+            String ratingStr = request.getParameter("rating");
+            double rating = 5; //cho mặc định đánh giá 5 sao nếu người dùng chỉ comment
+            if(ratingStr != null && !ratingStr.isEmpty()){
+                rating = Double.parseDouble(ratingStr);
+            }
 
-        Reviews r = new Reviews();
-        r.setUserID(user.getId());
-        r.setProductID(productId);
-        r.setRating(rating);
-        r.setComment(comment);
+            Reviews r = new Reviews();
+            r.setUserID(user.getId());
+            r.setProductID(productId);
+            r.setRating(rating);
+            r.setComment(comment);
 
-        ReviewDAO.addReview(r);
+            boolean isSuccess = ReviewDAO.addReview(r);
+            if(isSuccess){
+                System.out.println("Thêm đánh giá thành công");
+            }else{
+                System.out.println("Thêm sản phẩm thất bại, kiểm tra lại ReviewDAO");
+            }
 
-        //quay lại trang chi tiết sp rồi load lại danh sách review
-        response.sendRedirect("product-detail?id=" + productId);
+            //quay lại trang chi tiết sp rồi load lại danh sách review
+            response.sendRedirect(request.getContextPath() + "/product-detail?id=" + productId);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
