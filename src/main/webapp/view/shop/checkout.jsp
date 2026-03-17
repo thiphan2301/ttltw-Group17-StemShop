@@ -47,7 +47,7 @@
                                 <input id="receiverName"
                                        name="receiverName"
                                        class="input-text"
-                                       value="${user.fullName}"
+                                       value="${not empty receiverName ? receiverName : user.fullName}"
                                        required>
                             </div>
 
@@ -56,7 +56,7 @@
                                 <input id="receiverPhone"
                                        name="receiverPhone"
                                        class="input-text"
-                                       value="${user.phoneNumber}"
+                                       value="${not empty receiverPhone ? receiverPhone : user.phoneNumber}"
                                        placeholder="0123456789"
                                        required>
                             </div>
@@ -74,7 +74,7 @@
                                 <input id="address"
                                        name="address"
                                        class="input-text"
-                                       value="${user.address}"
+                                       value="${not empty address ? address : user.address}"
                                        plaveholder="Tên đường, số nhà"
                                        required>
                             </div>
@@ -85,6 +85,7 @@
                                        name="city"
                                        class="input-text"
                                        placeholder="TP.Hồ Chí Minh"
+                                       value="${city}"
                                        required>
                             </div>
 
@@ -93,7 +94,7 @@
                                 <textarea id="note"
                                           name="note"
                                           placeholder="Ghi chú về đơn hàng của bạn"
-                                          class="input-textarea"></textarea>
+                                          class="input-textarea">${note}</textarea>
                             </div>
 
                         </div>
@@ -132,24 +133,39 @@
 
                             <!-- VOUCHER -->
                             <div class="voucher-section">
-                                <h4 class="sub-title">Mã giảm giá</h4>
+                                <h4 class="sub-title">Mã giảm giá sản phẩm</h4>
                                 <div class="voucher_container">
-                                    <input name="voucherCode"
+                                    <input name="voucherCodeProduct"
                                            class="input-text"
-                                           value="${voucherCode}"
-                                           placeholder="Nhập mã giảm giá">
+                                           value="${sessionScope.savedVoucherProduct}"
+                                           placeholder="Nhập mã giảm giá cho đơn hàng">
 
                                     <button type="submit"
                                             name="action"
-                                            value="applyVoucher"
+                                            value="applyVoucherProduct"
                                             class="btn-apply-voucher">
                                         Áp dụng
                                     </button>
                                 </div>
 
-                                <c:if test="${not empty voucherError}">
-                                    <p class="voucher-error">${voucherError}</p>
-                                </c:if>
+                                <h4 class="sub-title">Mã giảm giá phí vận chuyển</h4>
+                                <div class="voucher_container">
+                                    <input name="voucherCodeShip"
+                                           class="input-text"
+                                           value="${sessionScope.savedVoucherShip}"
+                                           placeholder="Nhập mã giảm giá cho vận chuyển">
+
+                                    <button type="submit"
+                                            name="action"
+                                            value="applyVoucherShip"
+                                            class="btn-apply-voucher">
+                                        Áp dụng
+                                    </button>
+                                </div>
+
+<%--                                <c:if test="${not empty voucherError}">--%>
+<%--                                    <p class="voucher-error">${voucherError}</p>--%>
+<%--                                </c:if>--%>
                             </div>
 
                             <!-- PAYMENT METHOD -->
@@ -177,21 +193,28 @@
                                 <div class="summary-row">
                                     <span>Tạm tính</span>
                                     <span>
-                                <fmt:formatNumber value="${totalAmount}"
+                                        <fmt:formatNumber value="${subTotal}"
                                                   type="currency"
                                                   currencySymbol="₫"/>
-                            </span>
+                                    </span>
                                 </div>
+
+                                <c:if test="${productDiscount > 0}">
+                                    <div class="summary-row" style="color: red;">
+                                        <span>Giảm giá sản phẩm: </span>
+                                        <span>- <fmt:formatNumber value="${productDiscount}" type="currency" currencySymbol="₫"/></span>
+                                    </div>
+                                </c:if>
 
                                 <div class="summary-row">
                                     <span>Phí vận chuyển</span>
-                                    <span>30.000 ₫</span>
+                                    <span><fmt:formatNumber value="${finalShippingFee}" type="currency" currencySymbol="₫"/></span>
                                 </div>
 
                                 <div class="summary-row summary-total">
                                     <span>Tổng cộng</span>
                                     <span>
-                                <fmt:formatNumber value="${totalAmount + 30000}"
+                                <fmt:formatNumber value="${finalTotalAmount}"
                                                   type="currency"
                                                   currencySymbol="₫"/>
                             </span>
@@ -199,6 +222,7 @@
                             </div>
 
                             <button type="submit"
+                                    name="action"
                                     value="order"
                                     class="btn-order">
                                 ĐẶT HÀNG

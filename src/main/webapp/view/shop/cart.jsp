@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
 <html>
 <head>
@@ -101,7 +102,7 @@
                 <!-- GIÁ -->
                 <div class="cart-container__price">
                     <p class="product-line-price">
-                            ${item.totalPrice} Đ
+                        <fmt:formatNumber value="${item.totalPrice}" type="number" groupingUsed="true"/> Đ
                     </p>
                 </div>
 
@@ -112,7 +113,7 @@
         <h2>
             Tổng cộng:
             <span id="total-price">
-                ${cart.totalPrice} Đ
+                <fmt:formatNumber value="${cart.totalPrice}" type="number" groupingUsed="true"/> Đ
             </span>
         </h2>
     </div>
