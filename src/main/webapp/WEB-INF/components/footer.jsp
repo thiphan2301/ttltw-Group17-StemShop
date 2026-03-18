@@ -9,7 +9,6 @@
 <%--thêm taglib này để viết JSTL--%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <footer class="footer">
-
   <div class="container footer__container">
 
     <!-- LOGO + ICON -->
@@ -80,3 +79,39 @@
   </div>
 
 </footer>
+<%------------------------------------------------------------------%>
+<div id="toast-notification" class="toast-hidden">
+  <i class="fa-solid fa-circle-check"></i> Sản phẩm đã được thêm vào giỏ hàng!
+</div>
+<style>
+  #toast-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    font-family: Arial, sans-serif;
+
+    z-index: 999999 !important;
+
+    transition: all 0.5s ease-in-out;
+  }
+
+  .toast-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+  }
+  .toast-show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+</style>
+<script src="${pageContext.request.contextPath}/assets/js/pages/cart.js"></script>
+<%------------------------------------------------------------------%>
+
+
