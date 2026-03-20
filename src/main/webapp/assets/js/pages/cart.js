@@ -91,12 +91,31 @@ document.addEventListener("DOMContentLoaded", () => {
     updateGrandTotal();
 
 });
-
+// ---------------------------------------------------
 function addToCart(productId) {
+    // 1. Gọi về server để thêm sản phẩm vào giỏ hàng
     fetch(`${contextPath}/add-to-cart?id=` + productId)
-        .then(() => updateCartCount());
+        .then(() => {
+            // 2. Cập nhật con số trên icon giỏ hàng
+            updateCartCount();
+
+            // 3. Hiển thị thông báo Toast thành công
+            const toast = document.getElementById("toast-notification");
+            if (toast) {
+                toast.className = "toast-show"; // Hiện lên
+
+                // Ẩn đi sau 3 giây
+                setTimeout(function() {
+                    toast.className = "toast-hidden";
+                }, 3000);
+            }
+        })
+        .catch(error => {
+            console.error("Lỗi khi thêm vào giỏ hàng:", error);
+        });
 }
 
+// ----------------------------------------------------
 function updateCartCount() {
     fetch(`${contextPath}/cart-count`)
         .then(res => res.json())
