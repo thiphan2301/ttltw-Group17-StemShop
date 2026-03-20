@@ -457,6 +457,10 @@
                     <i class="fa-solid fa-cart-plus"></i>
                 </button>
 
+                <button type="button" class="buyNow" onclick="buyNow(${product.id})">
+                    Mua ngay
+                </button>
+
                 <button type="button"
                         class="wishlist-btn"
                         onclick="toggleWishlist(${product.id}, this)">
@@ -692,6 +696,10 @@
             stars.forEach(s => s.classList.remove('hover-fill'));
         });
     });
+
+    function buyNow(productId){
+        window.location.href = "/BuyNowServlet?productId=" + productId;
+    }
 </script>
 </body>
 </html>

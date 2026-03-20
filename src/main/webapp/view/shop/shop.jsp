@@ -18,8 +18,10 @@
 <style>
     .product-actions {
         display: flex;
-        gap: 20px;
-        margin: 30px 0;
+        gap: 10px;
+        flex-direction: column;
+        position: relative;
+        bottom: 1rem;
     }
 
     .product-actions button {
@@ -27,9 +29,9 @@
         margin:auto;
     }
     .add-to-cart {
-        background-color: #FF6C80;
-        color: white;
-        border: none;
+        background-color: white;
+        color: #FF6C80;
+        border: 1px solid #FF6C80;
         padding: 10px 30px;
         cursor: pointer;
         transition: background-color 0.3s;
@@ -37,9 +39,20 @@
 
     .add-to-cart:hover {
         background-color: #ff3e5a;
+        color: white
     }
-    .list-product__body__card__container{
-        justify-content: flex-end;
+    .buyNow{
+        background-color: #FF6C80;
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .buyNow:hover{
+        background-color: white;
+        color: #ff3e5a;
+        border: 1px solid #ff3e5a;
     }
 </style>
 
@@ -187,7 +200,7 @@
 
                                     <img src="${pageContext.request.contextPath}/${p.imageUrl}"
                                          alt="${p.productName}"
-                                         style="width: 100%; height: 200px; object-fit: contain;">
+                                         style="width: 80%; height: 200px; object-fit: contain;">
 
                                     <div class="list-product__body__card__content">
                                         <h5>${p.productName}</h5>
@@ -202,6 +215,10 @@
                                             onclick="addToCart(${p.id})">
                                         Thêm vào giỏ hàng
                                         <i class="fa-solid fa-cart-plus"></i>
+                                    </button>
+
+                                    <button type="button" class="buyNow" onclick="buyNow(${p.id})">
+                                        Mua ngay
                                     </button>
                                 </div>
                             </div>

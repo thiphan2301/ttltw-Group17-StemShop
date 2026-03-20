@@ -282,7 +282,7 @@ main {
     margin: 20px;
 }
 .list-product__body__card__container {
-    display: flex;
+    display: flow;
     flex-direction: column;
     width: 230px;
     height: 370px;
