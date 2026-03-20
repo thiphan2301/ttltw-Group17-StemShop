@@ -193,3 +193,8 @@ backToTopBtn.addEventListener('click', () =>{
         behavior: "smooth"
     });
 });
+
+// mua ngay
+function buyNow(productId){
+    window.location.href = "/BuyNowServlet?productId=" + productId;
+}

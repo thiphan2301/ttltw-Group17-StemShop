@@ -415,21 +415,20 @@
 
         <!-- LEFT: IMAGES -->
         <div class="product-images">
-            <!-- MAIN IMAGE -->
-            <c:if test="${not empty images}">
-                <img class="main-image"
-                     src="${pageContext.request.contextPath}/${images[0].imageUrl}"
-                     alt="${product.productName}">
-            </c:if>
+            <img class="main-image"
+                 id="main-product-img"
+                 src="${pageContext.request.contextPath}/${product.imageUrl}"
+                 alt="${product.productName}">
 
-            <!-- THUMBNAILS -->
-            <div class="thumbnail-images">
-                <c:forEach var="img" items="${images}">
-                    <img src="${pageContext.request.contextPath}/${img.imageUrl}"
-                         alt="${product.productName}">
+            <div class="thumbnail-images" style="display: flex; gap: 10px; margin-top: 15px;">
+
+                <c:forEach var="imgItem" items="${images}">
+                    <img src="${pageContext.request.contextPath}/${imgItem.imageUrl}"
+                         class="thumb-item"
+                         onclick="changeImage(this.src)"
+                         style="width: 80px; height: 80px; object-fit: contain; cursor: pointer; border: 1px solid #ddd;">
                 </c:forEach>
             </div>
-
         </div>
 
         <!-- RIGHT: INFO -->
@@ -456,6 +455,10 @@
                         onclick="addToCart(${product.id})">
                     Thêm vào giỏ hàng
                     <i class="fa-solid fa-cart-plus"></i>
+                </button>
+
+                <button type="button" class="buyNow" onclick="buyNow(${product.id})">
+                    Mua ngay
                 </button>
 
                 <button type="button"
@@ -487,19 +490,19 @@
     <div class="trust-badge__container">
         <ul>
             <li>
-                <img src="${pageContext.request.contextPath}/assets/images/product-detail/chinh-hang.png">
+                <img src="${pageContext.request.contextPath}/assets/images/trust-badge/chinh-hang.png">
                 <p>Sản phẩm chính hãng 100%</p>
             </li>
             <li>
-                <img src="${pageContext.request.contextPath}/assets/images/product-detail/an-toan.png">
+                <img src="${pageContext.request.contextPath}/assets/images/trust-badge/an-toan.png">
                 <p>Nhựa an toàn cho trẻ em</p>
             </li>
             <li>
-                <img src="${pageContext.request.contextPath}/assets/images/product-detail/giao-hang.png">
-                <p>Miễn phí giao hàng từ 500K</p>
+                <img src="${pageContext.request.contextPath}/assets/images/trust-badge/giao-hang.png">
+                <p>Miễn phí giao hàng khi có Voucher FreeShip</p>
             </li>
             <li>
-                <img src="${pageContext.request.contextPath}/assets/images/product-detail/hoa-toc.png">
+                <img src="${pageContext.request.contextPath}/assets/images/trust-badge/hoa-toc.png">
                 <p>Giao hàng hỏa tốc 4 tiếng</p>
             </li>
         </ul>
@@ -598,18 +601,35 @@
                         <div class="review-item">
                             <div class="review-header">
                                 <div class="reviewer-info">
+                                    <%
+                                        // 1. Xử lý tên người dùng (Nếu NULL thì đổi thành "Khách hàng")
+                                        String displayName = r.getUserName();
+                                        if (displayName == null || displayName.trim().isEmpty()) {
+                                            displayName = "Khách hàng"; // Hoặc bạn có thể lấy r.getFullName() nếu class Reviews có lưu
+                                        }
+
+                                        // 2. Xử lý chữ cái trong Avatar (Đảm bảo an toàn không bị sập)
+                                        String avatarText = "KH";
+                                        if (displayName.length() >= 2) {
+                                            avatarText = displayName.substring(0, 2).toUpperCase();
+                                        } else {
+                                            avatarText = displayName.toUpperCase(); // Nếu tên chỉ có 1 chữ thì lấy 1 chữ
+                                        }
+                                    %>
+
                                     <div class="reviewer-avatar">
-                                        <%= r.getUserName().substring(0, 2).toUpperCase() %>
+                                        <%= avatarText %>
                                     </div>
+
                                     <div class="reviewer-details">
-                                        <span class="reviewer-name"><%= r.getUserName() %></span>
+                                        <span class="reviewer-name"><%= displayName %></span>
+
                                         <%
-                                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                                            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
                                         %>
                                         <span class="review-date">
-                                            <%= sdf.format(r.getCreateDate()) %>
-                                        </span>
-
+            <%= sdf.format(r.getCreateDate()) %>
+        </span>
                                     </div>
                                 </div>
 
@@ -646,14 +666,9 @@
 <jsp:include page="/WEB-INF/components/footer.jsp"/>
 <%--hàm đổi ản khi click vào thumbnail--%>
 <script>
-    const mainImage = document.querySelector('.main-image');
-    const thumbnails = document.querySelectorAll('.thumbnail-images img');
-
-    thumbnails.forEach(img => {
-        img.addEventListener('click', () => {
-            mainImage.src = img.src;
-        });
-    });
+    function changeImage(newSrc) {
+        document.getElementById('main-product-img').src = newSrc;
+    }
 </script>
 
 <script>
@@ -681,6 +696,10 @@
             stars.forEach(s => s.classList.remove('hover-fill'));
         });
     });
+
+    function buyNow(productId){
+        window.location.href = "/BuyNowServlet?productId=" + productId;
+    }
 </script>
 </body>
 </html>

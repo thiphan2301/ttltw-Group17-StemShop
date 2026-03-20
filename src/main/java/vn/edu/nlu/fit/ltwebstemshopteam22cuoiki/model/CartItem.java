@@ -6,7 +6,7 @@ public class CartItem {
 
     public CartItem(Product product, int i) {
         this.product = product;
-        this.quantity = 1;
+        this.quantity = i;
     }
 
     public Product getProduct() {
@@ -35,9 +35,6 @@ public class CartItem {
     }
 
     //hàm tính tổng tiền của 1 sp trong giỏ hàng
-    public double getSubTotal() {
-        return product.getPrice() * quantity;
-    }
 
     public double getTotalPrice() {
         return product.getPrice() * quantity;

@@ -12,10 +12,11 @@ import java.util.List;
 public class ProductDAO {
     public List<Product> getAll() {
         List<Product> list = new ArrayList<>();
-        //String sql = "SELECT * FROM products";
-        String sql = "SELECT p.*, b.BrandName," +
-                "(SELECT ImageURL FROM product_image WHERE ProductID = p.ID LIMIT 1) AS image_url " +
-                "FROM products p JOIN brands b ON p.BrandID = b.ID";
+
+        String sql = "SELECT p.*, b.BrandName, " +
+                "(SELECT ImageURL FROM product_image WHERE ProductID = p.ID AND is_main = 1 LIMIT 1) AS image_url " +
+                "FROM products p LEFT JOIN brands b ON p.BrandID = b.ID " +
+                "WHERE p.status = 1";
         try (
                 Connection con = ConnectionDB.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql);
@@ -43,19 +44,22 @@ public class ProductDAO {
 
 
     public Product findByIdWithImage(int id) {
-        String sql = "SELECT p.*, b.BrandName, " +
-                "(SELECT ImageURL FROM product_image WHERE ProductID = p.ID LIMIT 1) AS image_url " +
-                "FROM products p  JOIN brands b ON p.BrandID = b.ID " +
+        Product p = null;
+
+        // Lấy thông tin cơ bản và ảnh chính
+        String sqlProduct = "SELECT p.*, b.BrandName, " +
+                "(SELECT ImageURL FROM product_image WHERE ProductID = p.ID AND is_main = 1 LIMIT 1) AS image_url " +
+                "FROM products p LEFT JOIN brands b ON p.BrandID = b.ID " +
                 "WHERE p.ID = ?";
-        try (
-                Connection con = ConnectionDB.getConnection();
-                PreparedStatement ps = con.prepareStatement(sql)
-        ) {
+
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sqlProduct)) {
+
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                Product p = new Product();
+                p = new Product();
                 p.setId(rs.getInt("ID"));
                 p.setCategoriesID(rs.getInt("CategoryID"));
                 p.setBrandID(rs.getInt("BrandID"));
@@ -64,13 +68,35 @@ public class ProductDAO {
                 p.setDescription(rs.getString("Description"));
                 p.setPrice(rs.getDouble("Price"));
                 p.setQuantity(rs.getInt("Quantity"));
-                p.setImageUrl(rs.getString("image_url"));
-                return p;
+
+                String img = rs.getString("image_url");
+                p.setImageUrl(img != null ? img : "assets/images/no-image.png");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+
+        // Lấy các ảnh phụ (is_main = 0)
+        if (p != null) {
+            String sqlImages = "SELECT ImageURL FROM product_image WHERE ProductID = ? AND is_main = 0";
+            try (Connection con = ConnectionDB.getConnection();
+                 PreparedStatement ps = con.prepareStatement(sqlImages)) {
+
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                List<String> subs = new ArrayList<>();
+
+                while (rs.next()) {
+                    subs.add(rs.getString("ImageURL"));
+                }
+                p.setSubImages(subs); // Gắn danh sách ảnh phụ vào đối tượng Product
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return p;
     }
 
     // hàm lấy thông tin của một sản phẩm theo id

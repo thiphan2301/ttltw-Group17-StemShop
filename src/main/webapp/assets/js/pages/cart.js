@@ -114,6 +114,7 @@ function addToCart(productId) {
             console.error("Lỗi khi thêm vào giỏ hàng:", error);
         });
 }
+
 // ----------------------------------------------------
 function updateCartCount() {
     fetch(`${contextPath}/cart-count`)

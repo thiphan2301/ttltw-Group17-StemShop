@@ -11,7 +11,7 @@ import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.Cart;
 import java.io.IOException;
 
 @WebServlet("/cart")
-class CartServlet extends HttpServlet {
+public class CartServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -25,7 +25,7 @@ class CartServlet extends HttpServlet {
         }
 
         request.setAttribute("cart", cart);
-        request.getRequestDispatcher("/view/shop/cart.jsp")
+        request.getRequestDispatcher(request.getContextPath() + "/view/shop/cart.jsp")
                 .forward(request, response);
     }
 }
