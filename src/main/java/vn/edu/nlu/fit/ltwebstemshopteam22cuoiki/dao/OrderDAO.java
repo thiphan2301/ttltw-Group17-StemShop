@@ -186,4 +186,46 @@ public class OrderDAO {
             e.printStackTrace();
         }
     }
+    //------------------------------//
+
+    // LẤY CHI TIẾT 1 ĐƠN HÀNG DỰA VÀO ID
+    public Order getOrderById(int orderId) throws Exception {
+        Order order = null;
+        String sql = "SELECT * FROM orders WHERE ID = ?";
+
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                order = new Order();
+                order.setId(rs.getInt("ID"));
+                order.setUserId(rs.getInt("UserID"));
+
+                // Xử lý an toàn cho PromotionID (vì có thể null)
+                int promoId = rs.getInt("PromotionID");
+                if (!rs.wasNull()) {
+                    order.setPromotionId(promoId);
+                } else {
+                    order.setPromotionId(null);
+                }
+
+                order.setOrderDate(rs.getTimestamp("OrderDate"));
+                order.setOrderStatus(rs.getString("OrderStatus"));
+                order.setShippingFee(rs.getDouble("ShippingFee"));
+                order.setTotalAmount(rs.getDouble("TotalAmount"));
+                order.setNote(rs.getString("Note"));
+                order.setShippingAddress(rs.getString("ShippingAddress"));
+                order.setReceiverName(rs.getString("ReceiverName"));
+                order.setReceiverPhone(rs.getString("ReceiverPhone"));
+
+                // Lưu ý: Trong Order.java của bạn KHÔNG CÓ trường paymentMethod
+                // Nên trên JSP đoạn kiểm tra thanh toán nó sẽ luôn tự động hiện là "Thanh toán khi nhận hàng (COD)"
+            }
+        }
+        return order;
+    }
+
 }
