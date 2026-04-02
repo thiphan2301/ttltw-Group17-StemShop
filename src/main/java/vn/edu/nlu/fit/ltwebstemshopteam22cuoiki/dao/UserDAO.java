@@ -15,7 +15,8 @@ public class UserDAO {
     //Lấy danh sác user
     public List<User> getAllUsers() {
         List<User> Users = new ArrayList<>();
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT * FROM users" +
+                "";
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;

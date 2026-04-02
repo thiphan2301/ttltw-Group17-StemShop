@@ -282,7 +282,7 @@ main {
     margin: 20px;
 }
 .list-product__body__card__container {
-    display: flow;
+    display: flex;
     flex-direction: column;
     width: 230px;
     height: 370px;
@@ -423,6 +423,7 @@ main {
 .product-link {
     text-decoration: none;
     color: inherit;
+    height: stretch;
 }
 .pagination a {
     padding: 8px 12px;
@@ -436,4 +437,72 @@ main {
     background: #FF6C80;
     color: white;
     border-color: #FF6C80;
+}
+
+.result-info {
+    padding: 10px 20px;
+    text-align: right;
+    color: #666;
+    font-size: 14px;
+    background: #f9f9f9;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+.no-products {
+    text-align: center;
+    padding: 50px;
+    width: 100%;
+    font-size: 18px;
+    color: #999;
+}
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+.list-product__body__pagination ul li.active {
+    background: #FF6C80;
+    color: white;
+}
+
+.product-actions {
+    display: flex;
+    gap: 10px;
+    flex-direction: row;
+    position: relative;
+    bottom: 1rem;
+}
+
+.product-actions button {
+    border-radius: 10px;
+    margin:auto;
+}
+.add-to-cart {
+    background-color: white;
+    color: #FF6C80;
+    border: 1px solid #FF6C80;
+    padding: 10px 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    padding: 1rem;
+}
+
+.add-to-cart:hover {
+    background-color: #ff3e5a;
+    color: white
+}
+.buyNow{
+    background-color: #FF6C80;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    padding: 1rem;
+}
+.buyNow:hover{
+    background-color: white;
+    color: #ff3e5a;
+    border: 1px solid #ff3e5a;
 }
