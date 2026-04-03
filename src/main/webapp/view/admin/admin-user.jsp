@@ -27,18 +27,18 @@
             background-color: #FFC107;
             color: white;
         }
-        .btn-delete{
+        .btn-lock{
             padding: 5px 8px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             color: white;
-            background-color: #BA1424;
+            background-color: #FF9800;
             font-size: 12px;
             margin-left: 5px;
         }
-        .btn-delete:hover{
-            background-color: #ba1424;
+        .btn-lock:hover{
+            background-color: #ff98000;
             color: white;
         }
     </style>
@@ -111,13 +111,13 @@
                             <td>${user.phoneNumber}</td>
                             <td>${user.role}</td>
                             <td>
-                                <button type="submit" class="btn-action btn-delete">
-                                    <i class="fas fa-trash"></i> Xóa
+                                <button type="submit" class="btn-action btn-lock">
+                                    <i class="fas fa-lock"></i> Khóa
                                 </button>
                                 <a href="" class="btn-action btn-edit">
                                     <i class="fas fa-edit"></i> Sửa
                                 </a>
-                                <button class="btn-small delete" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-user-detail?id=${user.id}'">Chi tiết</button>
+                                <button class="btn-small lock" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-user-detail?id=${user.id}'">Chi tiết</button>
                             </td>
                         </tr>
                     </c:forEach>
