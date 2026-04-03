@@ -171,6 +171,21 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
+    //Khóa tài khoản
+    public void lockUser(int userId) {
+        String sql = "UPDATE users SET Status=? WHERE ID=?";
+        try (Connection conn ConnectionDB.getConnection();
+             PreparedStatement ps= conn.prepareStatement(sql)) {
+
+            ps.setString(1, "LOCK");
+            ps.setInt(2, user.getId());
+
+            ps.executeUpdate();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
