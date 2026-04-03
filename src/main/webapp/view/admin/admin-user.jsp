@@ -117,7 +117,7 @@
                                 <a href="" class="btn-action btn-edit">
                                     <i class="fas fa-edit"></i> Sửa
                                 </a>
-                                <button class="btn-small delete" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-user-detail?id=${user.id}'">Chi tiết</button>
+                                <button class="btn-small lock" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-user-detail?id=${user.id}'">Chi tiết</button>
                             </td>
                         </tr>
                     </c:forEach>
