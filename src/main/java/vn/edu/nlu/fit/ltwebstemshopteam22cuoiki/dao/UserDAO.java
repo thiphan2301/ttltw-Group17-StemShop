@@ -4,19 +4,19 @@ package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.config.ConnectionDB;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.GoogleUserDTO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.User;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.PasswordUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class UserDAO {
     //Lấy danh sác user
     public List<User> getAllUsers() {
         List<User> Users = new ArrayList<>();
-        String sql = "SELECT * FROM users" +
-                "";
+        String sql = "SELECT * FROM users";
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -30,7 +30,6 @@ public class UserDAO {
                 u.setFullName(rs.getString("FullName"));
                 u.setEmail(rs.getString("Email"));
                 u.setUserName(rs.getString("UserName"));
-                // THÊM - 23130355_LeQuangTruong - để nó lấy sdt
                 u.setPhoneNumber(rs.getString("PhoneNumber"));
                 u.setRole(rs.getString("Role"));
                 u.setStatus(rs.getString("Status"));
@@ -60,7 +59,6 @@ public class UserDAO {
                 u.setUserName(rs.getString("UserName"));
                 u.setFullName(rs.getString("FullName"));
                 u.setEmail(rs.getString("Email"));
-                // THÊM - 23130355_LeQuangTruong - để nó lấy sdt
                 u.setPhoneNumber(rs.getString("PhoneNumber"));
                 u.setRole(rs.getString("Role"));
 
@@ -76,79 +74,103 @@ public class UserDAO {
         return null;
     }
 
-    //  Đăng ký
-    public boolean registerWithVerify(User user, String token) {
-        String sql = "INSERT INTO users " +
-                "(FullName, Email, UserName, Password, Role, Status, CreateAt, IsVerified, VerifyToken) " +
-                "VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE, 0, ?)";
-
+    //  -------------------------Đăng ký----------------------
+    // Kiểm tra email đã tồn tại chưa
+    public boolean isEmailExists(String email) throws Exception {
+        String sql = "SELECT id FROM users WHERE email = ?";
         try (Connection conn = ConnectionDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, user.getFullName());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getUserName());
-            ps.setString(4, user.getPassword());
-            ps.setString(5, "USER");
-            ps.setString(6, "ACTIVE");
-            ps.setString(7, token);
-
-            return ps.executeUpdate() > 0;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    // check trùng username
-    public boolean isUsernameExists(String username) {
-        String sql = "SELECT ID FROM users WHERE UserName = ?";
-        try (Connection conn = ConnectionDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, username);
-            ResultSet rs = ps.executeQuery();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
             return rs.next();
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return false;
     }
-    // xác thực tài khoản
-    public boolean verifyAccount(String token) {
-        String sql = "UPDATE users SET IsVerified=1, VerifyToken=NULL WHERE VerifyToken=?";
+
+    // Tạo user mới
+    public boolean createUser(User user) throws Exception {
+        String sql = "INSERT INTO users (UserName, Email, Password, VerifyToken, token_expiry) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            ps.setString(1, token);
-            return ps.executeUpdate() > 0;
+            // Mã hóa mật khẩu
+            String hashedPassword = PasswordUtils.hashPassword(user.getPassword());
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            // Tạo token xác thực email
+            String verificationToken = UUID.randomUUID().toString();
+            Date expiry = new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(24)); // 24 giờ
+
+            stmt.setString(1, user.getUserName());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, hashedPassword);
+            stmt.setString(4, verificationToken);
+            stmt.setTimestamp(5, new Timestamp(expiry.getTime()));
+
+            return stmt.executeUpdate() > 0;
         }
-        return false;
     }
-    // tài khoản chưa xác thực
-    public boolean isUnverifiedUser(String username, String password) {
-        String sql = "SELECT ID FROM users WHERE UserName=? AND Password=? AND IsVerified=0";
+
+    // Lấy user theo token (để xác thực email)
+    public User getUserByVerificationToken(String token) throws Exception {
+        String sql = "SELECT * FROM users WHERE VerifyToken = ? AND token_expiry > NOW()";
+
         try (Connection conn = ConnectionDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, token);
+            ResultSet rs = stmt.executeQuery();
 
-            ps.setString(1, username);
-            ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("ID"));
+                user.setUserName(rs.getString("UserName"));
+                user.setEmail(rs.getString("Email"));
+                user.setVerified(rs.getBoolean("IsVerified"));
+                return user;
+            }
+            return null;
         }
-        return false;
     }
 
+    // Xác thực email thành công
+    public boolean verifyEmail(String token) throws Exception {
+        String sql = "UPDATE users SET IsVerified = True, VerifyToken = NULL WHERE VerifyToken = ? AND token_expiry > NOW()";
 
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, token);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+     // Tìm user theo username hoặc email
+    public User findByUsernameOrEmail(String usernameOrEmail) throws Exception {
+        String sql = "SELECT * FROM users WHERE UserName = ? OR Email = ?";
+
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, usernameOrEmail);
+            stmt.setString(2, usernameOrEmail);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("ID"));
+                user.setUserName(rs.getString("UserName"));
+                user.setFullName(rs.getString("FullName"));
+                user.setEmail(rs.getString("Email"));
+                user.setPassword(rs.getString("Password"));  // Lấy password đã hash
+                user.setPhoneNumber(rs.getString("PhoneNumber"));
+                user.setRole(rs.getString("Role"));
+                user.setStatus(rs.getString("Status"));
+                user.setVerified(rs.getBoolean("IsVerified"));
+                user.setAvatar(rs.getString("avatar"));
+                return user;
+            }
+            return null;
+        }
+    }
 
     // 2 Phương thức này ở admin - quan ly
     // Sửa

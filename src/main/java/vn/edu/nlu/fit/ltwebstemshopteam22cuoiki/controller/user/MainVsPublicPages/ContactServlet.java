@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.ContactDao;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.Contact;
-import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.util.EmailUtil;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.EmailUtil;
 
 import java.io.IOException;
 

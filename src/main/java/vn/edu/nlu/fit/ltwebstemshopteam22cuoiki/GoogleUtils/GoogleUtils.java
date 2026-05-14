@@ -14,18 +14,19 @@ public class GoogleUtils {
     public static String CLIENT_ID;
     public static String CLIENT_SECRET;
     // public static final String REDIRECT_URI = "http://localhost:8080/login-google";
-    public static final String REDIRECT_URI = "https://stemshop.id.vn/login-google";
+    public static String REDIRECT_URI;
 
     // Khối static này sẽ chạy ngay khi class được load để đọc file properties
     static {
         try (InputStream input = GoogleUtils.class.getClassLoader().getResourceAsStream("system.properties")) {
             Properties prop = new Properties();
-            if (input == null) {
-                System.out.println("Cảnh báo: Không tìm thấy file system.properties tại src/main/resources/");
-            } else {
+            if (input != null) {
                 prop.load(input);
                 CLIENT_ID = prop.getProperty("google.client.id");
                 CLIENT_SECRET = prop.getProperty("google.client.secret");
+                REDIRECT_URI = prop.getProperty("google.redirect.uri");
+
+                System.out.println("DEBUG: Google Client ID đang dùng là: " + CLIENT_ID);
             }
         } catch (IOException ex) {
             ex.printStackTrace();

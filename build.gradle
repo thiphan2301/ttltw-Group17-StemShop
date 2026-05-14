@@ -51,6 +51,9 @@ dependencies {
     // Test
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+
+    // BCrypt - mã hóa mật khẩu
+    implementation 'org.mindrot:jbcrypt:0.4'
 }
 
 test {

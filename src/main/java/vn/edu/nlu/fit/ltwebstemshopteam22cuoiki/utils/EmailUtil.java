@@ -1,4 +1,4 @@
-package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.util;
+package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils;
 
 import jakarta.mail.*;
 import jakarta.mail.internet.*;
