@@ -86,17 +86,14 @@ public class UserDAO {
         }
     }
 
-    // Tạo user mới
-    public boolean createUser(User user) throws Exception {
+    // Tạo user mới và trả về token (hoặc null nếu thất bại)
+    public String createUser(User user) throws Exception {
         String sql = "INSERT INTO users (UserName, Email, Password, VerifyToken, token_expiry) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            // Mã hóa mật khẩu
             String hashedPassword = PasswordUtils.hashPassword(user.getPassword());
-
-            // Tạo token xác thực email
             String verificationToken = UUID.randomUUID().toString();
             Date expiry = new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(24)); // 24 giờ
 
@@ -106,7 +103,11 @@ public class UserDAO {
             stmt.setString(4, verificationToken);
             stmt.setTimestamp(5, new Timestamp(expiry.getTime()));
 
-            return stmt.executeUpdate() > 0;
+            int result = stmt.executeUpdate();
+            if (result > 0) {
+                return verificationToken;  // Trả về token để gửi email
+            }
+            return null;
         }
     }
 
@@ -128,6 +129,21 @@ public class UserDAO {
                 return user;
             }
             return null;
+        }
+    }
+
+    // Cập nhật token mới cho email
+    public boolean updateVerificationToken(String email, String newToken, java.util.Date expiry) throws Exception{
+        String sql = "UPDATE users SET VerifyToken = ?, token_expiry = ?, IsVerified = 0 WHERE Email = ?";
+
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newToken);
+            stmt.setTimestamp(2, new Timestamp(expiry.getTime()));
+            stmt.setString(3, email);
+
+            return stmt.executeUpdate() > 0;
         }
     }
 

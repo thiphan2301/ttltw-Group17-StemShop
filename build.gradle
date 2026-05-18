@@ -43,7 +43,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
 
     // MariaDB Client
-    implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.0'
+    //implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.0'
 
     // Servlet API for Tomcat 10
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
@@ -54,6 +54,14 @@ dependencies {
 
     // BCrypt - mã hóa mật khẩu
     implementation 'org.mindrot:jbcrypt:0.4'
+}
+
+war {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    // Đảm bảo include đầy đủ các file class đã biên dịch mới nhất
+    from('build/classes/java/main') {
+        into 'WEB-INF/classes'
+    }
 }
 
 test {

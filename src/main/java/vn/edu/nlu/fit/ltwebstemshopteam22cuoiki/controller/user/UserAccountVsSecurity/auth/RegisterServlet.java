@@ -7,12 +7,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.UserDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.User;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.EmailUtils;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 
-@WebServlet("/register")
+@WebServlet("/dang-ky")
 public class RegisterServlet extends HttpServlet {
 
     private UserDAO userDAO = new UserDAO();
@@ -24,7 +25,7 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/register.jsp").forward(request, response);
+        request.getRequestDispatcher("/view/user/sign-up.jsp").forward(request, response);
     }
 
     @Override
@@ -73,31 +74,38 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("error", error);
             request.setAttribute("username", username);
             request.setAttribute("email", email);
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/user/sign-up.jsp").forward(request, response);
             return;
         }
 
         // Tạo user mới
         try {
             User newUser = new User();
-
             newUser.setUserName(username);
             newUser.setEmail(email);
             newUser.setPassword(password);
 
-            boolean created = userDAO.createUser(newUser);
+            String verificationToken = userDAO.createUser(newUser);  // Trả về token
 
-            if (created) {
-                request.setAttribute("success", "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.");
-                request.getRequestDispatcher("/login.jsp").forward(request, response);
+            if (verificationToken != null) {
+                // Gửi email xác thực
+                boolean emailSent = EmailUtils.sendVerificationEmail(email, verificationToken);
+
+                if (emailSent) {
+                    request.setAttribute("success", "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.");
+                } else {
+                    request.setAttribute("warning", "Đăng ký thành công nhưng không gửi được email xác thực.");
+                }
             } else {
                 request.setAttribute("error", "Đăng ký thất bại, vui lòng thử lại");
-                request.getRequestDispatcher("/register.jsp").forward(request, response);
+                request.getRequestDispatcher("/view/user/sign-up.jsp").forward(request, response);
+                return;
             }
+            request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Lỗi hệ thống: " + e.getMessage());
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/user/sign-up.jsp").forward(request, response);
         }
     }
 }

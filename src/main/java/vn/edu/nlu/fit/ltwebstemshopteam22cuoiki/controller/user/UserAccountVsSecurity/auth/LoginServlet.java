@@ -20,7 +20,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/sign-in.jsp").forward(request, response);
+        request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
     }
 
     @Override
@@ -34,14 +34,14 @@ public class LoginServlet extends HttpServlet {
 
         // Kiểm tra nhập liệu
         if (username == null || username.trim().isEmpty()) {
-            error = "Vui lòng nhập tên đăng nhập hoặc email";
+            error = "Vui lòng nhập tên đăng nhập";
         } else if (password == null || password.isEmpty()) {
             error = "Vui lòng nhập mật khẩu";
         }
 
         if (error != null) {
             request.setAttribute("error", error);
-            request.getRequestDispatcher("/sign-in.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
             return;
         }
 
@@ -49,16 +49,17 @@ public class LoginServlet extends HttpServlet {
             User user = userDAO.findByUsernameOrEmail(username.trim());
 
             if (user == null) {
-                error = "Sai tên đăng nhập/email hoặc mật khẩu";
+                error = "Sai tên đăng nhập hoặc mật khẩu";
                 request.setAttribute("error", error);
-                request.getRequestDispatcher("/sign-in.jsp").forward(request, response);
+                request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
                 return;
             }
 
+            // Sau khi tìm thấy user, trước khi kiểm tra mật khẩu
             if (!user.isVerified()) {
                 error = "Tài khoản chưa được xác thực. Vui lòng kiểm tra email để xác thực.";
                 request.setAttribute("error", error);
-                request.getRequestDispatcher("/sign-in.jsp").forward(request, response);
+                request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
                 return;
             }
 
@@ -66,7 +67,7 @@ public class LoginServlet extends HttpServlet {
             if (!PasswordUtils.verifyPassword(password, user.getPassword())) {
                 error = "Sai tên đăng nhập/email hoặc mật khẩu";
                 request.setAttribute("error", error);
-                request.getRequestDispatcher("/sign-in.jsp").forward(request, response);
+                request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
                 return;
             }
 
@@ -90,7 +91,7 @@ public class LoginServlet extends HttpServlet {
             e.printStackTrace();
             error = "Lỗi hệ thống, vui lòng thử lại sau";
             request.setAttribute("error", error);
-            request.getRequestDispatcher("/sign-in.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
         }
     }
 }
