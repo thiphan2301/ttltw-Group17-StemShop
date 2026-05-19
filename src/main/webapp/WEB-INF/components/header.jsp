@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%--thêm taglib này để viết JSTL--%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
@@ -21,6 +21,7 @@
             padding: 2px 6px;
             border-radius: 50%;
         }
+
         #wishlist-count {
             position: absolute;
             top: -6px;
@@ -40,7 +41,7 @@
                 <a href="https://maps.app.goo.gl/nj1KfxS8ajpDxTni6" target="_blank">
                     <span><i class="fa-solid fa-location-dot"></i> Trường Đại Học Nông Lâm TPHCM</span>
                 </a>
-                <a href=""><span><i class="fa-solid fa-envelope"></i> shopstemteam22@gmail.com</span></a>
+                <a href=""><span><i class="fa-solid fa-envelope"></i> stemshop.system@gmail.com</span></a>
             </div>
             <div class="header__top-right">
                 <div class="header__phone-top">
@@ -74,7 +75,8 @@
                         <ul class="nav__list">
 
                             <li class="nav__item">
-                                <a href="${pageContext.request.contextPath}/"><i class="fa-solid fa-house"></i> Trang chủ</a>
+                                <a href="${pageContext.request.contextPath}/"><i class="fa-solid fa-house"></i> Trang
+                                    chủ</a>
                             </li>
 
                             <!-- Giới thiệu -->
@@ -83,9 +85,12 @@
                                     Giới thiệu <i class="fa-solid fa-angle-up"></i>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="${pageContext.request.contextPath}/view/about_info/about-stem.jsp">Về STEMSHOP</a></li>
-                                    <li><a href="${pageContext.request.contextPath}/view/about_info//mission.jsp">Sứ mệnh & Tầm nhìn</a></li>
-                                    <li><a href="${pageContext.request.contextPath}/view/about_info/guide.jsp">Tài liệu hướng dẫn</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/view/about_info/about-stem.jsp">Về
+                                        STEMSHOP</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/view/about_info//mission.jsp">Sứ
+                                        mệnh & Tầm nhìn</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/view/about_info/guide.jsp">Tài liệu
+                                        hướng dẫn</a></li>
                                 </ul>
                             </li>
 
@@ -95,19 +100,23 @@
                                     Cửa hàng <i class="fa-solid fa-angle-up"></i>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="${pageContext.request.contextPath}/view/shop/cart.jsp"><i class="fa-solid fa-cart-arrow-down"></i> Giỏ hàng</a></li>
-                                    <li><a href="${pageContext.request.contextPath}/wishlist"><i class="fa-solid fa-heart"></i> Yêu thích</a></li>
-                                    <li><a href="${pageContext.request.contextPath}/view/shop/checkout.jsp"><i class="fa-regular fa-credit-card"></i> Thanh toán</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/view/shop/cart.jsp"><i
+                                            class="fa-solid fa-cart-arrow-down"></i> Giỏ hàng</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/wishlist"><i
+                                            class="fa-solid fa-heart"></i> Yêu thích</a></li>
+                                    <li><a href="${pageContext.request.contextPath}/view/shop/checkout.jsp"><i
+                                            class="fa-regular fa-credit-card"></i> Thanh toán</a></li>
                                     <li>
                                         <a href="${pageContext.request.contextPath}/my-orders">
-                                            <i class="fa-solid fa-box"></i>  Đơn hàng
+                                            <i class="fa-solid fa-box"></i> Đơn hàng
                                         </a>
                                     </li>
                                 </ul>
                             </li>
 
                             <li class="nav__item">
-                                <a href="${pageContext.request.contextPath}/view/main/contact.jsp"><i class="fa-solid fa-envelope"></i> Liên hệ</a>
+                                <a href="${pageContext.request.contextPath}/view/main/contact.jsp"><i
+                                        class="fa-solid fa-envelope"></i> Liên hệ</a>
                             </li>
                         </ul>
                     </nav>
@@ -144,7 +153,9 @@
                                 <i class="fa-solid fa-circle-user user-avatar-icon"></i>
 
                                     <%-- TÊN --%>
-                                <span class="user-short-name">${sessionScope.user.fullName}</span>
+                                <span class="user-short-name">
+                                        ${not empty sessionScope.user.fullName ? sessionScope.user.fullName : sessionScope.user.userName}
+                                </span>
 
                                     <%-- DROPDOWN --%>
                                 <div class="user-dropdown">

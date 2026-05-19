@@ -17,58 +17,6 @@ a {
 
 /* =========================================
    2. HEADER & CONTAINER
-========================================= */
-.header {
-  width: 100%;
-  background-color: #fff;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Đổ bóng nhẹ cho header */
-  position: relative;
-  z-index: 1000;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 15px;
-  width: 100%;
-}
-
-/* =========================================
-   3. TOP BAR (Phần thanh ngang trên cùng)
-========================================= */
-.header__first {
-  background: linear-gradient(90deg, #ff4fa3, #ffaa32); /* Nâng cấp dải màu mượt hơn */
-  padding: 10px 0;
-  font-size: 0.85rem;
-  color: #ffffff;
-  font-weight: 500;
-}
-
-.header__first .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.header__top-left,
-.header__top-right {
-  display: flex;
-  align-items: center;
-  gap: 25px;
-  flex-wrap: wrap;
-}
-
-.header__first a {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: opacity 0.3s ease;
-}
-
-.header__first a:hover {
-  opacity: 0.8;
 }
 
 /* Icons mạng xã hội */
@@ -141,7 +89,7 @@ a {
 }
 
 .nav__item {
-  position: relative;
+    position: relative;
 }
 
 .nav__item > a {
@@ -382,84 +330,4 @@ a {
 
 /* =========================================
    7. RESPONSIVE (Điện thoại & Tablet)
-========================================= */
-@media (max-width: 1024px) {
-  .header__end-left { gap: 20px; }
-  .header__top-left, .header__top-right { gap: 15px; }
-}
-
-@media (max-width: 768px) {
-  /* Căn giữa Topbar */
-  .header__first .container {
-    justify-content: center;
-    flex-direction: column;
-    padding: 5px 0;
-  }
-
-  .header__top-left, .header__top-right {
-    justify-content: center;
-  }
-
-  /* Main Header dọc */
-  .header__end .container {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .header__end-left, .header__end-right {
-    width: 100%;
-    justify-content: center;
-    gap: 20px;
-  }
-
-  /* Giao diện Menu Pill cho Mobile */
-  .nav__list {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .nav__item > a {
-    font-size: 14px;
-    padding: 8px 14px;
-    background: #f8f9fa; /* Nền xám nhạt cho nút */
-    border: 1px solid #eee;
-  }
-
-  .nav__item > a:hover {
-    background: #fff1f7;
-    border-color: #ff4fa3;
-  }
-
-  /* Xử lý Dropdown Mobile */
-  .dropdown-menu {
-    position: static;
-    box-shadow: none;
-    border: 1px solid #eee;
-    margin-top: 5px;
-    display: none;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    padding: 5px;
-  }
-
-  .nav__item.dropdown:hover .dropdown-menu {
-    display: flex;
-  }
-
-  /* Đẩy User ra giữa */
-  .header__user-logged {
-    justify-content: center;
-  }
-
-  .user-dropdown {
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .header__user-logged:hover .user-dropdown {
-    transform: translateX(-50%) translateY(5px);
-  }
 }
