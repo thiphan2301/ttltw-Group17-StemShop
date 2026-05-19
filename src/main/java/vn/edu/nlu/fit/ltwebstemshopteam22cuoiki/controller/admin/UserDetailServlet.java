@@ -29,25 +29,14 @@ public class UserDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-/*      //check bên filterAdmin
-        // Kiểm tra admin
-        HttpSession session = request.getSession();
-        User admin = (User) session.getAttribute("user");
-
-        if (admin == null || !"admin".equals(admin.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/dang-nhap");
-            return;
-        }*/
-
         try {
             int userId = Integer.parseInt(request.getParameter("id"));
 
             // Thông tin user
             User user = userDAO.getUserById(userId);
 
-            // Danh sách đơn hàng
-            List<Order> orders = orderDAO.getOrdersByUserId(userId);
+            // SỬA TẠI ĐÂY: Dùng hàm lấy đơn hàng theo ID của User
+            List<Order> orders = orderDAO.getOrdersWithItemsByUserId(userId);
 
             request.setAttribute("user", user);
             request.setAttribute("orders", orders);
@@ -56,8 +45,7 @@ public class UserDetailServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                    "Có lỗi xảy ra");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Có lỗi xảy ra");
         }
     }
 }

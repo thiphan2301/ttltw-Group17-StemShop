@@ -1,10 +1,11 @@
 package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model;
 
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList; // Bổ sung import này
+import java.util.List;      // Bổ sung import này
 
 public class Order {
-    private int id;
+    private int id; // Mã đơn hàng dùng thuộc tính này
     private int userId;
     private Integer promotionId;
     private Timestamp orderDate;
@@ -15,9 +16,13 @@ public class Order {
     private String shippingAddress;
     private String receiverName;
     private String receiverPhone;
-    // chỉ dùng cho admin view (quản lý đơn hàng)
+
+    // Thuộc tính phục vụ Admin View
     private String userFullName;
     private String userPhone;
+
+    // Danh sách sản phẩm của đơn hàng (Đã gom nhóm)
+    private List<OrderItem> items = new ArrayList<>();
 
     public Order() {
     }
@@ -36,6 +41,14 @@ public class Order {
         this.receiverPhone = receiverPhone;
         this.userFullName = userFullName;
         this.userPhone = userPhone;
+    }
+
+    // Getter và Setter cho danh sách sản phẩm
+    public List<OrderItem> getItems() {
+        return items;
+    }
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
     }
 
     public int getId() {
