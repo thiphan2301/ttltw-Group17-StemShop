@@ -55,10 +55,8 @@ public class ForgotPasswordServlet extends HttpServlet {
             if (valid) {
                 // Tạo token mới
                 String token = UUID.randomUUID().toString();
-                Date expiry = new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)); // 1 giờ
-
                 // Lưu token vào database
-                boolean saved = userDAO.saveResetToken(email.trim(), token, expiry);
+                boolean saved = userDAO.saveResetToken(email.trim(), token);
 
                 if (saved) {
                     // Gửi email reset mật khẩu

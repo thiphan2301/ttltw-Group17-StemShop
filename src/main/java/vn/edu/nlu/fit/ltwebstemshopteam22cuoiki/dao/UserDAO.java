@@ -203,14 +203,14 @@ public class UserDAO {
     }
 
     // Lưu token reset mật khẩu vào bảng password_resets
-    public boolean saveResetToken(String email, String token, java.util.Date expiry) throws Exception {
-        String sql = "INSERT INTO password_resets (email, token, expiry) VALUES (?, ?, ?)";
+    public boolean saveResetToken(String email, String token) throws Exception {
+        // Không cần truyền expiry, để MySQL tự tính UTC_TIMESTAMP + 1 hour
+        String sql = "INSERT INTO password_resets (email, token, expiry) VALUES (?, ?, UTC_TIMESTAMP() + INTERVAL 1 HOUR)";
 
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, email);
             stmt.setString(2, token);
-            stmt.setTimestamp(3, new Timestamp(expiry.getTime()));
             return stmt.executeUpdate() > 0;
         }
     }
