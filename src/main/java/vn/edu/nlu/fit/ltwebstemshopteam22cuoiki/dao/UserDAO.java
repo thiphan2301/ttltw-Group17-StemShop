@@ -188,6 +188,71 @@ public class UserDAO {
         }
     }
 
+    // ------------------------------------Quên pass--------------------------------
+    // Kiểm tra username và email có khớp với tài khoản không
+    public boolean checkUserCredentials(String username, String email) throws Exception {
+        String sql = "SELECT id FROM users WHERE UserName = ? AND Email = ?";
+
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            stmt.setString(2, email);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }
+    }
+
+    // Lưu token reset mật khẩu vào bảng password_resets
+    public boolean saveResetToken(String email, String token, java.util.Date expiry) throws Exception {
+        String sql = "INSERT INTO password_resets (email, token, expiry) VALUES (?, ?, ?)";
+
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            stmt.setString(2, token);
+            stmt.setTimestamp(3, new Timestamp(expiry.getTime()));
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    // Kiểm tra token có hợp lệ không (tồn tại, chưa hết hạn, chưa dùng)
+    public String getEmailByResetToken(String token) throws Exception {
+        String sql = "SELECT email FROM password_resets WHERE token = ? AND expiry > UTC_TIMESTAMP() AND used = FALSE";
+
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, token);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("email");
+            }
+            return null;
+        }
+    }
+
+    // Đánh dấu token đã được sử dụng
+    public void markTokenAsUsed(String token) throws Exception {
+        String sql = "UPDATE password_resets SET used = TRUE WHERE token = ?";
+
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, token);
+            stmt.executeUpdate();
+        }
+    }
+
+    // Cập nhật mật khẩu mới theo email
+    public boolean updatePasswordByEmail(String email, String hashedPassword) throws Exception {
+        String sql = "UPDATE users SET Password = ? WHERE Email = ?";
+
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, hashedPassword);
+            stmt.setString(2, email);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
     // 2 Phương thức này ở admin - quan ly
     // Sửa
     public void updateUser(User user) {
@@ -213,11 +278,11 @@ public class UserDAO {
     //Khóa tài khoản
     public void lockUser(int userId) {
         String sql = "UPDATE users SET Active=? WHERE ID=?";
-        try (Connection conn ConnectionDB.getConnection();
+        try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps= conn.prepareStatement(sql)) {
 
-            ps.setBoolean(1, false);
-            ps.setInt(2, user.getId());
+            ps.setInt(1, 0);
+            ps.setInt(2, userId);
 
             ps.executeUpdate();
             
@@ -278,21 +343,6 @@ public class UserDAO {
         return null;
     }
 
-    // tạo password mới
-    public boolean updatePassword(int userId, String hashedPassword) {
-        String sql = "UPDATE users SET Password=? WHERE id=?";
-        try (Connection con = ConnectionDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, hashedPassword);
-            ps.setInt(2, userId);
-            return ps.executeUpdate() > 0;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
     // update profile
     public boolean updateProfile(User user) {
@@ -316,23 +366,6 @@ public class UserDAO {
         return false;
     }
 
-    // check password cũ để đổi
-    public boolean checkPassword(int userId, String hashedPassword) {
-        String sql = "SELECT ID FROM users WHERE ID = ? AND Password = ?";
-        try (Connection con = ConnectionDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, userId);
-            ps.setString(2, hashedPassword);
-
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
     //lấy số lượng user
     public int countUsers() {

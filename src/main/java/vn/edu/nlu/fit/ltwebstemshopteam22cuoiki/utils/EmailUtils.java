@@ -156,4 +156,70 @@ public class EmailUtils {
         }
     }
 
+    /**
+     * Gửi email đặt lại mật khẩu
+     * @param toEmail Email người nhận
+     * @param username Tên người dùng
+     * @param token Token đặt lại mật khẩu
+     */
+    public static boolean sendResetPasswordEmail(String toEmail, String username, String token) {
+        try {
+            Properties props = new Properties();
+            props.put("mail.smtp.host", emailConfig.getProperty("mail.smtp.host"));
+            props.put("mail.smtp.port", emailConfig.getProperty("mail.smtp.port"));
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+
+            Session session = Session.getInstance(props, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(
+                            emailConfig.getProperty("mail.from"),
+                            emailConfig.getProperty("mail.password")
+                    );
+                }
+            });
+
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(emailConfig.getProperty("mail.from")));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+            message.setSubject("Đặt lại mật khẩu - StemShop");
+
+            String baseUrl = emailConfig.getProperty("app.base.url");
+            String resetLink = baseUrl + "/dat-lai-mat-khau?token=" + token;
+
+            String htmlContent = """
+            <!DOCTYPE html>
+            <html>
+            <head><meta charset='UTF-8'></head>
+            <body style='font-family: Arial, sans-serif;'>
+                <div style='max-width: 600px; margin: 0 auto; padding: 20px;'>
+                    <h2 style='color: #2c3e50;'>Đặt lại mật khẩu</h2>
+                    <p>Xin chào <strong>%s</strong>,</p>
+                    <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.</p>
+                    <p>Vui lòng click vào link bên dưới để tạo mật khẩu mới:</p>
+                    <p><a href='%s' style='display: inline-block; padding: 10px 20px; background: #e67e22; color: white; text-decoration: none; border-radius: 5px;'>Đặt lại mật khẩu</a></p>
+                    <p>Hoặc copy link này vào trình duyệt:<br>%s</p>
+                    <p><strong>Link có hiệu lực trong vòng 1 giờ.</strong></p>
+                    <hr>
+                    <p style='color: #7f8c8d; font-size: 12px;'>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</p>
+                </div>
+            </body>
+            </html>
+            """.formatted(username, resetLink, resetLink);
+
+            message.setContent(htmlContent, "text/html; charset=UTF-8");
+            Transport.send(message);
+
+            System.out.println("Email đặt lại mật khẩu đã gửi đến: " + toEmail);
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Lỗi gửi email reset mật khẩu: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

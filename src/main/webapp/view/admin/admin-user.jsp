@@ -38,7 +38,7 @@
             margin-left: 5px;
         }
         .btn-lock:hover{
-            background-color: #ff98000;
+            background-color: #ff9800;
             color: white;
         }
     </style>
@@ -111,7 +111,7 @@
                             <td>${user.phoneNumber}</td>
                             <td>${user.role}</td>
                             <td>
-                                <button type="submit" class="btn-action btn-lock">
+                                <button type="submit" class="btn-action btn-lock" >
                                     <i class="fas fa-lock"></i> Khóa
                                 </button>
                                 <a href="" class="btn-action btn-edit">
