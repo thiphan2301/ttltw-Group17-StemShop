@@ -13,120 +13,83 @@
 </head>
 <body>
 
-<style>
-    .cart-product-row{
-        padding: 20px 0;
-    }
-    .cart-container__quantity {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .change{
-        padding: 20px;
-        margin-right:  20px;
-        border: 1px solid #333;
-        border-radius: 200px;
-        width: 40%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .change a{
-        color: black;
-    }
-    .bin{
-        flex: 1;
-    }
-    .bin a{
-        color: black;
-    }
-    .cart-container__product__title h4 {
-        font-size: 1.2rem;
-    }
-</style>
+<jsp:include page="/WEB-INF/components/header.jsp"/>
 
-    <jsp:include page="/WEB-INF/components/header.jsp"/>
-
+<div class="cart-wrapper">
     <div class="back">
         <a href="${pageContext.request.contextPath}/index.jsp">Trang Chủ</a>
         <span>/</span>
         <a href="${pageContext.request.contextPath}/shop">Cửa Hàng</a>
         <span>/</span>
-        <a href="#">Giỏ hàng</a>
+        <span style="color: #333;">Giỏ hàng</span>
     </div>
-    <div class="cart-container__head">
-        <h3>Sản Phẩm</h3>
-        <h3>Số Lượng</h3>
-        <h3>Giá</h3>
-    </div>
-    <c:if test="${empty cart}">
-        <p style="text-align:center; margin: 5%">Giỏ hàng trống</p>
-    </c:if>
-    <c:forEach items="${cart.items}" var="item">
-        <div class="cart-containers-">
-            <div class="cart-container cart-product-row">
 
-                <!-- SẢN PHẨM -->
-                <div class="cart-container__product">
-                    <img src="${pageContext.request.contextPath}/${item.product.imageUrl}" alt="">
-                    <div class="cart-container__product__title">
-                        <h4 style="color: #989898;">${item.product.brandName}</h4>
-                        <h4>${item.product.productName}</h4>
+    <div class="cart-content">
+        <div class="cart-grid-header">
+            <div class="col-product">Sản Phẩm</div>
+            <div class="col-quantity">Số Lượng</div>
+            <div class="col-price">Giá</div>
+        </div>
+
+        <c:if test="${empty cart}">
+            <div class="empty-cart">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <p>Giỏ hàng của bạn đang trống</p>
+            </div>
+        </c:if>
+
+        <c:forEach items="${cart.items}" var="item">
+            <div class="cart-grid-row">
+                <div class="col-product">
+                    <img src="${pageContext.request.contextPath}/${item.product.imageUrl}" alt="product">
+                    <div class="product-info">
+                        <p class="brand-name">${item.product.brandName}</p>
+                        <h4 class="product-name">${item.product.productName}</h4>
                     </div>
                 </div>
 
-                <!-- SỐ LƯỢNG -->
-                <div class="cart-container__quantity">
-                    <div class="change">
-                        <a href="javascript:void(0)"
-                           onclick="updateQuantity(${item.product.id}, 'dec')">
+                <div class="col-quantity">
+                    <div class="qty-control">
+                        <a href="javascript:void(0)" class="qty-btn" onclick="updateQuantity(${item.product.id}, 'dec')">
                             <i class="fa-solid fa-minus"></i>
                         </a>
-
-                        <span class="quantity-value">${item.quantity}</span>
-
-                        <a href="javascript:void(0)"
-                           onclick="updateQuantity(${item.product.id}, 'inc')">
+                        <span class="qty-value">${item.quantity}</span>
+                        <a href="javascript:void(0)" class="qty-btn" onclick="updateQuantity(${item.product.id}, 'inc')">
                             <i class="fa-solid fa-plus"></i>
                         </a>
                     </div>
-
-                    <div class="bin">
-                        <a href="${pageContext.request.contextPath}/remove-from-cart?id=${item.product.id}">
-                            <i class="fa-solid fa-trash delete-btn"></i>
-                        </a>
-                    </div>
+                    <a href="${pageContext.request.contextPath}/remove-from-cart?id=${item.product.id}" class="delete-btn" title="Xóa sản phẩm">
+                        <i class="fa-solid fa-trash"></i> Xóa
+                    </a>
                 </div>
 
-                <!-- GIÁ -->
-                <div class="cart-container__price">
-                    <p class="product-line-price">
-                        <fmt:formatNumber value="${item.totalPrice}" type="number" groupingUsed="true"/> Đ
-                    </p>
+                <div class="col-price">
+                    <fmt:formatNumber value="${item.totalPrice}" type="number" groupingUsed="true"/> Đ
                 </div>
-
             </div>
-        </div>
-    </c:forEach>
-    <div class="total">
-        <h2>
-            Tổng cộng:
-            <span id="total-price">
-                <fmt:formatNumber value="${cart.totalPrice}" type="number" groupingUsed="true"/> Đ
-            </span>
-        </h2>
-    </div>
-    <div class="continue-shopping">
-        <a href="${pageContext.request.contextPath}/shop">
-            <h2>Tiếp tục mua hàng</h2>
-        </a>
-        <a href="${pageContext.request.contextPath}/checkout">
-            <h2>Tiến hành thanh toán</h2>
-        </a>
+        </c:forEach>
     </div>
 
-    <jsp:include page="/WEB-INF/components/footer.jsp"/>
+    <div class="cart-footer">
+        <div class="total-section">
+            <span>Tổng thanh toán:</span>
+            <span class="total-price">
+                    <fmt:formatNumber value="${cart.totalPrice}" type="number" groupingUsed="true"/> Đ
+                </span>
+        </div>
+
+        <div class="action-buttons">
+            <a href="${pageContext.request.contextPath}/shop" class="btn btn-outline">
+                <i class="fa-solid fa-arrow-left"></i> Tiếp tục mua hàng
+            </a>
+            <a href="${pageContext.request.contextPath}/checkout" class="btn btn-solid">
+                Tiến hành thanh toán <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<jsp:include page="/WEB-INF/components/footer.jsp"/>
 
 </body>
 </html>

@@ -15,26 +15,28 @@
     body {
       background-color: #f5f5f5;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
     }
     .app-container {
-      max-width: 650px;
+      max-width: 100%; /* Đã mở rộng tối đa theo kích thước của Iframe/Modal */
       margin: 0 auto;
       background-color: #f5f5f5;
       min-height: 100vh;
       padding-bottom: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     .header-top {
       background-color: #fff;
       padding: 15px;
       display: flex;
+      justify-content: center; /* Căn giữa tiêu đề */
       align-items: center;
       font-size: 1.2rem;
+      font-weight: 600;
       position: sticky;
       top: 0;
       z-index: 100;
+      border-bottom: 1px solid #eaeaea; /* Thêm viền dưới cho đẹp */
     }
-    .header-top i { color: #ee4d2d; margin-right: 15px; cursor: pointer; font-size: 1.4rem; }
     .status-banner {
       background-color: #26aa99;
       color: white;
@@ -70,10 +72,7 @@
 <div class="app-container">
 
   <div class="header-top">
-    <a href="${pageContext.request.contextPath}/orders" style="text-decoration: none;">
-      <i class="fa-solid fa-arrow-left"></i>
-    </a>
-    <span>Thông tin đơn hàng</span>
+    <span>Thông tin đơn hàng #${order.id}</span>
   </div>
 
   <div class="status-banner">
