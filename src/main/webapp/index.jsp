@@ -1,7 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
-
 
 
 <!DOCTYPE html>
@@ -15,7 +14,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/home.css">
     <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 
 <body>
@@ -59,27 +58,32 @@
 
             <div class="category-grid">
                 <div class="category-item">
-                    <img src="${pageContext.request.contextPath}/assets/images/products/Robot%20lập%20trình%20Scratch.png" alt="Robot - Lập Trình">
+                    <img src="${pageContext.request.contextPath}/assets/images/products/Robot%20lập%20trình%20Scratch.png"
+                         alt="Robot - Lập Trình">
                     <h3>Robot - Lập Trình</h3>
                 </div>
 
                 <div class="category-item">
-                    <img src="${pageContext.request.contextPath}/assets/images/products/Kit%20STEM%20Arduino%20cơ%20bản.png" alt="Kỹ Thuật – Cơ Khí">
+                    <img src="${pageContext.request.contextPath}/assets/images/products/Kit%20STEM%20Arduino%20cơ%20bản.png"
+                         alt="Kỹ Thuật – Cơ Khí">
                     <h3>Kỹ Thuật – Cơ Khí</h3>
                 </div>
 
                 <div class="category-item">
-                    <img src="${pageContext.request.contextPath}/assets/images/workshop/math.jpg" alt="Toán Học – Logic">
+                    <img src="${pageContext.request.contextPath}/assets/images/workshop/math.jpg"
+                         alt="Toán Học – Logic">
                     <h3>Toán Học – Logic</h3>
                 </div>
 
                 <div class="category-item">
-                    <img src="${pageContext.request.contextPath}/assets/images/products/Bộ%20lắp%20ráp%20cơ%20khí%20cho%20trẻ%20em.png" alt="Khoa Học - Thí Nghiệm">
+                    <img src="${pageContext.request.contextPath}/assets/images/products/Bộ%20lắp%20ráp%20cơ%20khí%20cho%20trẻ%20em.png"
+                         alt="Khoa Học - Thí Nghiệm">
                     <h3>Khoa Học - Thí Nghiệm</h3>
                 </div>
 
                 <div class="category-item">
-                    <img src="${pageContext.request.contextPath}/assets/images/workshop/chemistry.jpg" alt="Sáng Tạo - Nghệ Thuật">
+                    <img src="${pageContext.request.contextPath}/assets/images/workshop/chemistry.jpg"
+                         alt="Sáng Tạo - Nghệ Thuật">
                     <h3>Sáng Tạo - Nghệ Thuật</h3>
                 </div>
             </div>
@@ -180,7 +184,8 @@
         <img src="${pageContext.request.contextPath}/assets/images/banner/school-bg.jpeg" alt="" class="bg-img">
         <div class="container">
             <div class="about-left">
-                <img src="${pageContext.request.contextPath}/assets/images/banner/kid-study-2.png" alt="Giới thiệu STEMSHOP">
+                <img src="${pageContext.request.contextPath}/assets/images/banner/kid-study-2.png"
+                     alt="Giới thiệu STEMSHOP">
             </div>
             <div class="about-right">
                 <h3 class="subtitle">Về chúng tôi</h3>
@@ -258,7 +263,8 @@
 
             <div class="blog-grid">
                 <div class="blog-card">
-                    <img src="${pageContext.request.contextPath}/assets/images/blog/Lợi ích học STEM sớm cho trẻ em.jpg" alt="Lợi ích học STEM sớm">
+                    <img src="${pageContext.request.contextPath}/assets/images/blog/Lợi ích học STEM sớm cho trẻ em.jpg"
+                         alt="Lợi ích học STEM sớm">
                     <div class="blog-content">
                         <h2>Lợi ích học STEM sớm cho trẻ em</h2>
                         <p>Khám phá tại sao việc cho trẻ tiếp xúc với STEM từ sớm giúp phát triển tư duy logic,
@@ -270,10 +276,12 @@
                 </div>
 
                 <div class="blog-card">
-                    <img src="${pageContext.request.contextPath}/assets/images/blog/Hướng dẫn chọn kit STEM phù hợp.jpg" alt="Hướng dẫn chọn kit STEM phù hợp">
+                    <img src="${pageContext.request.contextPath}/assets/images/blog/Hướng dẫn chọn kit STEM phù hợp.jpg"
+                         alt="Hướng dẫn chọn kit STEM phù hợp">
                     <div class="blog-content">
                         <h2>Hướng dẫn chọn bộ Kit STEM phù hợp độ tuổi</h2>
-                        <p>Chọn đúng bộ sản phẩm giúp trẻ học hiệu quả hơn – từ robot, hóa học, cơ khí đến sáng tạo nghệ thuật.</p>
+                        <p>Chọn đúng bộ sản phẩm giúp trẻ học hiệu quả hơn – từ robot, hóa học, cơ khí đến sáng tạo nghệ
+                            thuật.</p>
                         <a href="${pageContext.request.contextPath}/view/content/blog-detail" class="btn-readmore">
                             Đọc thêm <i class="fa-solid fa-arrow-right"></i>
                         </a>
@@ -281,10 +289,12 @@
                 </div>
 
                 <div class="blog-card">
-                    <img src="${pageContext.request.contextPath}/assets/images/blog/STEM trong đời sống.jpg" alt="STEM trong đời sống">
+                    <img src="${pageContext.request.contextPath}/assets/images/blog/STEM trong đời sống.jpg"
+                         alt="STEM trong đời sống">
                     <div class="blog-content">
                         <h2>STEM trong đời sống – Học qua những điều quen thuộc</h2>
-                        <p>Từ làm bánh, trồng cây đến chế tạo đồ chơi, STEM có mặt khắp nơi – chỉ cần bé đủ tò mò để khám phá!</p>
+                        <p>Từ làm bánh, trồng cây đến chế tạo đồ chơi, STEM có mặt khắp nơi – chỉ cần bé đủ tò mò để
+                            khám phá!</p>
                         <a href="${pageContext.request.contextPath}/view/content/blog-detail" class="btn-readmore">
                             Đọc thêm <i class="fa-solid fa-arrow-right"></i>
                         </a>
@@ -293,7 +303,8 @@
             </div>
 
             <div class="blog-viewall">
-                <a href="${pageContext.request.contextPath}/view/content/blog.jsp">Xem tất cả bài viết <i class="fa-solid fa-eye"></i></a>
+                <a href="${pageContext.request.contextPath}/view/content/blog.jsp">Xem tất cả bài viết <i
+                        class="fa-solid fa-eye"></i></a>
             </div>
         </div>
     </section>
@@ -306,7 +317,8 @@
 
             <div class="workshop-gallery">
                 <div class="gallery-item">
-                    <img src="https://ohstem.vn/wp-content/uploads/2024/02/huong-dan-lap-trinh-nhieu-man-hinh-i2c-voi-yolo-uno-ohstem-avt.png" alt="Workshop STEM 1">
+                    <img src="https://ohstem.vn/wp-content/uploads/2024/02/huong-dan-lap-trinh-nhieu-man-hinh-i2c-voi-yolo-uno-ohstem-avt.png"
+                         alt="Workshop STEM 1">
                 </div>
                 <div class="gallery-item">
                     <img src="https://ohstem.vn/wp-content/uploads/2021/09/Robot-ne-vat-can.jpg" alt="Workshop STEM 2">
@@ -316,7 +328,8 @@
                     <img src="https://ohstem.vn/wp-content/uploads/2021/02/B46.png" alt="Workshop STEM 3">
                 </div>
                 <div class="gallery-item">
-                    <img src="https://ohstem.vn/wp-content/uploads/2021/09/lap-trinh-LED-doi-mau.jpg" alt="Workshop STEM 4">
+                    <img src="https://ohstem.vn/wp-content/uploads/2021/09/lap-trinh-LED-doi-mau.jpg"
+                         alt="Workshop STEM 4">
                 </div>
             </div>
 
@@ -336,7 +349,8 @@
 
             <div class="reviews-grid">
                 <div class="review-card">
-                    <img src="${pageContext.request.contextPath}/assets/images/workshop/rate/ảnh-phụ-huynh-học-sinh-1.jpg" alt="Phụ huynh 1" class="review-avatar">
+                    <img src="${pageContext.request.contextPath}/assets/images/workshop/rate/ảnh-phụ-huynh-học-sinh-1.jpg"
+                         alt="Phụ huynh 1" class="review-avatar">
                     <p class="review-quote">
                         "Bé nhà tôi rất thích bộ Kit Khoa Học Vui — vừa học vừa chơi, cực kỳ bổ ích và an toàn!"
                     </p>
@@ -345,7 +359,8 @@
                 </div>
 
                 <div class="review-card">
-                    <img src="${pageContext.request.contextPath}/assets/images/workshop/rate/ảnh-phụ-huynh-học-sinh-2.jpg" alt="Giáo viên" class="review-avatar">
+                    <img src="${pageContext.request.contextPath}/assets/images/workshop/rate/ảnh-phụ-huynh-học-sinh-2.jpg"
+                         alt="Giáo viên" class="review-avatar">
                     <p class="review-quote">
                         "Sản phẩm chất lượng, giúp học sinh dễ hiểu hơn trong các tiết học STEM trên lớp."
                     </p>
@@ -354,7 +369,8 @@
                 </div>
 
                 <div class="review-card">
-                    <img src="${pageContext.request.contextPath}/assets/images/workshop/rate/ảnh-học-sinh-nam-1.jpg" alt="Học sinh" class="review-avatar">
+                    <img src="${pageContext.request.contextPath}/assets/images/workshop/rate/ảnh-học-sinh-nam-1.jpg"
+                         alt="Học sinh" class="review-avatar">
                     <p class="review-quote">
                         "Em thích nhất là được tự tay lắp robot chạy bằng pin mặt trời. Rất vui và thú vị!"
                     </p>
@@ -369,8 +385,10 @@
     <section class="section-newsletter">
         <div class="container">
             <div class="section-newsletter__img">
-                <img src="${pageContext.request.contextPath}/assets/images/newsletter/steamEducation-1-HOME-newslettes.jpg" alt="newsletter1">
-                <img src="${pageContext.request.contextPath}/assets/images/newsletter/steamEducation-2-HOME-newslettes.jpg" alt="newsletter2">
+                <img src="${pageContext.request.contextPath}/assets/images/newsletter/steamEducation-1-HOME-newslettes.jpg"
+                     alt="newsletter1">
+                <img src="${pageContext.request.contextPath}/assets/images/newsletter/steamEducation-2-HOME-newslettes.jpg"
+                     alt="newsletter2">
             </div>
             <div class="section-newsletter__form">
                 <h1><i class="fa-solid fa-envelope"></i>

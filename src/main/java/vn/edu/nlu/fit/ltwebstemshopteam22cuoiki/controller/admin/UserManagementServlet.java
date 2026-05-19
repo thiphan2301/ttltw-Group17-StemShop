@@ -24,17 +24,6 @@ public class UserManagementServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-/*
-        //check bên filterAdmin
-
-        // Kiểm tra xem admin
-        HttpSession session = request.getSession();
-        User admin = (User) session.getAttribute("user");
-
-        if (admin == null || !"admin".equals(admin.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/dang-nhap");
-            return;
-        }*/
 
         try {
             // Lấy danh sách
@@ -59,6 +48,7 @@ public class UserManagementServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         try {
+            //Thao tác update (admin)
             if ("update".equals(action)) {
                 // Lấy thông tin từ form
                 User user = new User();
@@ -72,24 +62,24 @@ public class UserManagementServlet extends HttpServlet {
                 user.setUserName(request.getParameter("userName"));
 
                 userDAO.updateUser(user);
-            }
-            //Các thao tác quản lí của admin: chỉnh sửa, khóa người dùng
-            if ("editUser".equals(action){
+            }else if ("editUser".equals(action)) { // thao tác cập nhật tk người dùng (amdin)
+                // Sửa: Nhận ID và cập nhật trực tiếp quyền/trạng thái qua DAO
                 String paramId = request.getParameter("id");
-                int id = Interger.parseInt(paramId);
-                for (User user: users){
-                    if (id== user.id){
-                        user.setRole(request.getParameter("role"));
-                        user.setActive(request.getParameter("active"));
-                    }
-                }
-            }
-            if ("lockUser".equals(action)) {
+                int id = Integer.parseInt(paramId);
+
+                User user = new User();
+                user.setId(id);
+                user.setRole(request.getParameter("role"));
+                user.setStatus(request.getParameter("active"));
+
+                // Gọi DAO để cập nhật
+                userDAO.updateUser(user);
+
+            } else if ("lockUser".equals(action)) { // thao tác khóa tk người dùng (admin)
                 String paramId = request.getParameter("id");
                 int id = Integer.parseInt(paramId);
                 userDAO.lockUser(id);
             }
-
             response.sendRedirect(request.getContextPath() + "/admin/admin-user");
 
         } catch (Exception e) {
