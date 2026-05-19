@@ -48,6 +48,7 @@ public class UserManagementServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                     "Có lỗi");
         }
+        
     }
 
     @Override
@@ -71,6 +72,22 @@ public class UserManagementServlet extends HttpServlet {
                 user.setUserName(request.getParameter("userName"));
 
                 userDAO.updateUser(user);
+            }
+            //Các thao tác quản lí của admin: chỉnh sửa, khóa người dùng
+            if ("editUser".equals(action){
+                String paramId = request.getParameter("id");
+                int id = Interger.parseInt(paramId);
+                for (User user: users){
+                    if (id== user.id){
+                        user.setRole(request.getParameter("role"));
+                        user.setActive(request.getParameter("active"));
+                    }
+                }
+            }
+            if ("lockUser".equals(action)) {
+                String paramId = request.getParameter("id");
+                int id = Integer.parseInt(paramId);
+                userDAO.lockUser(id);
             }
 
             response.sendRedirect(request.getContextPath() + "/admin/admin-user");
