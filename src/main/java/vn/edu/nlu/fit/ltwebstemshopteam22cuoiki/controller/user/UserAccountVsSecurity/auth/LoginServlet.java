@@ -7,62 +7,91 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.UserDAO;
-import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.Cart;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.User;
-import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.util.PasswordUtil;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.PasswordUtils;
 
 import java.io.IOException;
 
-
 @WebServlet("/dang-nhap")
-public class LoginServlet  extends HttpServlet {
+public class LoginServlet extends HttpServlet {
+
+    private UserDAO userDAO = new UserDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/view/user/sign-in.jsp")
-                .forward(request, response);
-
+        request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        // debug
-        System.out.println("Username: " + username);
-        System.out.println("Password raw: " + password);
 
-        UserDAO dao = new UserDAO();
-        String hashedPassword = PasswordUtil.md5(password);
-        System.out.println("Password: " + hashedPassword);
+        String error = null;
 
-        User user = dao.login(username, hashedPassword);
-        System.out.println("User: " + (user != null));
-        if (user != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("user", user);
-            session.setAttribute("cart", new Cart());
-            // Phân biệt admin và user -> nếu admin thì cho qua dashboard, user thì mình cho về trang chủ
-            if ("admin".equals(user.getRole())) {
-                response.sendRedirect(request.getContextPath() + "/admin/dashboard");
-                return;
-            } else {
-                response.sendRedirect(request.getContextPath() + "/index.jsp");
-            }  return;
-
+        // Kiểm tra nhập liệu
+        if (username == null || username.trim().isEmpty()) {
+            error = "Vui lòng nhập tên đăng nhập";
+        } else if (password == null || password.isEmpty()) {
+            error = "Vui lòng nhập mật khẩu";
         }
 
-        if (dao.isUnverifiedUser(username, hashedPassword)) {
-            request.setAttribute("error1", "Tài khoản chưa được xác thực. Vui lòng kiểm tra email.");
+        if (error != null) {
+            request.setAttribute("error", error);
             request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
             return;
         }
-        request.setAttribute("error2", "Username hoặc password không đúng");
-        request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
+
+        try {
+            User user = userDAO.findByUsernameOrEmail(username.trim());
+
+            if (user == null) {
+                error = "Sai tên đăng nhập hoặc mật khẩu";
+                request.setAttribute("error", error);
+                request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
+                return;
+            }
+
+            // Sau khi tìm thấy user, trước khi kiểm tra mật khẩu
+            if (!user.isVerified()) {
+                error = "Tài khoản chưa được xác thực. Vui lòng kiểm tra email để xác thực.";
+                request.setAttribute("error", error);
+                request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
+                return;
+            }
+
+            // Kiểm tra mật khẩu (dùng BCrypt)
+            if (!PasswordUtils.verifyPassword(password, user.getPassword())) {
+                error = "Sai tên đăng nhập/email hoặc mật khẩu";
+                request.setAttribute("error", error);
+                request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
+                return;
+            }
+
+            // Đăng nhập thành công
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            session.setAttribute("userId", user.getId());
+            session.setAttribute("username", user.getUserName());
+            session.setAttribute("role", user.getRole());
+
+            // Chuyển hướng về trang chủ hoặc trang trước đó
+            String redirectUrl = (String) session.getAttribute("redirectAfterLogin");
+            if (redirectUrl != null) {
+                session.removeAttribute("redirectAfterLogin");
+                response.sendRedirect(redirectUrl);
+            } else {
+                response.sendRedirect(request.getContextPath() + "/");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            error = "Lỗi hệ thống, vui lòng thử lại sau";
+            request.setAttribute("error", error);
+            request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
+        }
     }
-
-
-
-    }
+}

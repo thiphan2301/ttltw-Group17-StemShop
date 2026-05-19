@@ -23,12 +23,8 @@
 <main class="auth">
     <section class="auth__container">
         <h1 class="auth__title">Đăng  nhập!</h1>
-        <c:if test="${not empty error1}">
-            <p style="color:red">${error1}</p>
-        </c:if>
-        
-        <c:if test="${not empty error2}">
-            <p style="color:red">${error2}</p>
+        <c:if test="${not empty error}">
+            <p style="color:red">${error}</p>
         </c:if>
 
         <c:if test="${not empty success}">
@@ -41,10 +37,6 @@
             <div class="auth__group">
                 <label for="username" class="auth__label">Username</label>
                 <input type="text" id="username" name="username" class="auth__input" value="${username}" placeholder="Nhập username">
-                <%--trogn input tryyền value=${username} để:
-                    Khi login fail → ${username} có giá trị => tự điền lại
-                    Khi mở trang lần đầu → ${username} rỗng => không lỗi
-                --%>
             </div>
 
             <div class="auth__group">

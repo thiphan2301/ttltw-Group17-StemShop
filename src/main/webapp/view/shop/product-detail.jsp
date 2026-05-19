@@ -415,19 +415,26 @@
 
         <!-- LEFT: IMAGES -->
         <div class="product-images">
+            <%-- Luôn hiển thị ảnh chính làm thumbnail đầu tiên để tránh bị trống --%>
             <img class="main-image"
                  id="main-product-img"
                  src="${pageContext.request.contextPath}/${product.imageUrl}"
                  alt="${product.productName}">
 
             <div class="thumbnail-images" style="display: flex; gap: 10px; margin-top: 15px;">
-
-                <c:forEach var="imgItem" items="${images}">
-                    <img src="${pageContext.request.contextPath}/${imgItem.imageUrl}"
-                         class="thumb-item"
-                         onclick="changeImage(this.src)"
-                         style="width: 80px; height: 80px; object-fit: contain; cursor: pointer; border: 1px solid #ddd;">
-                </c:forEach>
+                <%-- Chỉ lặp nếu danh sách images có dữ liệu --%>
+                <c:if test="${not empty images}">
+                    <c:forEach var="imgItem" items="${images}">
+                        <%-- KIỂM TRA: Nếu imageUrl không null và không rỗng mới hiện thẻ img --%>
+                        <c:if test="${not empty imgItem.imageUrl}">
+                            <img src="${pageContext.request.contextPath}/${imgItem.imageUrl}"
+                                 class="thumb-item"
+                                 onclick="changeImage(this.src)"
+                                 onerror="this.style.display='none'"
+                                 style="width: 80px; height: 80px; object-fit: contain; cursor: pointer; border: 1px solid #ddd;">
+                        </c:if>
+                    </c:forEach>
+                </c:if>
             </div>
         </div>
 

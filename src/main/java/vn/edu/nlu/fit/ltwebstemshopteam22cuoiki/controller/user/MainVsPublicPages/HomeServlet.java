@@ -23,22 +23,6 @@ public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            System.out.println("=== HomeServlet được gọi! ===");
 
-            // Lấy 6 sản phẩm đầu tiên
-            List<Product> products = productDAO.getFirst6Products();
-            System.out.println("Số sản phẩm: " + products.size());
-
-
-
-            request.setAttribute("products", products);
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
-
-        } catch (Exception e) {
-            System.err.println("LỖI trong HomeServlet:");
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
     }
 }
