@@ -1,5 +1,6 @@
 package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList; // Bổ sung import này
 import java.util.List;      // Bổ sung import này
@@ -16,6 +17,10 @@ public class Order {
     private String shippingAddress;
     private String receiverName;
     private String receiverPhone;
+    private Integer paymentMethodId;
+    private String paymentStatus;
+    private String transactionId;
+    private Date paymentTime;
 
     // Thuộc tính phục vụ Admin View
     private String userFullName;
@@ -27,7 +32,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(int id, int userId, Integer promotionId, Timestamp orderDate, String orderStatus, double shippingFee, double totalAmount, String note, String shippingAddress, String receiverName, String receiverPhone, String userFullName, String userPhone) {
+    public Order(int id, int userId, Integer promotionId, Timestamp orderDate, String orderStatus, double shippingFee, double totalAmount, String note, String shippingAddress, String receiverName, String receiverPhone, Integer paymentMethodId, String paymentStatus, String transactionId, Date paymentTime, String userFullName, String userPhone, List<OrderItem> items) {
         this.id = id;
         this.userId = userId;
         this.promotionId = promotionId;
@@ -39,8 +44,13 @@ public class Order {
         this.shippingAddress = shippingAddress;
         this.receiverName = receiverName;
         this.receiverPhone = receiverPhone;
+        this.paymentMethodId = paymentMethodId;
+        this.paymentStatus = paymentStatus;
+        this.transactionId = transactionId;
+        this.paymentTime = paymentTime;
         this.userFullName = userFullName;
         this.userPhone = userPhone;
+        this.items = items;
     }
 
     // Getter và Setter cho danh sách sản phẩm
@@ -153,5 +163,37 @@ public class Order {
 
     public void setUserPhone(String userPhone) {
         this.userPhone = userPhone;
+    }
+
+    public Integer getPaymentMethodId() {
+        return paymentMethodId;
+    }
+
+    public void setPaymentMethodId(Integer paymentMethodId) {
+        this.paymentMethodId = paymentMethodId;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public Date getPaymentTime() {
+        return paymentTime;
+    }
+
+    public void setPaymentTime(Date paymentTime) {
+        this.paymentTime = paymentTime;
     }
 }
