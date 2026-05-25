@@ -54,8 +54,8 @@
             </div>
 
             <div class="auth__link">
-                <a href="forgot-password.jsp" class="auth__link--highlight">Quên mật khẩu?</a>
-                <a href="sign-up.jsp" class="auth__link--highlight">Đăng ký</a>
+                <a href="/view/user/forgot-password.jsp" class="auth__link--highlight">Quên mật khẩu?</a>
+                <a href="/view/user/sign-up.jsp" class="auth__link--highlight">Đăng ký</a>
             </div>
         </form>
     </section>

@@ -12,32 +12,30 @@ public class OrderDAO {
 
     // 1. Tạo đơn hàng mới
     public int insert(Order order) throws Exception {
-        String sql = "INSERT INTO orders (UserID, PromotionID, OrderDate, OrderStatus, ShippingFee, TotalAmount, Note, ShippingAddress, ReceiverName, ReceiverPhone) VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO orders (UserID, TotalAmount, ShippingFee, Note, ShippingAddress, ReceiverName, ReceiverPhone, OrderStatus, payment_method_id, payment_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = ConnectionDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setInt(1, order.getUserId());
+            stmt.setInt(1, order.getUserId());
+            stmt.setDouble(2, order.getTotalAmount());
+            stmt.setDouble(3, order.getShippingFee());
+            stmt.setString(4, order.getNote());
+            stmt.setString(5, order.getShippingAddress());
+            stmt.setString(6, order.getReceiverName());
+            stmt.setString(7, order.getReceiverPhone());
+            stmt.setString(8, order.getOrderStatus());
+            stmt.setInt(9, order.getPaymentMethodId());
+            stmt.setString(10, order.getPaymentStatus());
 
-            if (order.getPromotionId() != null)
-                ps.setInt(2, order.getPromotionId());
-            else
-                ps.setNull(2, Types.INTEGER);
+            stmt.executeUpdate();
 
-            ps.setString(3, order.getOrderStatus());
-            ps.setDouble(4, order.getShippingFee());
-            ps.setDouble(5, order.getTotalAmount());
-            ps.setString(6, order.getNote());
-            ps.setString(7, order.getShippingAddress());
-            ps.setString(8, order.getReceiverName());
-            ps.setString(9, order.getReceiverPhone());
-
-            ps.executeUpdate();
-
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) return rs.getInt(1);
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return -1;
         }
-        return -1;
     }
 
     // 2. Lấy tổng số lượng đơn hàng (Dùng cho Admin Dashboard)
@@ -227,46 +225,18 @@ public class OrderDAO {
         }
         return orderList;
     }
-    //------------------------------//
 
-    // LẤY CHI TIẾT 1 ĐƠN HÀNG DỰA VÀO ID
-    public Order getOrderById(int orderId) throws Exception {
-        Order order = null;
-        String sql = "SELECT * FROM orders WHERE ID = ?";
+    // cập nhật thông tin thánh toán (trạng thái thanh toán, id giao dịch, thời gian)
+    public boolean updatePaymentInfo(int orderId, String paymentStatus, String transactionId, java.util.Date paymentTime) throws Exception {
+        String sql = "UPDATE orders SET payment_status = ?, transaction_id = ?, payment_time = ? WHERE ID = ?";
 
         try (Connection conn = ConnectionDB.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, orderId);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                order = new Order();
-                order.setId(rs.getInt("ID"));
-                order.setUserId(rs.getInt("UserID"));
-
-                // Xử lý an toàn cho PromotionID (vì có thể null)
-                int promoId = rs.getInt("PromotionID");
-                if (!rs.wasNull()) {
-                    order.setPromotionId(promoId);
-                } else {
-                    order.setPromotionId(null);
-                }
-
-                order.setOrderDate(rs.getTimestamp("OrderDate"));
-                order.setOrderStatus(rs.getString("OrderStatus"));
-                order.setShippingFee(rs.getDouble("ShippingFee"));
-                order.setTotalAmount(rs.getDouble("TotalAmount"));
-                order.setNote(rs.getString("Note"));
-                order.setShippingAddress(rs.getString("ShippingAddress"));
-                order.setReceiverName(rs.getString("ReceiverName"));
-                order.setReceiverPhone(rs.getString("ReceiverPhone"));
-
-                // Lưu ý: Trong Order.java của bạn KHÔNG CÓ trường paymentMethod
-                // Nên trên JSP đoạn kiểm tra thanh toán nó sẽ luôn tự động hiện là "Thanh toán khi nhận hàng (COD)"
-            }
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, paymentStatus);
+            stmt.setString(2, transactionId);
+            stmt.setTimestamp(3, paymentTime != null ? new Timestamp(paymentTime.getTime()) : null);
+            stmt.setInt(4, orderId);
+            return stmt.executeUpdate() > 0;
         }
-        return order;
     }
-
 }

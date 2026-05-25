@@ -162,10 +162,6 @@
                                         Áp dụng
                                     </button>
                                 </div>
-
-<%--                                <c:if test="${not empty voucherError}">--%>
-<%--                                    <p class="voucher-error">${voucherError}</p>--%>
-<%--                                </c:if>--%>
                             </div>
 
                             <!-- PAYMENT METHOD -->
@@ -176,15 +172,16 @@
                                     <input type="radio"
                                            name="paymentMethod"
                                            value="COD"
-                                           checked>
+                                    ${empty param.paymentMethod or param.paymentMethod eq 'COD' ? 'checked' : ''}>
                                     Thanh toán khi nhận hàng (COD)
                                 </label>
 
                                 <label class="payment-option">
                                     <input type="radio"
                                            name="paymentMethod"
-                                           value="BANKING">
-                                    Chuyển khoản ngân hàng
+                                           value="VNPAY"
+                                    ${param.paymentMethod eq 'VNPAY' ? 'checked' : ''}>
+                                    Thanh toán qua VNPay
                                 </label>
                             </div>
 

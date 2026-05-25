@@ -10,6 +10,7 @@ import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.OrderDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.OrderDetailDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.Promotions.PromotionDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.*;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.VNPayConfig;
 
 import java.io.IOException;
 
@@ -129,6 +130,11 @@ public class CheckoutServlet extends HttpServlet {
 
             // ĐẶT HÀNG
             if ("order".equals(action)) {
+                String paymentMethod = req.getParameter("paymentMethod"); // "COD" hoặc "VNPAY"
+
+                int paymentMethodId = "VNPAY".equals(paymentMethod) ? 2 : 1;
+                String paymentStatus = "COD".equals(paymentMethod) ? "unpaid" : "pending";
+
                 Order order = new Order();
                 order.setUserId(user.getId());
                 order.setOrderStatus("PENDING");
@@ -138,6 +144,8 @@ public class CheckoutServlet extends HttpServlet {
                 order.setShippingAddress(req.getParameter("address") + ", " + req.getParameter("city"));
                 order.setReceiverName(req.getParameter("receiverName"));
                 order.setReceiverPhone(req.getParameter("receiverPhone"));
+                order.setPaymentMethodId(paymentMethodId);
+                order.setPaymentStatus(paymentStatus);
 
                 OrderDAO orderDAO = new OrderDAO();
                 int orderId = orderDAO.insert(order);
@@ -157,8 +165,31 @@ public class CheckoutServlet extends HttpServlet {
                 session.removeAttribute("savedVoucherShip");
                 session.removeAttribute("savedShipDiscount");
 
-                resp.sendRedirect(req.getContextPath() + "/order-success");
-                return;
+                // Nếu là COD
+                if ("COD".equals(paymentMethod)) {
+                    resp.sendRedirect(req.getContextPath() + "/order-success");
+                    return;
+                }
+
+                // Nếu là VNPAY
+                if ("VNPAY".equals(paymentMethod)) {
+                    String orderInfo = "Thanh toan don hang #" + orderId;
+                    String paymentUrl = VNPayConfig.createPaymentUrl(orderId, finalTotalAmount, orderInfo, req);
+
+                    if (paymentUrl != null) {
+                        resp.sendRedirect(paymentUrl);
+                    } else {
+                        req.setAttribute("error", "Không thể tạo yêu cầu thanh toán, vui lòng thử lại.");
+                        req.setAttribute("user", user);
+                        req.setAttribute("cart", cart);
+                        req.setAttribute("subTotal", subTotal);
+                        req.setAttribute("productDiscount", finalProductDiscount);
+                        req.setAttribute("finalShippingFee", finalShippingFee);
+                        req.setAttribute("finalTotalAmount", finalTotalAmount);
+                        req.getRequestDispatcher("/view/shop/checkout.jsp").forward(req, resp);
+                    }
+                    return;
+                }
             }
 
             // Render lại JSP
