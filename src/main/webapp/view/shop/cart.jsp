@@ -41,7 +41,11 @@
         <c:forEach items="${cart.items}" var="item">
             <div class="cart-grid-row">
                 <div class="col-product">
-                    <img src="${pageContext.request.contextPath}/${item.product.imageUrl}" alt="product">
+                    <a href="${pageContext.request.contextPath}/product-detail?id=${item.product.id}"
+                       class="product-link">
+                        <img src="${pageContext.request.contextPath}/${item.product.imageUrl}" alt="product">
+                    </a>
+
                     <div class="product-info">
                         <p class="brand-name">${item.product.brandName}</p>
                         <h4 class="product-name">${item.product.productName}</h4>
