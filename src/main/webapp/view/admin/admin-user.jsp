@@ -41,6 +41,9 @@
             background-color: #ff9800;
             color: white;
         }
+        .btn-detail{
+            background-color: #FFC107;
+        }
     </style>
 </head>
 <body>
@@ -117,7 +120,7 @@
                                 <a href="" class="btn-action btn-edit">
                                     <i class="fas fa-edit"></i> Sửa
                                 </a>
-                                <button class="btn-small lock" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-user-detail?id=${user.id}'">Chi tiết</button>
+                                <button class="btn-small lock btn-detail" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-user-detail?id=${user.id}'">Chi tiết</button>
                             </td>
                         </tr>
                     </c:forEach>
