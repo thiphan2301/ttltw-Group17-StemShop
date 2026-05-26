@@ -239,4 +239,16 @@ public class OrderDAO {
             return stmt.executeUpdate() > 0;
         }
     }
+    // Cập nhật cả payment_status và OrderStatus cùng lúc
+    public boolean updatePaymentStatusAndOrderStatus(int orderId, String paymentStatus, String orderStatus) throws Exception {
+        String sql = "UPDATE orders SET payment_status = ?, OrderStatus = ? WHERE id = ?";
+
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, paymentStatus);
+            stmt.setString(2, orderStatus);
+            stmt.setInt(3, orderId);
+            return stmt.executeUpdate() > 0;
+        }
+    }
 }
