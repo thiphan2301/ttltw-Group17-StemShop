@@ -40,7 +40,7 @@ public class AdminOrderServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         if ("confirm".equals(action)) {
-            orderDAO.updateOrderStatus(orderId, "CONFIRMED");
+            orderDAO.updateOrderStatus(orderId, "SHIPPING");
         } else if ("cancel".equals(action)) {
             orderDAO.updateOrderStatus(orderId, "CANCELLED");
         }

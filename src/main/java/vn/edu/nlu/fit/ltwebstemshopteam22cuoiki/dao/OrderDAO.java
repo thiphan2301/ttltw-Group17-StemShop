@@ -12,7 +12,7 @@ public class OrderDAO {
 
     // 1. Tạo đơn hàng mới
     public int insert(Order order) throws Exception {
-        String sql = "INSERT INTO orders (UserID, TotalAmount, ShippingFee, Note, ShippingAddress, ReceiverName, ReceiverPhone, OrderStatus, payment_method_id, payment_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO orders (UserID, TotalAmount, ShippingFee, Note, ShippingAddress, ReceiverName, ReceiverPhone, OrderStatus, payment_method_id, payment_status, OrderDate, PromotionID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,NOW(),?)";
 
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -27,6 +27,12 @@ public class OrderDAO {
             stmt.setString(8, order.getOrderStatus());
             stmt.setInt(9, order.getPaymentMethodId());
             stmt.setString(10, order.getPaymentStatus());
+            // Thêm PromotionID (có thể null)
+            if (order.getPromotionId() != null) {
+                stmt.setInt(11, order.getPromotionId());
+            } else {
+                stmt.setNull(11, java.sql.Types.INTEGER);
+            }
 
             stmt.executeUpdate();
 
@@ -90,6 +96,8 @@ public class OrderDAO {
                 o.setReceiverPhone(rs.getString("ReceiverPhone"));
                 o.setUserFullName(rs.getString("FullName"));
                 o.setUserPhone(rs.getString("PhoneNumber"));
+                o.setPaymentMethodId(rs.getInt("payment_method_id"));
+                o.setPaymentStatus(rs.getString("payment_status"));
                 list.add(o);
             }
         } catch (Exception e) {
