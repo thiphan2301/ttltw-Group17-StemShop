@@ -12,7 +12,7 @@ public class OrderDAO {
 
     // 1. Tạo đơn hàng mới
     public int insert(Order order) throws Exception {
-        String sql = "INSERT INTO orders (UserID, TotalAmount, ShippingFee, Note, ShippingAddress, ReceiverName, ReceiverPhone, OrderStatus, payment_method_id, payment_status, OrderDate, PromotionID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,NOW(),?)";
+        String sql = "INSERT INTO orders (UserID, TotalAmount, ShippingFee, Note, ShippingAddress, ReceiverName, ReceiverPhone, OrderStatus, payment_method_id, payment_status, OrderDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,NOW())";
 
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -27,12 +27,6 @@ public class OrderDAO {
             stmt.setString(8, order.getOrderStatus());
             stmt.setInt(9, order.getPaymentMethodId());
             stmt.setString(10, order.getPaymentStatus());
-            // Thêm PromotionID (có thể null)
-            if (order.getPromotionId() != null) {
-                stmt.setInt(11, order.getPromotionId());
-            } else {
-                stmt.setNull(11, java.sql.Types.INTEGER);
-            }
 
             stmt.executeUpdate();
 
@@ -138,8 +132,6 @@ public class OrderDAO {
                         order = new Order();
                         order.setId(rs.getInt("ID"));
                         order.setUserId(rs.getInt("UserID"));
-                        int promoId = rs.getInt("PromotionID");
-                        order.setPromotionId(rs.wasNull() ? null : promoId);
                         order.setOrderDate(rs.getTimestamp("OrderDate"));
                         order.setOrderStatus(rs.getString("OrderStatus"));
                         order.setShippingFee(rs.getDouble("ShippingFee"));
@@ -201,8 +193,6 @@ public class OrderDAO {
                         order.setReceiverName(rsOrders.getString("ReceiverName"));
                         order.setReceiverPhone(rsOrders.getString("ReceiverPhone"));
 
-                        int promoId = rsOrders.getInt("PromotionID");
-                        order.setPromotionId(rsOrders.wasNull() ? null : promoId);
 
                         orderList.add(order);
                     }
@@ -257,6 +247,17 @@ public class OrderDAO {
             stmt.setString(2, orderStatus);
             stmt.setInt(3, orderId);
             return stmt.executeUpdate() > 0;
+        }
+    }
+
+    public void saveOrderPromotion(int orderId, int promotionId, double discountAmount) throws Exception {
+        String sql = "INSERT INTO order_promotions (order_id, promotion_id, applied_discount_amount) VALUES (?, ?, ?)";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, orderId);
+            stmt.setInt(2, promotionId);
+            stmt.setDouble(3, discountAmount);
+            stmt.executeUpdate();
         }
     }
 }

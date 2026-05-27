@@ -19,7 +19,7 @@
     <div class="order-tabs">
         <button class="tab-btn active" onclick="filterOrders('ALL', this)">Tất cả</button>
         <button class="tab-btn" onclick="filterOrders('PENDING', this)">Chờ xác nhận</button>
-        <button class="tab-btn" onclick="filterOrders('CONFIRMED', this)">Đang giao hàng</button>
+        <button class="tab-btn" onclick="filterOrders('SHIPPING', this)">Đang giao hàng</button>
         <button class="tab-btn" onclick="filterOrders('DELIVERED', this)">Đã giao</button>
         <button class="tab-btn" onclick="filterOrders('RETURNED', this)">Trả hàng</button>
         <button class="tab-btn" onclick="filterOrders('CANCELLED', this)">Đã hủy</button>
@@ -41,7 +41,7 @@
                     <c:choose>
                         <c:when test="${order.orderStatus == 'PENDING'}">Chờ xác nhận</c:when>
                         <c:when test="${order.orderStatus == 'CANCEL_REQUESTED'}">Đang chờ duyệt hủy</c:when>
-                        <c:when test="${order.orderStatus == 'CONFIRMED'}">Đang giao hàng</c:when>
+                        <c:when test="${order.orderStatus == 'SHIPPING'}">Đang giao hàng</c:when>
                         <c:when test="${order.orderStatus == 'DELIVERED'}">Đã giao</c:when>
                         <c:when test="${order.orderStatus == 'RETURN_PENDING'}">Chờ duyệt trả hàng</c:when>
                         <c:when test="${order.orderStatus == 'RETURNED'}">Đã trả hàng/hoàn tiền</c:when>
@@ -83,7 +83,7 @@
                     <button class="action-btn btn-red" onclick="cancelOrder('${order.id}')">Hủy đơn</button>
                 </c:if>
 
-                <c:if test="${order.orderStatus == 'CONFIRMED'}">
+                <c:if test="${order.orderStatus == 'DELIVERED'}">
                     <button class="action-btn btn-green" onclick="confirmReceived('${order.id}')">Đã nhận được hàng</button>
                 </c:if>
 
