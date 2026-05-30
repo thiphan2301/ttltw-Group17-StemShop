@@ -260,4 +260,64 @@ public class OrderDAO {
             stmt.executeUpdate();
         }
     }
+
+    //lấy danh sách đơn hàng đang giao (SHIPPING)
+    public List<Order> getShippingOrders() {
+        List<Order> list = new ArrayList<>();
+        String sql = "SELECT o.*, u.FullName FROM orders o " +
+                "LEFT JOIN users u ON o.UserID = u.ID " +
+                "WHERE o.OrderStatus = 'SHIPPING' " +
+                "ORDER BY o.OrderDate ASC";
+
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("ID"));
+                order.setUserId(rs.getInt("UserID"));
+                order.setReceiverName(rs.getString("ReceiverName"));
+                order.setReceiverPhone(rs.getString("ReceiverPhone"));
+                order.setPaymentMethodId(rs.getInt("payment_method_id"));
+                order.setPaymentStatus(rs.getString("payment_status"));
+                order.setOrderStatus(rs.getString("OrderStatus"));
+                order.setOrderDate(rs.getTimestamp("OrderDate"));
+                order.setShippingAddress(rs.getString("ShippingAddress"));
+                order.setTotalAmount(rs.getDouble("TotalAmount"));
+                order.setUserFullName(rs.getString("FullName"));
+                list.add(order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public boolean updatePaymentStatus(int orderId, String paymentStatus) throws Exception {
+        String sql = "UPDATE orders SET payment_status = ? WHERE ID = ?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, paymentStatus);
+            stmt.setInt(2, orderId);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+    // xác nhận đơn hàng đã giao (DELIVERED)
+    public boolean confirmDelivered(int orderId, int paymentMethodId, String currentPaymentStatus) throws Exception {
+        // Cập nhật OrderStatus thành DELIVERED
+        String sqlUpdateOrder = "UPDATE orders SET OrderStatus = 'DELIVERED' WHERE ID = ?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sqlUpdateOrder)) {
+            stmt.setInt(1, orderId);
+            stmt.executeUpdate();
+        }
+
+        // Nếu là COD (method = 1) và tình trạng HIỆN TẠI KHÁC 'paid' -> Ép thành 'paid'
+        if (paymentMethodId == 1 && !"paid".equals(currentPaymentStatus)) {
+            updatePaymentStatus(orderId, "paid");
+        }
+
+        return true;
+    }
 }
