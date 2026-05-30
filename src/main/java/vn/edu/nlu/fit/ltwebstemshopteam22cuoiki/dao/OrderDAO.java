@@ -140,6 +140,9 @@ public class OrderDAO {
                         order.setShippingAddress(rs.getString("ShippingAddress"));
                         order.setReceiverName(rs.getString("ReceiverName"));
                         order.setReceiverPhone(rs.getString("ReceiverPhone"));
+                        order.setPaymentStatus(rs.getString("payment_status"));
+                        order.setPaymentMethodId(rs.getInt("payment_method_id"));
+                        order.setTransactionId(rs.getString("transaction_id"));
                     }
                 }
             }
@@ -192,6 +195,10 @@ public class OrderDAO {
                         order.setShippingAddress(rsOrders.getString("ShippingAddress"));
                         order.setReceiverName(rsOrders.getString("ReceiverName"));
                         order.setReceiverPhone(rsOrders.getString("ReceiverPhone"));
+
+                        order.setPaymentStatus(rsOrders.getString("payment_status"));
+                        order.setPaymentMethodId(rsOrders.getInt("payment_method_id"));
+                        order.setTransactionId(rsOrders.getString("transaction_id"));
 
                         int promoId = rsOrders.getInt("PromotionID");
                         order.setPromotionId(rsOrders.wasNull() ? null : promoId);
