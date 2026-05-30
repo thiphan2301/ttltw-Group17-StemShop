@@ -239,4 +239,23 @@ public class OrderDAO {
             return stmt.executeUpdate() > 0;
         }
     }
+    // 8. Lấy tổng tiền của một đơn hàng (Dùng cho thanh toán lại VNPAY)
+    public double getTotalAmountByOrderId(int orderId) {
+        double totalAmount = 0;
+        String sql = "SELECT TotalAmount FROM orders WHERE ID = ?";
+
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    totalAmount = rs.getDouble("TotalAmount");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return totalAmount;
+    }
 }
