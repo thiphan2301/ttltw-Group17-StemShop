@@ -17,6 +17,19 @@ import java.io.IOException;
 @WebServlet("/checkout")
 public class CheckoutServlet extends HttpServlet {
 
+    // Hàm tính phí vận chuyển theo tổng tiền và thành phố
+    private double calculateShippingFee(double subTotal, String city) {
+        if (subTotal >= 500000) return 0; // Miễn phí ship nếu đơn trên 500k
+        if (city == null) return 50000;
+        switch (city) {
+            case "Hồ Chí Minh": return 30000;
+            case "Hà Nội": return 35000;
+            case "Đà Nẵng": return 40000;
+            case "Cần Thơ": return 45000;
+            default: return 50000;
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -29,25 +42,23 @@ public class CheckoutServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/view/user/sign-in.jsp");
             return;
         }
-
         if (cart == null || cart.isEmpty()) {
             resp.sendRedirect(req.getContextPath() + "/cart");
             return;
         }
 
         double subTotal = cart.getTotalPrice();
-        double baseShippingFee = 30000;
+        String defaultCity = "Hồ Chí Minh";
+        double shippingFee = calculateShippingFee(subTotal, defaultCity);
 
         req.setAttribute("user", user);
         req.setAttribute("cart", cart);
-
-        // Truyền đầy đủ các biến sang JSP
         req.setAttribute("subTotal", subTotal);
         req.setAttribute("productDiscount", 0.0);
-        req.setAttribute("finalShippingFee", baseShippingFee);
-        req.setAttribute("finalTotalAmount", subTotal + baseShippingFee);
+        req.setAttribute("finalShippingFee", shippingFee);
+        req.setAttribute("finalTotalAmount", subTotal + shippingFee);
+        req.setAttribute("city", defaultCity);
 
-        // Xóa các mã cũ trong session nếu người dùng refresh lại trang mới hoàn toàn
         session.removeAttribute("savedVoucherProduct");
         session.removeAttribute("savedProductDiscount");
         session.removeAttribute("savedVoucherShip");
@@ -70,12 +81,18 @@ public class CheckoutServlet extends HttpServlet {
                 return;
             }
 
-            // Giữ lại form data
-            req.setAttribute("receiverName", req.getParameter("receiverName"));
-            req.setAttribute("receiverPhone", req.getParameter("receiverPhone"));
-            req.setAttribute("address", req.getParameter("address"));
-            req.setAttribute("city", req.getParameter("city"));
-            req.setAttribute("note", req.getParameter("note"));
+            // Lấy form data
+            String receiverName = req.getParameter("receiverName");
+            String receiverPhone = req.getParameter("receiverPhone");
+            String address = req.getParameter("address");
+            String city = req.getParameter("city");
+            String note = req.getParameter("note");
+
+            req.setAttribute("receiverName", receiverName);
+            req.setAttribute("receiverPhone", receiverPhone);
+            req.setAttribute("address", address);
+            req.setAttribute("city", city);
+            req.setAttribute("note", note);
 
             String percent = "percent";
             String amount = "amount";
@@ -84,30 +101,41 @@ public class CheckoutServlet extends HttpServlet {
             String action = req.getParameter("action");
             if (action == null) action = "order";
 
-            // ÁP DỤNG MÃ SẢN PHẨM
+            // Xử lý cập nhật phí ship
+            if ("updateShipping".equals(action)) {
+                double subTotal = cart.getTotalPrice();
+                double shippingFee = calculateShippingFee(subTotal, city);
+                req.setAttribute("subTotal", subTotal);
+                req.setAttribute("productDiscount", 0.0);
+                req.setAttribute("finalShippingFee", shippingFee);
+                req.setAttribute("finalTotalAmount", subTotal + shippingFee);
+                req.setAttribute("user", user);
+                req.setAttribute("cart", cart);
+                req.getRequestDispatcher("/view/shop/checkout.jsp").forward(req, resp);
+                return;
+            }
+
+            // Áp dụng voucher sản phẩm
             if ("applyVoucherProduct".equals(action)) {
                 String codeProduct = req.getParameter("voucherCodeProduct");
                 double productDiscount = 0;
-
                 if (promotionDAO.getCode().contains(codeProduct)) {
                     String discountType = promotionDAO.getDiscountType(codeProduct);
                     double val = promotionDAO.getDiscountValue(codeProduct, discountType);
-
                     productDiscount = percent.equals(discountType) ? cart.getTotalPrice() * (val / 100) : val;
                 }
                 session.setAttribute("savedVoucherProduct", codeProduct);
                 session.setAttribute("savedProductDiscount", productDiscount);
-
-                // ÁP DỤNG MÃ VẬN CHUYỂN
-            } else if ("applyVoucherShip".equals(action)) {
+            }
+            // Áp dụng voucher vận chuyển
+            else if ("applyVoucherShip".equals(action)) {
                 String codeShip = req.getParameter("voucherCodeShip");
                 double shipDiscount = 0;
-
                 if (promotionDAO.getCode().contains(codeShip)) {
                     String discountType = promotionDAO.getDiscountType(codeShip);
                     double val = promotionDAO.getDiscountValue(codeShip, discountType);
-                    double baseShippingFee = 30000;
-
+                    double subTotal = cart.getTotalPrice();
+                    double baseShippingFee = calculateShippingFee(subTotal, city);
                     shipDiscount = percent.equals(discountType) ? baseShippingFee * (val / 100) : val;
                     if (shipDiscount > baseShippingFee) shipDiscount = baseShippingFee;
                 }
@@ -115,7 +143,7 @@ public class CheckoutServlet extends HttpServlet {
                 session.setAttribute("savedShipDiscount", shipDiscount);
             }
 
-            // TÍNH TOÁN TIỀN
+            // Tính toán lại tiền sau voucher
             Double pd = (Double) session.getAttribute("savedProductDiscount");
             double finalProductDiscount = (pd != null) ? pd : 0;
 
@@ -123,15 +151,15 @@ public class CheckoutServlet extends HttpServlet {
             double finalShipDiscount = (sd != null) ? sd : 0;
 
             double subTotal = cart.getTotalPrice();
-            double baseShippingFee = 30000;
+            double baseShippingFee = calculateShippingFee(subTotal, city);
             double finalShippingFee = baseShippingFee - finalShipDiscount;
+            if (finalShippingFee < 0) finalShippingFee = 0;
 
             double finalTotalAmount = (subTotal - finalProductDiscount) + finalShippingFee;
 
-            // ĐẶT HÀNG
+            // Đặt hàng
             if ("order".equals(action)) {
-                String paymentMethod = req.getParameter("paymentMethod"); // "COD" hoặc "VNPAY"
-
+                String paymentMethod = req.getParameter("paymentMethod");
                 int paymentMethodId = "VNPAY".equals(paymentMethod) ? 2 : 1;
                 String paymentStatus = "COD".equals(paymentMethod) ? "unpaid" : "pending";
 
@@ -140,10 +168,10 @@ public class CheckoutServlet extends HttpServlet {
                 order.setOrderStatus("PENDING");
                 order.setShippingFee(finalShippingFee);
                 order.setTotalAmount(finalTotalAmount);
-                order.setNote(req.getParameter("note"));
-                order.setShippingAddress(req.getParameter("address") + ", " + req.getParameter("city"));
-                order.setReceiverName(req.getParameter("receiverName"));
-                order.setReceiverPhone(req.getParameter("receiverPhone"));
+                order.setNote(note);
+                order.setShippingAddress(address + ", " + city);
+                order.setReceiverName(receiverName);
+                order.setReceiverPhone(receiverPhone);
                 order.setPaymentMethodId(paymentMethodId);
                 order.setPaymentStatus(paymentStatus);
 
@@ -152,11 +180,25 @@ public class CheckoutServlet extends HttpServlet {
 
                 OrderDetailDAO detailDAO = new OrderDetailDAO();
                 for (CartItem item : cart.getItems()) {
-                    OrderDetail detail = new OrderDetail(
-                            orderId, item.getProduct().getId(),
-                            item.getQuantity(), item.getProduct().getPrice()
-                    );
+                    OrderDetail detail = new OrderDetail(orderId, item.getProduct().getId(), item.getQuantity(), item.getProduct().getPrice());
                     detailDAO.insert(detail);
+                }
+
+                // Lưu thông tin khuyến mãi (voucher) đã áp dụng
+                String appliedVoucherProduct = (String) session.getAttribute("savedVoucherProduct");
+                String appliedVoucherShip = (String) session.getAttribute("savedVoucherShip");
+
+                if (appliedVoucherProduct != null && !appliedVoucherProduct.isEmpty()) {
+                    Integer promoId = promotionDAO.getPromotionIdByCode(appliedVoucherProduct);
+                    if (promoId != null && finalProductDiscount > 0) {
+                        orderDAO.saveOrderPromotion(orderId, promoId, finalProductDiscount);
+                    }
+                }
+                if (appliedVoucherShip != null && !appliedVoucherShip.isEmpty()) {
+                    Integer promoId = promotionDAO.getPromotionIdByCode(appliedVoucherShip);
+                    if (promoId != null && finalShipDiscount > 0) {
+                        orderDAO.saveOrderPromotion(orderId, promoId, finalShipDiscount);
+                    }
                 }
 
                 session.removeAttribute("cart");
@@ -165,17 +207,14 @@ public class CheckoutServlet extends HttpServlet {
                 session.removeAttribute("savedVoucherShip");
                 session.removeAttribute("savedShipDiscount");
 
-                // Nếu là COD
                 if ("COD".equals(paymentMethod)) {
                     resp.sendRedirect(req.getContextPath() + "/order-success");
                     return;
                 }
 
-                // Nếu là VNPAY
                 if ("VNPAY".equals(paymentMethod)) {
                     String orderInfo = "Thanh toan don hang #" + orderId;
                     String paymentUrl = VNPayConfig.createPaymentUrl(orderId, finalTotalAmount, orderInfo, req);
-
                     if (paymentUrl != null) {
                         resp.sendRedirect(paymentUrl);
                     } else {
@@ -192,14 +231,13 @@ public class CheckoutServlet extends HttpServlet {
                 }
             }
 
-            // Render lại JSP
+            // Hiển thị lại trang (nếu chỉ áp voucher)
             req.setAttribute("user", user);
             req.setAttribute("cart", cart);
             req.setAttribute("subTotal", subTotal);
             req.setAttribute("productDiscount", finalProductDiscount);
             req.setAttribute("finalShippingFee", finalShippingFee);
             req.setAttribute("finalTotalAmount", finalTotalAmount);
-
             req.getRequestDispatcher("/view/shop/checkout.jsp").forward(req, resp);
 
         } catch (Exception e) {

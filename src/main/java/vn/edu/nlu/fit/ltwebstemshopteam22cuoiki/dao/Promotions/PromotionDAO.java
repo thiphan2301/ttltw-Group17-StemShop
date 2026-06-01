@@ -68,4 +68,15 @@ public class PromotionDAO {
         return discountValue;
     }
 
+    public Integer getPromotionIdByCode(String code) throws Exception {
+        String sql = "SELECT id FROM promotions WHERE code = ?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, code);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        }
+        return null;
+    }
+
 }

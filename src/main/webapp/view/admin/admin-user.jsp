@@ -70,6 +70,9 @@
             <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-orders'">
                 <i class="fa-solid fa-shopping-cart"></i> Quản lý Đơn Hàng
             </li>
+            <li class="admin-menu__item" onclick="location.href='${pageContext.request.contextPath}/admin/shipping'">
+                <i class="fa-solid fa-truck"></i> Quản lý Vận chuyển
+            </li>
             <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/'">
                 <i class="fa-solid fa-home"></i> Về trang chủ
             </li>

@@ -163,7 +163,7 @@
 
     <div class="info-row">
       <span class="info-label">Phương thức thanh toán</span>
-      <span class="info-value">Thanh toán khi nhận hàng (COD)</span>
+      <span class="info-value">${order.paymentMethodId == 2 ? "VNPay" : "Thanh toán khi nhận hàng (COD)"}</span>
     </div>
 
     <div class="info-row">

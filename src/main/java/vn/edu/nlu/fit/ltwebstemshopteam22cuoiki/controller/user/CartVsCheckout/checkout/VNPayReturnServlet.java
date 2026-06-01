@@ -58,7 +58,7 @@ public class VNPayReturnServlet extends HttpServlet {
             }
         } else {
             try {
-                orderDAO.updatePaymentInfo(orderId, "failed", vnp_TransactionNo, null);
+                orderDAO.updatePaymentStatusAndOrderStatus(orderId, "failed", "CANCELLED");
             } catch (Exception e) {
                 e.printStackTrace();
             }
