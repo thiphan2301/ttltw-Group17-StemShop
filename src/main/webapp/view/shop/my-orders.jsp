@@ -79,6 +79,12 @@
                     Xem chi tiết
                 </button>
 
+                <c:if test="${order.orderStatus == 'PENDING' && order.paymentStatus != 'paid'}">
+                    <button class="action-btn btn-orange" style="background-color: #ff9800; color: white; border-color: #ff9800;" onclick="continuePayment('${order.id}')">
+                        Tiếp tục thanh toán
+                    </button>
+                </c:if>
+
                 <c:if test="${order.orderStatus == 'PENDING'}">
                     <button class="action-btn btn-red" onclick="cancelOrder('${order.id}')">Hủy đơn</button>
                 </c:if>
@@ -158,6 +164,9 @@
 
     window.onclick = function(e) {
         if (e.target == document.getElementById("orderDetailModal")) closeDetailPopup();
+    }
+    function continuePayment(id) {
+        window.location.href = "${pageContext.request.contextPath}/vnpay-payment?orderId=" + id;
     }
 </script>
 

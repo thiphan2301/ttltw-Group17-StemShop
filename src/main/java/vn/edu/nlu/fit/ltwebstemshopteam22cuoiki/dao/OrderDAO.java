@@ -140,6 +140,9 @@ public class OrderDAO {
                         order.setShippingAddress(rs.getString("ShippingAddress"));
                         order.setReceiverName(rs.getString("ReceiverName"));
                         order.setReceiverPhone(rs.getString("ReceiverPhone"));
+                        order.setPaymentStatus(rs.getString("payment_status"));
+                        order.setPaymentMethodId(rs.getInt("payment_method_id"));
+                        order.setTransactionId(rs.getString("transaction_id"));
                     }
                 }
             }
@@ -193,6 +196,10 @@ public class OrderDAO {
                         order.setReceiverName(rsOrders.getString("ReceiverName"));
                         order.setReceiverPhone(rsOrders.getString("ReceiverPhone"));
 
+                        order.setPaymentStatus(rsOrders.getString("payment_status"));
+                        order.setPaymentMethodId(rsOrders.getInt("payment_method_id"));
+                        order.setTransactionId(rsOrders.getString("transaction_id"));
+
                         int promoId = rsOrders.getInt("PromotionID");
                         order.setPromotionId(rsOrders.wasNull() ? null : promoId);
 
@@ -238,5 +245,24 @@ public class OrderDAO {
             stmt.setInt(4, orderId);
             return stmt.executeUpdate() > 0;
         }
+    }
+    // 8. Lấy tổng tiền của một đơn hàng (Dùng cho thanh toán lại VNPAY)
+    public double getTotalAmountByOrderId(int orderId) {
+        double totalAmount = 0;
+        String sql = "SELECT TotalAmount FROM orders WHERE ID = ?";
+
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, orderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    totalAmount = rs.getDouble("TotalAmount");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return totalAmount;
     }
 }
