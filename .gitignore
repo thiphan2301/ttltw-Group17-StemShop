@@ -36,3 +36,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+.gradle/
+build/
+local.properties
+
+src/main/resources/system.properties

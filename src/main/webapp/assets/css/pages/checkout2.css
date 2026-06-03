@@ -225,3 +225,14 @@
     background: #FF840B;
     transition: .3s;
 }
+
+.btn-update-ship {
+    background-color: white;
+    border: 1px solid ;
+    padding: .2rem;
+    border-radius: .5rem;
+}
+.btn-update-ship:hover {
+    background-color: #f5f0eb;
+    transition: .2s;
+}

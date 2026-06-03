@@ -189,64 +189,16 @@ public class ProductDAO {
         }
         return 0;
     }
-    public List<Product> getFirst6Products() {
-        List<Product> products = new ArrayList<>();
-        String sql = "SELECT p.ID, p.ProductName, p.Description, p.Price, p.Quantity, " +
-                "p.CategoryID, p.BrandID, b.BrandName, " +
-                "COALESCE(pi.ImageURL, '/assets/images/products/no-image.png') as ImageURL " +
-                "FROM products p " +
-                "LEFT JOIN brands b ON p.BrandID = b.ID " +
-                "LEFT JOIN product_image pi ON p.ID = pi.ProductID " +
-                "ORDER BY p.ID ASC " +
-                "LIMIT 6";
-
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            con = ConnectionDB.getConnection();
-            ps = con.prepareStatement(sql);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Product p = new Product();
-                p.setId(rs.getInt("ID"));
-                p.setCategoriesID(rs.getInt("CategoryID"));
-                p.setBrandID(rs.getInt("BrandID"));
-                p.setBrandName(rs.getString("BrandName"));
-                p.setProductName(rs.getString("ProductName"));
-                p.setDescription(rs.getString("Description"));
-                p.setPrice(rs.getDouble("Price"));
-                p.setQuantity(rs.getInt("Quantity"));
-                p.setImageUrl(rs.getString("ImageURL"));
-                products.add(p);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (con != null) con.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        return products;
-    }
-
     // Lấy toàn bộ sản phẩm và thương hiệu
     public List<Product> getAllWithBrand() {
         List<Product> list = new ArrayList<>();
 
         String sql = "SELECT p.*, b.BrandName, "+
-               "(SELECT pi.ImageURL FROM product_image pi WHERE pi.ProductID = p.ID ORDER BY pi.ID ASC LIMIT 1) AS imageUrl "+
-        "FROM products p "+
-        "JOIN brands b ON p.BrandID = b.ID "+
-        "WHERE p.status = 1 "+
-        "ORDER BY p.ID DESC";
+                "(SELECT pi.ImageURL FROM product_image pi WHERE pi.ProductID = p.ID ORDER BY pi.ID ASC LIMIT 1) AS imageUrl "+
+                "FROM products p "+
+                "JOIN brands b ON p.BrandID = b.ID "+
+                "WHERE p.status = 1 "+
+                "ORDER BY p.ID DESC";
 
         try (Connection con = ConnectionDB.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -267,6 +219,7 @@ public class ProductDAO {
         }
         return list;
     }
+
 
     // Tìm sản phẩm theo tên
     public List<Product> searchByName(String keyword) {
@@ -394,5 +347,290 @@ public class ProductDAO {
         return list;
     }
 
+    //  CÁC PHƯƠNG THỨC MỚI CHO LỌC, TÌM KIẾM, SẮP XẾP, PHÂN TRANG
+
+    //Đếm tổng số sản phẩm thỏa mãn điều kiện lọc
+    public int countProductsWithFilters(Integer[] categoryIds, String priceRange, String keyword) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM products p WHERE p.status = 1");
+        List<Object> params = new ArrayList<>();
+
+        // Thêm điều kiện lọc danh mục
+        if (categoryIds != null && categoryIds.length > 0) {
+            sql.append(" AND p.CategoryID IN (");
+            for (int i = 0; i < categoryIds.length; i++) {
+                sql.append("?");
+                if (i < categoryIds.length - 1) sql.append(",");
+            }
+            sql.append(")");
+            for (Integer id : categoryIds) {
+                params.add(id);
+            }
+        }
+
+        // Thêm điều kiện lọc giá
+        if (priceRange != null && !priceRange.isEmpty()) {
+            switch (priceRange) {
+                case "duoi200":
+                    sql.append(" AND p.Price < 200000");
+                    break;
+                case "200-1tr":
+                    sql.append(" AND p.Price BETWEEN 200000 AND 1000000");
+                    break;
+                case "1tr-2tr":
+                    sql.append(" AND p.Price BETWEEN 1000000 AND 2000000");
+                    break;
+                case "2tr-4tr":
+                    sql.append(" AND p.Price BETWEEN 2000000 AND 4000000");
+                    break;
+                case "tren4tr":
+                    sql.append(" AND p.Price > 4000000");
+                    break;
+            }
+        }
+
+        // Thêm điều kiện tìm kiếm
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append(" AND LOWER(p.ProductName) LIKE LOWER(?)");
+            params.add("%" + keyword.trim() + "%");
+        }
+
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+     //Lấy danh sách sản phẩm có phân trang, lọc, tìm kiếm, sắp xếp
+
+    public List<Product> getProductsWithFilters(Integer[] categoryIds, String priceRange,
+                                                String keyword, String sortBy,
+                                                int offset, int limit) {
+        List<Product> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder();
+
+        sql.append("SELECT p.ID, p.ProductName, p.Price, p.CategoryID, p.BrandID, p.Description, p.Quantity, ");
+        sql.append("b.BrandName, ");
+        sql.append("(SELECT ImageURL FROM product_image WHERE ProductID = p.ID AND is_main = 1 LIMIT 1) AS image_url ");
+        sql.append("FROM products p ");
+        sql.append("LEFT JOIN brands b ON p.BrandID = b.ID ");
+        sql.append("WHERE p.status = 1");
+
+        List<Object> params = new ArrayList<>();
+
+        // Lọc danh mục
+        if (categoryIds != null && categoryIds.length > 0) {
+            sql.append(" AND p.CategoryID IN (");
+            for (int i = 0; i < categoryIds.length; i++) {
+                sql.append("?");
+                if (i < categoryIds.length - 1) sql.append(",");
+            }
+            sql.append(")");
+            for (Integer id : categoryIds) {
+                params.add(id);
+            }
+        }
+
+        // Lọc giá
+        if (priceRange != null && !priceRange.isEmpty()) {
+            switch (priceRange) {
+                case "duoi200":
+                    sql.append(" AND p.Price < 200000");
+                    break;
+                case "200-1tr":
+                    sql.append(" AND p.Price BETWEEN 200000 AND 1000000");
+                    break;
+                case "1tr-2tr":
+                    sql.append(" AND p.Price BETWEEN 1000000 AND 2000000");
+                    break;
+                case "2tr-4tr":
+                    sql.append(" AND p.Price BETWEEN 2000000 AND 4000000");
+                    break;
+                case "tren4tr":
+                    sql.append(" AND p.Price > 4000000");
+                    break;
+            }
+        }
+
+        // Tìm kiếm
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append(" AND LOWER(p.ProductName) LIKE LOWER(?)");
+            params.add("%" + keyword.trim() + "%");
+        }
+
+        // Sắp xếp
+        if (sortBy != null && !sortBy.isEmpty()) {
+            switch (sortBy) {
+                case "az":
+                    sql.append(" ORDER BY p.ProductName ASC");
+                    break;
+                case "za":
+                    sql.append(" ORDER BY p.ProductName DESC");
+                    break;
+                case "price-asc":
+                    sql.append(" ORDER BY p.Price ASC");
+                    break;
+                case "price-desc":
+                    sql.append(" ORDER BY p.Price DESC");
+                    break;
+                default:
+                    sql.append(" ORDER BY p.ID DESC");
+            }
+        } else {
+            sql.append(" ORDER BY p.ID DESC");
+        }
+
+        // Phân trang
+        sql.append(" LIMIT ? OFFSET ?");
+        params.add(limit);
+        params.add(offset);
+
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Product p = new Product();
+                p.setId(rs.getInt("ID"));
+                p.setProductName(rs.getString("ProductName"));
+                p.setPrice(rs.getDouble("Price"));
+                p.setCategoriesID(rs.getInt("CategoryID"));
+                p.setBrandID(rs.getInt("BrandID"));
+                p.setBrandName(rs.getString("BrandName"));
+                p.setDescription(rs.getString("Description"));
+                p.setQuantity(rs.getInt("Quantity"));
+                p.setImageUrl(rs.getString("image_url"));
+                list.add(p);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
+    //Lấy danh sách sản phẩm cho shop (có filter, sort, phân trang) - Phương thức tiện lợi hơn
+
+    public List<Product> getShopProducts(Integer[] categoryIds, String priceRange,
+                                         String keyword, String sortBy,
+                                         int page, int itemsPerPage) {
+        int offset = (page - 1) * itemsPerPage;
+        return getProductsWithFilters(categoryIds, priceRange, keyword, sortBy, offset, itemsPerPage);
+    }
+
+    //Lấy danh sách sản phẩm theo category ID (có phân trang)
+    public List<Product> getProductsByCategory(int categoryId, int offset, int limit) {
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT p.ID, p.ProductName, p.Price, p.CategoryID, p.BrandID, " +
+                "b.BrandName, " +
+                "(SELECT ImageURL FROM product_image WHERE ProductID = p.ID AND is_main = 1 LIMIT 1) AS image_url " +
+                "FROM products p " +
+                "LEFT JOIN brands b ON p.BrandID = b.ID " +
+                "WHERE p.status = 1 AND p.CategoryID = ? " +
+                "ORDER BY p.ID DESC " +
+                "LIMIT ? OFFSET ?";
+
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, categoryId);
+            ps.setInt(2, limit);
+            ps.setInt(3, offset);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Product p = new Product();
+                p.setId(rs.getInt("ID"));
+                p.setProductName(rs.getString("ProductName"));
+                p.setPrice(rs.getDouble("Price"));
+                p.setCategoriesID(rs.getInt("CategoryID"));
+                p.setBrandID(rs.getInt("BrandID"));
+                p.setBrandName(rs.getString("BrandName"));
+                p.setImageUrl(rs.getString("image_url"));
+                list.add(p);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
+    //Đếm sản phẩm theo category
+    public int countProductsByCategory(int categoryId) {
+        String sql = "SELECT COUNT(*) FROM products p WHERE p.status = 1 AND p.CategoryID = ?";
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, categoryId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    //Lọc sản phẩm theo nhiều category (có phân trang)
+    public List<Product> getProductsByMultipleCategories(Integer[] categoryIds, int offset, int limit) {
+        if (categoryIds == null || categoryIds.length == 0) {
+            return getProductsByPage(offset, limit);
+        }
+
+        List<Product> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT p.ID, p.ProductName, p.Price, p.CategoryID, p.BrandID, ");
+        sql.append("b.BrandName, ");
+        sql.append("(SELECT ImageURL FROM product_image WHERE ProductID = p.ID AND is_main = 1 LIMIT 1) AS image_url ");
+        sql.append("FROM products p ");
+        sql.append("LEFT JOIN brands b ON p.BrandID = b.ID ");
+        sql.append("WHERE p.status = 1 AND p.CategoryID IN (");
+
+        for (int i = 0; i < categoryIds.length; i++) {
+            sql.append("?");
+            if (i < categoryIds.length - 1) sql.append(",");
+        }
+        sql.append(") ORDER BY p.ID DESC LIMIT ? OFFSET ?");
+
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < categoryIds.length; i++) {
+                ps.setInt(i + 1, categoryIds[i]);
+            }
+            ps.setInt(categoryIds.length + 1, limit);
+            ps.setInt(categoryIds.length + 2, offset);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Product p = new Product();
+                p.setId(rs.getInt("ID"));
+                p.setProductName(rs.getString("ProductName"));
+                p.setPrice(rs.getDouble("Price"));
+                p.setCategoriesID(rs.getInt("CategoryID"));
+                p.setBrandID(rs.getInt("BrandID"));
+                p.setBrandName(rs.getString("BrandName"));
+                p.setImageUrl(rs.getString("image_url"));
+                list.add(p);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
 }

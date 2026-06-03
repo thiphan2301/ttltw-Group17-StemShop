@@ -27,19 +27,22 @@
             background-color: #FFC107;
             color: white;
         }
-        .btn-delete{
+        .btn-lock{
             padding: 5px 8px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             color: white;
-            background-color: #BA1424;
+            background-color: #FF9800;
             font-size: 12px;
             margin-left: 5px;
         }
-        .btn-delete:hover{
-            background-color: #ba1424;
+        .btn-lock:hover{
+            background-color: #ff9800;
             color: white;
+        }
+        .btn-detail{
+            background-color: #FFC107;
         }
     </style>
 </head>
@@ -66,6 +69,9 @@
             </li>
             <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-orders'">
                 <i class="fa-solid fa-shopping-cart"></i> Quản lý Đơn Hàng
+            </li>
+            <li class="admin-menu__item" onclick="location.href='${pageContext.request.contextPath}/admin/shipping'">
+                <i class="fa-solid fa-truck"></i> Quản lý Vận chuyển
             </li>
             <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/'">
                 <i class="fa-solid fa-home"></i> Về trang chủ
@@ -111,13 +117,13 @@
                             <td>${user.phoneNumber}</td>
                             <td>${user.role}</td>
                             <td>
-                                <button type="submit" class="btn-action btn-delete">
-                                    <i class="fas fa-trash"></i> Xóa
+                                <button type="submit" class="btn-action btn-lock" >
+                                    <i class="fas fa-lock"></i> Khóa
                                 </button>
                                 <a href="" class="btn-action btn-edit">
                                     <i class="fas fa-edit"></i> Sửa
                                 </a>
-                                <button class="btn-small lock" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-user-detail?id=${user.id}'">Chi tiết</button>
+                                <button class="btn-small lock btn-detail" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-user-detail?id=${user.id}'">Chi tiết</button>
                             </td>
                         </tr>
                     </c:forEach>

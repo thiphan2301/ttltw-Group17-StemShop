@@ -6,7 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.UserDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.User;
-import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.util.PasswordUtil;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.PasswordUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,13 +45,13 @@ public class ProfileServlet extends HttpServlet {
         }
 
         // check sdt
-        if (phone != null && !phone.trim().isEmpty()) {
-            if (!PasswordUtil.isValidPhone(phone)) {
-                request.setAttribute("error", "Số điện thoại không hợp lệ");
-                request.getRequestDispatcher("/view/user/profile.jsp").forward(request, response);
-                return;
-            }
-        }
+//        if (phone != null && !phone.trim().isEmpty()) {
+//            if (!PasswordUtils.isValidPhone(phone)) {
+//                request.setAttribute("error", "Số điện thoại không hợp lệ");
+//                request.getRequestDispatcher("/view/user/profile.jsp").forward(request, response);
+//                return;
+//            }
+//        }
 
         // check email không được để trống
         if (email == null || email.trim().isEmpty()) {

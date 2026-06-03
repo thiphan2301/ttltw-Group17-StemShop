@@ -48,9 +48,12 @@
         <div class="wishlist-item"
              id="wishlist-item-${p.id}"
              style="display:flex;gap:20px;padding:15px;border-bottom:1px solid #ddd">
+<a href="${pageContext.request.contextPath}/product-detail?id=${p.id}"
+   class="product-link">
+    <img src="${pageContext.request.contextPath}/${p.imageUrl}"
+         width="100" height="100" style="object-fit:cover">
+</a>
 
-            <img src="${pageContext.request.contextPath}/${p.imageUrl}"
-                 width="100" height="100" style="object-fit:cover">
 
             <div style="flex:1" >
                 <h3>${p.productName}</h3>

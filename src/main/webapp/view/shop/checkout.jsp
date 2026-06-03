@@ -80,13 +80,14 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="city">Thành phố</label>
-                                <input id="city"
-                                       name="city"
-                                       class="input-text"
-                                       placeholder="TP.Hồ Chí Minh"
-                                       value="${city}"
-                                       required>
+                                <label for="city">Tỉnh/Thành phố</label>
+                                <select id="city" name="city" class="input-text" required>
+                                    <option value="Hồ Chí Minh" ${city == 'Hồ Chí Minh' ? 'selected' : ''}>Hồ Chí Minh</option>
+                                    <option value="Hà Nội" ${city == 'Hà Nội' ? 'selected' : ''}>Hà Nội</option>
+                                    <option value="Đà Nẵng" ${city == 'Đà Nẵng' ? 'selected' : ''}>Đà Nẵng</option>
+                                    <option value="Cần Thơ" ${city == 'Cần Thơ' ? 'selected' : ''}>Cần Thơ</option>
+                                    <option value="Khác" ${city == 'Khác' ? 'selected' : ''}>Tỉnh khác</option>
+                                </select>
                             </div>
 
                             <div class="form-group">
@@ -162,10 +163,6 @@
                                         Áp dụng
                                     </button>
                                 </div>
-
-<%--                                <c:if test="${not empty voucherError}">--%>
-<%--                                    <p class="voucher-error">${voucherError}</p>--%>
-<%--                                </c:if>--%>
                             </div>
 
                             <!-- PAYMENT METHOD -->
@@ -176,15 +173,16 @@
                                     <input type="radio"
                                            name="paymentMethod"
                                            value="COD"
-                                           checked>
+                                    ${empty param.paymentMethod or param.paymentMethod eq 'COD' ? 'checked' : ''}>
                                     Thanh toán khi nhận hàng (COD)
                                 </label>
 
                                 <label class="payment-option">
                                     <input type="radio"
                                            name="paymentMethod"
-                                           value="BANKING">
-                                    Chuyển khoản ngân hàng
+                                           value="VNPAY"
+                                    ${param.paymentMethod eq 'VNPAY' ? 'checked' : ''}>
+                                    Thanh toán qua VNPay
                                 </label>
                             </div>
 
@@ -209,6 +207,10 @@
                                 <div class="summary-row">
                                     <span>Phí vận chuyển</span>
                                     <span><fmt:formatNumber value="${finalShippingFee}" type="currency" currencySymbol="₫"/></span>
+                                </div>
+
+                                <div class="summary-row">
+                                    <button type="submit" name="action" value="updateShipping" class="btn-update-ship">Cập nhật phí ship</button>
                                 </div>
 
                                 <div class="summary-row summary-total">

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -34,6 +35,17 @@
             background-color: #d9534f;
             transition: ease .4s;
         }
+        .admin-table .btn-detail{
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+            background-color: #eadf21;
+            color: white;
+        }
+        .admin-table .btn-detail:hover{
+            background-color: #eadf21;
+            transition: ease .4s;
+        }
     </style>
 </head>
 <body>
@@ -60,6 +72,9 @@
             <li class="admin-menu__item active" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-orders'">
                 <i class="fa-solid fa-shopping-cart"></i> Quản lý Đơn Hàng
             </li>
+            <li class="admin-menu__item" onclick="location.href='${pageContext.request.contextPath}/admin/shipping'">
+                <i class="fa-solid fa-truck"></i> Quản lý Vận chuyển
+            </li>
             <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/'">
                 <i class="fa-solid fa-home"></i> Về trang chủ
             </li>
@@ -85,11 +100,10 @@
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Khách hàng</th>
-                    <th>SĐT</th>
-                    <th>Ngày đặt</th>
-                    <th>Tổng tiền</th>
-                    <th>Trạng thái</th>
+                    <th>Tên ngưòi nhận</th>
+                    <th>Phương thức thanh toán</th>
+                    <th>Trạng thái đơn hàng</th>
+                    <th>Trạng thái thanh toán</th>
                     <th>Thao tác</th>
                 </tr>
                 </thead>
@@ -97,29 +111,79 @@
                 <c:forEach var="o" items="${orders}">
                     <tr>
                         <td>#${o.id}</td>
-                        <td>${o.userFullName}</td>
-                        <td>${o.userPhone}</td>
+                        <td>${o.receiverName}</td>
                         <td>
-                            <fmt:formatDate value="${o.orderDate}" pattern="dd/MM/yyyy HH:mm"/>
+                            <c:choose>
+                                <c:when test="${o.paymentMethodId == 1}"><i class="fa-solid fa-money-bill-1-wave"></i> Tiền mặt (COD)</c:when>
+                                <c:when test="${o.paymentMethodId == 2}"><i class="fa-solid fa-credit-card"></i> Chuyển khoản (VNPAY)</c:when>
+                                <c:otherwise>-</c:otherwise>
+                            </c:choose>
                         </td>
                         <td>
-                            <fmt:formatNumber value="${o.totalAmount}" type="currency" currencySymbol="₫"/>
+                            <c:choose>
+                                <c:when test="${o.orderStatus == 'PENDING'}"><i class="fa-solid fa-hourglass-half"></i> Chờ xác nhận</c:when>
+                                <c:when test="${o.orderStatus == 'SHIPPING'}"><i class="fa-solid fa-truck-arrow-right"></i> Đang giao</c:when>
+                                <c:when test="${o.orderStatus == 'DELIVERED'}"><i class="fa-regular fa-circle-check"></i> Đã giao</c:when>
+                                <c:when test="${o.orderStatus == 'CANCELLED'}"><i class="fa-regular fa-circle-xmark"></i> Đã hủy</c:when>
+                                <c:otherwise>${o.orderStatus}</c:otherwise>
+                            </c:choose>
                         </td>
-                        <td>${o.orderStatus}</td>
                         <td>
+                            <c:choose>
+                                <c:when test="${o.paymentStatus == 'paid'}">
+                                    <span style="color: green;"><i class="fa-regular fa-circle-check"></i> Đã thanh toán</span>
+                                </c:when>
+                                <c:when test="${o.paymentStatus == 'failed'}">
+                                    <span style="color: red;"><i class="fa-regular fa-circle-xmark"></i> Thất bại</span>
+                                </c:when>
+                                <c:when test="${o.paymentStatus == 'pending'}">
+                                    <span style="color: orange;"><i class="fa-solid fa-hourglass-half"></i>  Chờ thanh toán</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span style="color: gray;">Chưa thanh toán</span>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td>
+                            <!-- Chỉ hiển thị nút Xác nhận khi OrderStatus = PENDING -->
                             <c:if test="${o.orderStatus == 'PENDING'}">
-                                <form method="post" style="display:inline">
-                                    <input type="hidden" name="orderId" value="${o.id}">
-                                    <input type="hidden" name="action" value="confirm">
-                                    <button class="btn btn-success">Xác nhận</button>
-                                </form>
+                                <c:set var="canConfirm" value="false" />
 
-                                <form method="post" style="display:inline">
-                                    <input type="hidden" name="orderId" value="${o.id}">
-                                    <input type="hidden" name="action" value="cancel">
-                                    <button class="btn btn-danger">Hủy</button>
-                                </form>
+                                <!-- Nếu là COD (payment_method_id = 1) thì luôn được xác nhận -->
+                                <c:if test="${o.paymentMethodId == 1}">
+                                    <c:set var="canConfirm" value="true" />
+                                </c:if>
+
+                                <!-- Nếu là VNPAY (payment_method_id = 2) thì chỉ xác nhận khi đã thanh toán -->
+                                <c:if test="${o.paymentMethodId == 2 && o.paymentStatus == 'paid'}">
+                                    <c:set var="canConfirm" value="true" />
+                                </c:if>
+
+                                <!-- Hiển thị nút Xác nhận nếu đủ điều kiện -->
+                                <c:if test="${canConfirm == true}">
+                                    <form method="post" style="display:inline">
+                                        <input type="hidden" name="orderId" value="${o.id}">
+                                        <input type="hidden" name="action" value="confirm">
+                                        <button class="btn-success">Xác nhận</button>
+                                    </form>
+                                </c:if>
+
+                                <!-- Nút Hủy: Chỉ hiển thị nếu chưa thanh toán hoặc thanh toán thất bại -->
+                                <c:if test="${o.paymentStatus != 'paid'}">
+                                    <form method="post" style="display:inline">
+                                        <input type="hidden" name="orderId" value="${o.id}">
+                                        <input type="hidden" name="action" value="cancel">
+                                        <button class="btn-danger">Hủy</button>
+                                    </form>
+                                </c:if>
                             </c:if>
+
+                            <!-- Nút Chi tiết (luôn hiển thị) -->
+                            <form method="post" style="display:inline">
+                                <input type="hidden" name="orderId" value="${o.id}">
+                                <input type="hidden" name="action" value="detail">
+                                <button class="btn-detail">Chi tiết</button>
+                            </form>
                         </td>
                     </tr>
                 </c:forEach>

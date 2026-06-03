@@ -19,72 +19,89 @@
     <div class="order-tabs">
         <button class="tab-btn active" onclick="filterOrders('ALL', this)">Tất cả</button>
         <button class="tab-btn" onclick="filterOrders('PENDING', this)">Chờ xác nhận</button>
-        <button class="tab-btn" onclick="filterOrders('CONFIRMED', this)">Đang giao hàng</button>
+        <button class="tab-btn" onclick="filterOrders('SHIPPING', this)">Đang giao hàng</button>
         <button class="tab-btn" onclick="filterOrders('DELIVERED', this)">Đã giao</button>
         <button class="tab-btn" onclick="filterOrders('RETURNED', this)">Trả hàng</button>
         <button class="tab-btn" onclick="filterOrders('CANCELLED', this)">Đã hủy</button>
     </div>
 
-    <c:forEach var="item" items="${orders}">
-        <%-- Logic phân nhóm Tab --%>
-        <c:set var="tabCategory" value="${item.orderStatus}" />
-        <c:if test="${item.orderStatus == 'RETURN_PENDING' || item.orderStatus == 'RETURNED'}">
+    <c:forEach var="order" items="${orders}">
+        <c:set var="tabCategory" value="${order.orderStatus}" />
+        <c:if test="${order.orderStatus == 'RETURN_PENDING' || order.orderStatus == 'RETURNED'}">
             <c:set var="tabCategory" value="RETURNED" />
         </c:if>
-        <c:if test="${item.orderStatus == 'CANCEL_REQUESTED'}">
+        <c:if test="${order.orderStatus == 'CANCEL_REQUESTED'}">
             <c:set var="tabCategory" value="PENDING" />
         </c:if>
 
         <div class="order-box" data-status="${tabCategory}">
             <div class="order-header">
-                <span><strong>Đơn hàng #${item.orderId}</strong></span>
+                <span><strong>Đơn hàng #${order.id}</strong></span>
                 <span class="order-status">
                     <c:choose>
-                        <c:when test="${item.orderStatus == 'PENDING'}">Chờ xác nhận</c:when>
-                        <c:when test="${item.orderStatus == 'CANCEL_REQUESTED'}">Đang chờ duyệt hủy</c:when>
-                        <c:when test="${item.orderStatus == 'CONFIRMED'}">Đang giao hàng</c:when>
-                        <c:when test="${item.orderStatus == 'DELIVERED'}">Đã giao</c:when>
-                        <c:when test="${item.orderStatus == 'RETURN_PENDING'}">Chờ duyệt trả hàng</c:when>
-                        <c:when test="${item.orderStatus == 'RETURNED'}">Đã trả hàng/hoàn tiền</c:when>
-                        <c:when test="${item.orderStatus == 'CANCELLED'}">Đã hủy</c:when>
-                        <c:otherwise>${item.orderStatus}</c:otherwise>
+                        <c:when test="${order.orderStatus == 'PENDING'}">Chờ xác nhận</c:when>
+                        <c:when test="${order.orderStatus == 'CANCEL_REQUESTED'}">Đang chờ duyệt hủy</c:when>
+                        <c:when test="${order.orderStatus == 'SHIPPING'}">Đang giao hàng</c:when>
+                        <c:when test="${order.orderStatus == 'DELIVERED'}">Đã giao</c:when>
+                        <c:when test="${order.orderStatus == 'RETURN_PENDING'}">Chờ duyệt trả hàng</c:when>
+                        <c:when test="${order.orderStatus == 'RETURNED'}">Đã trả hàng/hoàn tiền</c:when>
+                        <c:when test="${order.orderStatus == 'CANCELLED'}">Đã hủy</c:when>
+                        <c:otherwise>${order.orderStatus}</c:otherwise>
                     </c:choose>
                 </span>
             </div>
 
-            <div class="product-item">
-                <img src="${pageContext.request.contextPath}/${item.imageUrl}" alt="${item.productName}">
-                <div class="product-info">
-                    <p><strong>${item.productName}</strong></p>
-                    <p class="text-muted">Số lượng: ${item.quantity}</p>
-                    <p>Thành tiền: <strong style="color: var(--accent-color);">
-                        <fmt:formatNumber value="${item.price * item.quantity}" type="currency" currencySymbol="₫"/>
-                    </strong></p>
+            <c:forEach var="item" items="${order.items}">
+                <div class="product-item" style="border-bottom: 1px solid #f9f9f9; padding: 10px 0;">
+                    <img src="${pageContext.request.contextPath}/${item.imageUrl}" alt="${item.productName}">
+                    <div class="product-info">
+                        <p><strong>${item.productName}</strong></p>
+                        <p class="text-muted">Số lượng: ${item.quantity}</p>
+                        <p>Giá sản phẩm: <strong style="color: var(--accent-color);">
+                            <fmt:formatNumber value="${item.price}" type="currency" currencySymbol="₫"/>
+                        </strong></p>
+                    </div>
                 </div>
+            </c:forEach>
+
+            <div style="text-align: right; padding: 15px 0; border-top: 1px dashed #eee;">
+                <span class="text-muted" style="font-size: 0.9rem; margin-right: 15px;">
+                    Voucher: <strong class="text-success">${empty order.promotionId ? 'Không có' : order.promotionId}</strong>
+                </span>
+                <span>Thành tiền đơn hàng: </span>
+                <strong style="color: #ee4d2d; font-size: 1.25rem;">
+                    <fmt:formatNumber value="${order.totalAmount}" type="currency" currencySymbol="₫"/>
+                </strong>
             </div>
 
             <div class="order-actions">
-                <button class="action-btn btn-blue" onclick="openDetailPopup('${pageContext.request.contextPath}/orderDetails?id=${item.orderId}')">
+                <button class="action-btn btn-blue" onclick="openDetailPopup('${pageContext.request.contextPath}/orderDetails?id=${order.id}')">
                     Xem chi tiết
                 </button>
 
-                <c:if test="${item.orderStatus == 'PENDING'}">
-                    <button class="action-btn btn-red" onclick="cancelOrder('${item.orderId}')">Hủy đơn</button>
+                <c:if test="${order.orderStatus == 'PENDING' && order.paymentStatus != 'paid' && order.paymentMethodId == 2}">
+                    <button class="action-btn btn-orange" style="background-color: #ff9800; color: white; border-color: #ff9800;" onclick="continuePayment('${order.id}')">
+                        Tiếp tục thanh toán
+                    </button>
                 </c:if>
 
-                <c:if test="${item.orderStatus == 'CONFIRMED'}">
-                    <button class="action-btn btn-green" onclick="confirmReceived('${item.orderId}')">Đã nhận được hàng</button>
+                <c:if test="${order.orderStatus == 'PENDING'}">
+                    <button class="action-btn btn-red" onclick="cancelOrder('${order.id}')">Hủy đơn</button>
                 </c:if>
 
-                <c:if test="${item.orderStatus == 'DELIVERED'}">
-                    <button class="action-btn btn-gray" onclick="requestReturn('${item.orderId}')">Trả hàng / Hoàn tiền</button>
+                <c:if test="${order.orderStatus == 'DELIVERED'}">
+                    <button class="action-btn btn-green" onclick="confirmReceived('${order.id}')">Đã nhận được hàng</button>
+                </c:if>
+
+                <c:if test="${order.orderStatus == 'DELIVERED'}">
+                    <button class="action-btn btn-gray" onclick="requestReturn('${order.id}')">Trả hàng / Hoàn tiền</button>
                 </c:if>
             </div>
         </div>
     </c:forEach>
 
     <div id="empty-filter-msg" style="text-align: center; color: #888; display: none; margin-top: 50px;">
-        <i class="fa-regular international fa-clipboard-list" style="font-size: 50px; margin-bottom: 10px;"></i>
+        <i class="fa-regular fa-clipboard-list" style="font-size: 50px; margin-bottom: 10px;"></i>
         <p>Không tìm thấy đơn hàng nào phù hợp.</p>
     </div>
 </div>
@@ -98,7 +115,6 @@
 
 <script>
     function filterOrders(status, btn) {
-        // Cập nhật trạng thái nút Active
         document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
         btn.classList.add('active');
 
@@ -112,7 +128,6 @@
             }
         });
 
-        // Hiển thị thông báo trống nếu không có đơn nào
         document.getElementById('empty-filter-msg').style.display = hasOrder ? 'none' : 'block';
     }
 
@@ -147,9 +162,11 @@
         }
     }
 
-    // Đóng modal khi click ra ngoài vùng trắng
     window.onclick = function(e) {
         if (e.target == document.getElementById("orderDetailModal")) closeDetailPopup();
+    }
+    function continuePayment(id) {
+        window.location.href = "${pageContext.request.contextPath}/vnpay-payment?orderId=" + id;
     }
 </script>
 
