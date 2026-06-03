@@ -24,6 +24,12 @@
             background: #d59b0d;
             transition: .3s;
         }
+        .btn-buy-now:hover{
+            background:#e68900;
+            border-color: #e68900;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 
@@ -58,7 +64,7 @@
             <div style="flex:1" >
                 <h3>${p.productName}</h3>
                 <p>${p.price} Đ</p>
-                <button onclick="" style="background-color: #ff9800; color: white; border: none; border-radius: 20px; padding: 8px 20px;" class=btn-buy-now">
+                <button onclick="" style="background-color: #ff9800; color: white; border: none; border-radius: 20px; padding: 8px 20px;" class="btn-buy-now">
                     <i class= "fa-solid fa bolt></i> Mua ngay
                 </button>
 
