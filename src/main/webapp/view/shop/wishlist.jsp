@@ -58,7 +58,7 @@
             <div style="flex:1" >
                 <h3>${p.productName}</h3>
                 <p>${p.price} Đ</p>
-                <button onclick="" style="background-color: #ff9800; color: white; border: none; border-radius: 20px; padding: 8px 20px;"
+                <button onclick="" style="background-color: #ff9800; color: white; border: none; border-radius: 20px; padding: 8px 20px;" class=btn-buy-now">
                     <i class= "fa-solid fa bolt></i> Mua ngay
                 </button>
 
