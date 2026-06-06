@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 function buyNow(productId){
-    //Điều hướng đến BuyNowServlet cho Mua ngay
+    //Điều hướng tới BuyNowServlet cho nút Mua ngay
     window.location.href= `${contextPath}/BuyNowServlet?productId=` + productId;
 }
 
