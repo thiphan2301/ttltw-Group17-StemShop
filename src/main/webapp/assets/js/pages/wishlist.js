@@ -23,6 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
     } )
 })
 
+function buyNow(productId){
+    //Điều hướng đến BuyNowServlet cho Mua ngay
+    window.location.href= `${contextPath}/BuyNowServlet?productId=` + productId;
+}
+
 function toggleWishlist(productId, btn) {
     const icon = btn.querySelector("i");
 

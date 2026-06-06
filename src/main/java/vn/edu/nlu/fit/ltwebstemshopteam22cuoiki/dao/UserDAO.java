@@ -275,20 +275,21 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
-    //Khóa tài khoản
-    public void lockUser(int userId) {
-        String sql = "UPDATE users SET Active=? WHERE ID=?";
+    //Cập nhật trạng thái tài khoản (ACTIVE/LOCKED)
+    public boolean updateUserStatus(int userId, String nextStatus) {
+        String sql = "UPDATE users SET Status=? WHERE ID=?";
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement ps= conn.prepareStatement(sql)) {
 
-            ps.setInt(1, 0);
+            ps.setString(1, nextStatus); //ACTIVE hoặc LOCKED
             ps.setInt(2, userId);
 
-            ps.executeUpdate();
+            return ps.executeUpdate()>0;
             
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 
 

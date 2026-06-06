@@ -24,6 +24,12 @@
             background: #d59b0d;
             transition: .3s;
         }
+        .btn-buy-now:hover{
+            background: #e68900;
+            border-color: #e68900;
+            transform: translateY(-2px);
+            shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 
@@ -61,6 +67,11 @@
 
                 <button onclick="addToCart(${p.id})" style="border: 1px solid #333; border-radius: 20px; padding: 5px; margin: 5px;" class="btn-add-heart">
                     <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ
+                </button>
+
+                <button onclick="buyNow(${p.id})" style="background-color: #ff9800; color: white; border: none;
+border-radius: 20px; padding: 8px 20px;" class="btn-buy-now">
+                    <i class="fa-solid fa-bolt"></i> Mua ngay
                 </button>
 
                 <button onclick="removeFromWishlist(${p.id})"
