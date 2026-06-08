@@ -14,6 +14,14 @@
 </head>
 
 <body>
+
+<c:if test="${not empty sessionScope.lockError}">
+    <script>
+        alert("${sessionScope.lockError}");
+    </script>
+    <c:remove var="lockError" scope="session"/>
+</c:if>
+
 <%@ include file="/WEB-INF/components/header.jsp" %>
 
 <main class="home-main">

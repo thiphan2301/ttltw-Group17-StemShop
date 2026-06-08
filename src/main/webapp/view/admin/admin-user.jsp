@@ -41,6 +41,20 @@
             background-color: #ff9800;
             color: white;
         }
+        .btn-unlock{
+            padding: 5px 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            background-color: #4CAF50;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        btn-unlock:hover{
+            background-color: #45a049;
+            color: white;
+        }
         .btn-detail{
             background-color: #FFC107;
         }
@@ -117,9 +131,26 @@
                             <td>${user.phoneNumber}</td>
                             <td>${user.role}</td>
                             <td>
-                                <button type="submit" class="btn-action btn-lock" >
-                                    <i class="fas fa-lock"></i> Khóa
-                                </button>
+                                <form action="${pageContext.request.contextPath}/admin/admin-user" method="POST" style="display:inline;">
+                                    <input type="hidden" name="action" value="updateUserStatus"/>
+                                    <input type="hidden" name="id" value="${user.id}"/>
+                                    <input type="hidden" name="status" value="${user.status}"/>
+
+                                <c:choose>
+                                    <c:when test="${user.status == 'ACTIVE'}">
+                                        <button type="submit" class="btn-action btn-lock"
+                                                onclick="return confirm('Xác nhận KHÓA tài khoản của ${user.fullName}?');">
+                                                <i class="fas fa-lock"></i> Khóa
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button type="submit" class="btn-action btn-unlock"
+                                                onclick="alert('Đã mở khóa tài khoản của ${user.fullName}');">
+                                                <i class="fas fa-key"></i> Mở khóa
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
+                                </form>
                                 <a href="" class="btn-action btn-edit">
                                     <i class="fas fa-edit"></i> Sửa
                                 </a>

@@ -71,6 +71,15 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
 
+            // Chặn đăng nhập nếu tài khoản bị khóa
+            if(user.getStatus() != null && "LOCKED".equalsIgnoreCase(user.getStatus())){
+                error = "Tài khoản của bạn hiện đã bị khóa. Vui lòng liên hệ hỗ trợ để biết thêm chi tiết.";
+                request.setAttribute("error", error);
+                request.getRequestDispatcher("/view/user/sign-in.jsp").forward(request, response);
+                return;
+
+            }
+
             // Đăng nhập thành công
             HttpSession session = request.getSession();
             session.setAttribute("user", user);

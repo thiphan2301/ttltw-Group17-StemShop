@@ -75,10 +75,17 @@ public class UserManagementServlet extends HttpServlet {
                 // Gọi DAO để cập nhật
                 userDAO.updateUser(user);
 
-            } else if ("lockUser".equals(action)) { // thao tác khóa tk người dùng (admin)
+            } else if ("updateUserStatus".equals(action)) { // thao tác đổi trạng người dùng ACTIVE hoặc BLOCK (admin)
                 String paramId = request.getParameter("id");
-                int id = Integer.parseInt(paramId);
-                userDAO.lockUser(id);
+                String currentStatus = request.getParameter("status");
+
+                if (paramId!=null && currentStatus!= null){
+                    int id= Integer.parseInt(paramId);
+
+                    //Dùng nextStatus để điều khiển đảo nhau của 2 trạng thái
+                    String nextStatus= "ACTIVE".equalsIgnoreCase(currentStatus)? "LOCKED": "ACTIVE";
+                    userDAO.updateUserStatus(id, nextStatus);
+                }
             }
             response.sendRedirect(request.getContextPath() + "/admin/admin-user");
 
