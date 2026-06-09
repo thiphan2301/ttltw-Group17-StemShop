@@ -114,7 +114,7 @@
             <li class="admin-menu__item active" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-products'">
                 <i class="fa-solid fa-box"></i> Quản lý Sản Phẩm
             </li>
-            <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/admin/orders'">
+            <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-orders'">
                 <i class="fa-solid fa-shopping-cart"></i> Quản lý Đơn Hàng
             </li>
             <li class="admin-menu__item" onclick="location.href='${pageContext.request.contextPath}/admin/shipping'">

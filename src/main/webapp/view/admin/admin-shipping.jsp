@@ -63,7 +63,7 @@
             <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/admin/dashboard'">
                 <i class="fa-solid fa-chart-line"></i> Dashboard
             </li>
-            <li class="admin-menu__item">
+            <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-user'">
                 <i class="fa-solid fa-users"></i> Quản lý Người Dùng
             </li>
             <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-products'">

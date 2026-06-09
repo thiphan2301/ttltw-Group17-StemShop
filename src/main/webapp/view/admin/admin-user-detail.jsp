@@ -138,7 +138,7 @@
                     </div>
                     <div class="detail-item">
                         <label>Họ tên:</label>
-                        <span>${user.fullName}</span>
+                        <span>${not empty user.fullName ? user.fullName : "[Ngời dùng chưa cập nhật Họ Tên]"}</span>
                     </div>
                     <div class="detail-item">
                         <label>Email:</label>
@@ -146,11 +146,11 @@
                     </div>
                     <div class="detail-item">
                         <label>Số điện thoại:</label>
-                        <span>${user.phoneNumber}</span>
+                        <span>${not empty user.phoneNumber ? user.phoneNumber : "[Người dùng chưa cập nhật SDT]"}</span>
                     </div>
                     <div class="detail-item">
                         <label>Địa chỉ:</label>
-                        <span>${user.address}</span>
+                        <span>${not empty user.address ? user.address : "[Người dùng chưa cập nhật Địa Chỉ]"}</span>
                     </div>
                     <div class="detail-item">
                         <label>Username:</label>
@@ -166,6 +166,12 @@
                         <label>Ngày tạo:</label>
                         <span>
                             <fmt:formatDate value="${user.createDate}" pattern="dd/MM/yyyy"/>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Trạng thái tài khoản: </label>
+                        <span>
+                            ${user.status == "ACTIVE" ? "Đang hoạt động" : "Bị khóa"}
                         </span>
                     </div>
                 </div>

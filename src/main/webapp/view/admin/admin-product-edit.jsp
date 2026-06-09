@@ -85,7 +85,7 @@
             <li class="admin-menu__item active" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-products'">
                 <i class="fa-solid fa-box"></i> Quản lý Sản Phẩm
             </li>
-            <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/admin/orders'">
+            <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-orders'">
                 <i class="fa-solid fa-shopping-cart"></i> Quản lý Đơn Hàng
             </li>
             <li class="admin-menu__item" onclick="location.href='${pageContext.request.contextPath}/admin/shipping'">
@@ -117,7 +117,7 @@
 
                 <div class="form-group">
                     <label>Mô tả:</label>
-                    <textarea name="description" rows="4" style="height:300px; ">${product.description}</textarea>
+                    <textarea name="description" rows="4" style="height:300px;">${product.description}</textarea>
                 </div>
 
                 <div class="form-group">
@@ -132,7 +132,7 @@
 
                 <div class="form-group">
                     <label>Danh mục:</label>
-                    <select name="categoryID" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                    <select name="categoryID" required>
                         <option value="">-- Chọn danh mục --</option>
                         <c:forEach var="category" items="${categories}">
                             <option value="${category.id}"
@@ -145,7 +145,7 @@
 
                 <div class="form-group">
                     <label>Thương hiệu:</label>
-                    <select name="brandID" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                    <select name="brandID" required>
                         <option value="">-- Chọn thương hiệu --</option>
                         <c:forEach var="brand" items="${brands}">
                             <option value="${brand.id}"
@@ -155,29 +155,28 @@
                         </c:forEach>
                     </select>
                 </div>
-        </div>
 
-        <!-- Hiển thị ảnh hiện tại -->
-        <div class="form-group full">
-            <label>Ảnh hiện tại</label>
-            <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                <c:forEach var="img" items="${images}">
-                    <div style="position:relative;">
-                        <img src="${pageContext.request.contextPath}/${img}"
-                             style="width:120px;height:120px;object-fit:cover;border-radius:8px">
+                <!-- Hiển thị ảnh hiện tại -->
+                <div class="form-group full">
+                    <label>Ảnh hiện tại</label>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <c:forEach var="img" items="${images}">
+                            <div style="position:relative;">
+                                <img src="${pageContext.request.contextPath}/${img}"
+                                     style="width:120px;height:120px;object-fit:cover;border-radius:8px">
+                            </div>
+                        </c:forEach>
                     </div>
-                </c:forEach>
-            </div>
-        </div>
+                </div>
 
-        <!-- Upload ảnh mới -->
-        <div class="form-group" style="margin: 20px;">
-            <label>Ảnh sản phẩm (chọn nhiều)</label>
-            <input type="file" name="productImages" multiple accept="image/*">
-            <small>Chọn ảnh mới sẽ thay thế toàn bộ ảnh cũ</small>
-        </div>
+                <!-- Upload ảnh mới -->
+                <div class="form-group">
+                    <label>Ảnh sản phẩm (chọn nhiều)</label>
+                    <input type="file" name="productImages" multiple accept="image/*">
+                    <small style="display:block; margin-top:5px; color:#666;">Chọn ảnh mới sẽ thay thế toàn bộ ảnh cũ</small>
+                </div>
 
-        <div class="form-actions">
+                <!-- Nút thao tác -->
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                     <a href="${pageContext.request.contextPath}/admin/admin-products" class="btn btn-secondary">Hủy</a>

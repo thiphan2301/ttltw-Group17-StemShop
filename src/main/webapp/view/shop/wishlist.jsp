@@ -72,11 +72,6 @@
                     <i class="fa-solid fa-cart-plus"></i> Thêm vào giỏ
                 </button>
 
-                <button onclick="buyNow(${p.id})" style="background-color: #ff9800; color: white; border: none;
-border-radius: 20px; padding: 8px 20px;" class="btn-buy-now">
-                    <i class="fa-solid fa-bolt"></i> Mua ngay
-                </button>
-
                 <button onclick="removeFromWishlist(${p.id})"
                         style="border: 1px solid #333; border-radius: 20px; padding: 5px; margin: 5px;"
                         class="btn-add-heart">
@@ -88,6 +83,8 @@ border-radius: 20px; padding: 8px 20px;" class="btn-buy-now">
 </div>
 
 <jsp:include page="/WEB-INF/components/footer.jsp"/>
+
+<script src="${pageContext.request.contextPath}/assets/js/pages/shop.js"></script>
 
 </body>
 </html>
