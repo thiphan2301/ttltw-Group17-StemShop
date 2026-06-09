@@ -38,7 +38,7 @@ public class UserDetailServlet extends HttpServlet {
             // SỬA TẠI ĐÂY: Dùng hàm lấy đơn hàng theo ID của User
             List<Order> orders = orderDAO.getOrdersWithItemsByUserId(userId);
 
-            request.setAttribute("user", user);
+            request.setAttribute("userDetail", user);
             request.setAttribute("orders", orders);
 
             request.getRequestDispatcher("/view/admin/admin-user-detail.jsp").forward(request, response);

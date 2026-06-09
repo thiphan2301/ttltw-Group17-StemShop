@@ -143,7 +143,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <button type="submit" class="btn-action btn-unlock"
-                                                onclick="return confirm('Xác nhận MỞ KHÓA tài khoản của ${user.fullName}?');"">
+                                                onclick="return confirm('Xác nhận MỞ KHÓA tài khoản của ${user.fullName}?');">
                                                 <i class="fas fa-key"></i> Mở khóa
                                         </button>
                                     </c:otherwise>

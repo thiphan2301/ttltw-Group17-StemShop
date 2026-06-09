@@ -1,4 +1,4 @@
-package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.GoogleUtils;
+package vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -50,5 +50,14 @@ public class GoogleUtils {
         String link = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + accessToken;
         String response = Request.Get(link).execute().returnContent().asString();
         return new Gson().fromJson(response, GoogleUserDTO.class);
+    }
+
+    public static String getGoogleAuthUrl() {
+        return "https://accounts.google.com/o/oauth2/auth?" +
+                "scope=email%20profile" +
+                "&response_type=code" +
+                "&approval_prompt=force" +
+                "&client_id=" + CLIENT_ID +
+                "&redirect_uri=" + REDIRECT_URI;
     }
 }

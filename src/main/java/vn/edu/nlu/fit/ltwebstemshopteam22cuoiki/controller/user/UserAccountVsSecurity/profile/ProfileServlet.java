@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.UserDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.User;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.AppConfig;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.PasswordUtils;
 
 import java.io.File;
@@ -83,10 +84,11 @@ public class ProfileServlet extends HttpServlet {
 
             String fileName = Paths.get(avatarPart.getSubmittedFileName()).getFileName().toString();
             String newFileName = "user_" + user.getId() + "_" + fileName;
-            String uploadPath = "E:/ProejctLapTrinhWeb/Avatar";
+            // lấy đường dẫn tưf system.properties
+            String uploadPath = AppConfig.AVATAR_UPLOAD_DIR;
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
+                uploadDir.mkdirs(); // Tự động tạo thư mục nếu chưa có
             }
 
             avatarPart.write(uploadPath + File.separator + newFileName);

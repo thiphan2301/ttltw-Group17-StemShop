@@ -54,7 +54,7 @@
 
         <p class="auth__link">
           Đã có tài khoản?
-          <a href="sign-in.jsp" class="auth__link--highlight">Đăng nhập</a>
+          <a href="${pageContext.request.contextPath}/dang-nhap" class="auth__link--highlight">Đăng nhập</a>
         </p>
       </form>
     </section>

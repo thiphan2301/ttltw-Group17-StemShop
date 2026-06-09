@@ -142,8 +142,8 @@
                     <c:choose>
                         <%-- CHƯA LOGIN --%>
                         <c:when test="${empty sessionScope.user}">
-                            <a href="${pageContext.request.contextPath}/view/user/sign-in.jsp">Đăng nhập</a>
-                            <a href="${pageContext.request.contextPath}/view/user/sign-up.jsp">Đăng ký</a>
+                            <a href="${pageContext.request.contextPath}/dang-nhap">Đăng nhập</a>
+                            <a href="${pageContext.request.contextPath}/dang-ky">Đăng ký</a>
                         </c:when>
                         <%-- ĐÃ LOGIN --%>
                         <c:otherwise>
