@@ -47,7 +47,7 @@
 
             <p class="auth__link">
                 Nhớ lại mật khẩu?
-                <a href="${pageContext.request.contextPath}/view/user/sign-in.jsp" class="auth__link--highlight">Đăng nhập</a>
+                <a href="${pageContext.request.contextPath}dang-nhap" class="auth__link--highlight">Đăng nhập</a>
             </p>
         </form>
     </section>

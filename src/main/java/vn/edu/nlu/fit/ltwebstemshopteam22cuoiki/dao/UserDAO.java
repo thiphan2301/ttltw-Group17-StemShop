@@ -314,6 +314,9 @@ public class UserDAO {
                 u.setRole(rs.getString("Role"));
                 u.setStatus(rs.getString("Status"));
                 u.setCreateDate(rs.getDate("CreateAt"));
+                u.setAvatar(rs.getString("avatar"));
+                u.setVerified(rs.getBoolean("IsVerified"));
+                u.setOauthProvider(rs.getString("oauth_provider"));
                 return u;
             }
         } catch (Exception e) {
