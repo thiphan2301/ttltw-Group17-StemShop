@@ -150,7 +150,24 @@
                             <div class="header__user header__user-logged">
 
                                     <%-- AVATAR ICON --%>
-                                <i class="fa-solid fa-circle-user user-avatar-icon"></i>
+                            <span class="user-avatar-icon">
+                            <c:choose>
+                                <c:when test="${empty sessionScope.user.avatar}">
+                                    <img src="${pageContext.request.contextPath}/assets/images/user/user-male-circle.jpg"
+                                         alt="Default Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                </c:when>
+                                <%-- Ảnh từ Google (Bắt đầu bằng http) --%>
+                                <c:when test="${sessionScope.user.avatar.startsWith('http')}">
+                                    <img src="${sessionScope.user.avatar}"
+                                         alt="Google Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                </c:when>
+                                <%-- Ảnh tự upload (Gọi qua AvatarServlet) --%>
+                                <c:otherwise>
+                                    <img src="${pageContext.request.contextPath}/avatar/${sessionScope.user.avatar}"
+                                         alt="User Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                </c:otherwise>
+                            </c:choose>
+                        </span>
 
                                     <%-- TÊN --%>
                                 <span class="user-short-name">

@@ -20,32 +20,39 @@
 
 <body>
 <style>
-    .rating{
+    .rating {
         display: flex;
         flex-direction: column;
         width: 30%;
     }
+
     .rating i {
         font-size: 2rem;
         color: #ec8b0b;
     }
-    .rating label input{
+
+    .rating label input {
         font-size: 2rem;
     }
-    .form-reviews{
+
+    .form-reviews {
         display: flex;
     }
-    .review__rate{
+
+    .review__rate {
         width: 50%;
     }
-    .review__comment{
-        flex:1;
+
+    .review__comment {
+        flex: 1;
     }
-    .review__comment textarea{
+
+    .review__comment textarea {
         width: 100%;
         height: 35%;
     }
-    .star i{
+
+    .star i {
         color: #ec8b0b;
     }
 
@@ -64,11 +71,12 @@
         --bg-light: #f5f5f5;
         --bg-white: #fff;
         --border-color: #e0e0e0;
-        --shadow: 0 2px 8px rgba(0,0,0,0.1);
-        --shadow-hover: 0 4px 16px rgba(0,0,0,0.15);
+        --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
         --radius: 8px;
         --radius-lg: 12px;
     }
+
     .reviews-section {
         padding: 60px 0;
         background: var(--bg-light);
@@ -278,7 +286,8 @@
         padding: 10px;
         border-radius: 25px;
     }
-    .btn-submit-review:hover{
+
+    .btn-submit-review:hover {
         background-color: var(--primary);
         transition: 0.3s;
     }
@@ -387,9 +396,10 @@
         margin-top: 20px;
     }
 
-    .average-stars span i{
+    .average-stars span i {
         color: #FFC107;
     }
+
     .active-heart {
         color: red !important;
     }
@@ -574,7 +584,8 @@
                                 <label>Đánh giá của bạn:</label>
                                 <div class="star-rating-input">
                                     <% for (int i = 1; i <= 5; i++) { %>
-                                    <span class="star-input" data-value="<%= i %>"><i class="fa-solid fa-star"></i></span>
+                                    <span class="star-input" data-value="<%= i %>"><i
+                                            class="fa-solid fa-star"></i></span>
                                     <% } %>
                                 </div>
                             </div>
@@ -609,34 +620,42 @@
                             <div class="review-header">
                                 <div class="reviewer-info">
                                     <%
-                                        // 1. Xử lý tên người dùng (Nếu NULL thì đổi thành "Khách hàng")
+                                        // Lấy tên hiển thị đã xử lý trong DAO
                                         String displayName = r.getUserName();
-                                        if (displayName == null || displayName.trim().isEmpty()) {
-                                            displayName = "Khách hàng"; // Hoặc bạn có thể lấy r.getFullName() nếu class Reviews có lưu
-                                        }
 
-                                        // 2. Xử lý chữ cái trong Avatar (Đảm bảo an toàn không bị sập)
+                                        // Lấy chữ cái đầu để làm Avatar mặc định (nếu ko có ảnh)
                                         String avatarText = "KH";
                                         if (displayName.length() >= 2) {
                                             avatarText = displayName.substring(0, 2).toUpperCase();
                                         } else {
-                                            avatarText = displayName.toUpperCase(); // Nếu tên chỉ có 1 chữ thì lấy 1 chữ
+                                            avatarText = displayName.toUpperCase();
                                         }
+
+                                        //Lấy link avatar từ DB
+                                        String userAvatar = r.getAvatar();
                                     %>
 
+                                    <% if (userAvatar == null || userAvatar.trim().isEmpty()) { %>
                                     <div class="reviewer-avatar">
                                         <%= avatarText %>
                                     </div>
+                                    <% } else if (userAvatar.startsWith("http")) { %>
+                                    <div class="reviewer-avatar" style="overflow: hidden; padding: 0;">
+                                        <img src="<%= userAvatar %>" alt="avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                    </div>
+                                    <% } else { %>
+                                    <div class="reviewer-avatar" style="overflow: hidden; padding: 0;">
+                                        <img src="${pageContext.request.contextPath}/avatar/<%= userAvatar %>" alt="avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                    </div>
+                                    <% } %>
 
                                     <div class="reviewer-details">
                                         <span class="reviewer-name"><%= displayName %></span>
 
-                                        <%
-                                            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm");
-                                        %>
+                                        <% java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm"); %>
                                         <span class="review-date">
-            <%= sdf.format(r.getCreateDate()) %>
-        </span>
+                                            <%= sdf.format(r.getCreateDate()) %>
+                                        </span>
                                     </div>
                                 </div>
 
@@ -653,7 +672,8 @@
                                 </div>
                             </div>
 
-                            <p class="review-text"><%= r.getComment() %></p>
+                            <p class="review-text"><%= r.getComment() %>
+                            </p>
                         </div>
                         <% } %>
 
@@ -704,7 +724,7 @@
         });
     });
 
-    function buyNow(productId){
+    function buyNow(productId) {
         window.location.href = "/BuyNowServlet?productId=" + productId;
     }
 </script>
