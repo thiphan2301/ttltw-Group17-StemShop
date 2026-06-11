@@ -56,7 +56,7 @@ public class ProfileServlet extends HttpServlet {
         // Kiểm tra số điện thoại
         if(phone!= null && !phone.trim().isEmpty()){
             // Bắt đầu bằng 0, sau đó là 9 số khác
-            if(!phone.matches("^0\\{9}$")){
+            if(!phone.matches("^0\\d{9}$")){
                 request.setAttribute("error", "Số điện thoại không hợp lệ");
                 request.getRequestDispatcher("/view/user/profile.jsp").forward(request, response);
                 return;
