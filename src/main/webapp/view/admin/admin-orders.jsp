@@ -6,12 +6,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý đơn hàng </title>
+    <title>Quản lý đơn hàng</title>
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/admin-orders.css">
+
+    <style>
+        /* Giao diện Modal */
+        .custom-modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; background-color: rgba(0,0,0,0.6); }
+        .modal-content { background-color: #f4f6f8; margin: 2% auto; padding: 15px 20px; border: none; width: 85%; max-width: 900px; height: 85vh; border-radius: 8px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .close-btn { color: #888; position: absolute; top: 10px; right: 20px; font-size: 30px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .close-btn:hover { color: #ee4d2d; }
+        #detailFrame { width: 100%; height: calc(100% - 20px); border: none; margin-top: 15px; border-radius: 4px; }
+
+        /* Giao diện Nút Bấm */
+        .admin-table .btn-success {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        .admin-table .btn-success:hover { background-color: #35bc3a; transition: ease .4s; }
+
+        .admin-table .btn-danger {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            background-color:  #df4848;
+            color: white;
+            cursor: pointer;
+        }
+        .admin-table .btn-danger:hover { background-color: #d9534f; transition: ease .4s; }
+
+        .admin-table .btn-detail {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #eadf21;
+            color: white;
+            cursor: pointer;
+        }
+        .admin-table .btn-detail:hover { background-color: #c9c018; transition: ease .4s; }
+    </style>
 </head>
 <body>
 
@@ -57,7 +97,6 @@
         </header>
 
         <section class="admin-page admin-page--active">
-
             <div class="filter-container">
                 <div class="filter-item">
                     <label for="searchInput"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm:</label>
@@ -81,6 +120,7 @@
                     </select>
                 </div>
             </div>
+
             <table class="admin-table">
                 <thead>
                 <tr>
@@ -131,38 +171,28 @@
                         </td>
                         <td>
                             <c:if test="${o.orderStatus == 'PENDING'}">
-                                <c:set var="canConfirm" value="false" />
 
-                                <c:if test="${o.paymentMethodId == 1}">
-                                    <c:set var="canConfirm" value="true" />
-                                </c:if>
-
-                                <c:if test="${o.paymentMethodId == 2 && o.paymentStatus == 'paid'}">
-                                    <c:set var="canConfirm" value="true" />
-                                </c:if>
-
-                                <c:if test="${canConfirm == true}">
-                                    <form method="post" style="display:inline">
+                                <c:if test="${o.paymentMethodId == 1 || (o.paymentMethodId == 2 && o.paymentStatus == 'paid')}">
+                                    <form method="post" action="${pageContext.request.contextPath}/admin/admin-orders" style="display:inline">
                                         <input type="hidden" name="orderId" value="${o.id}">
                                         <input type="hidden" name="action" value="confirm">
-                                        <button class="btn-success">Xác nhận</button>
+                                        <button type="submit" class="btn-success">Xác nhận</button>
                                     </form>
                                 </c:if>
 
                                 <c:if test="${o.paymentStatus != 'paid'}">
-                                    <form method="post" style="display:inline">
+                                    <form method="post" action="${pageContext.request.contextPath}/admin/admin-orders" style="display:inline">
                                         <input type="hidden" name="orderId" value="${o.id}">
                                         <input type="hidden" name="action" value="cancel">
-                                        <button class="btn-danger">Hủy</button>
+                                        <button type="submit" class="btn-danger">Hủy</button>
                                     </form>
                                 </c:if>
+
                             </c:if>
 
-                            <form method="post" style="display:inline">
-                                <input type="hidden" name="orderId" value="${o.id}">
-                                <input type="hidden" name="action" value="detail">
-                                <button class="btn-detail">Chi tiết</button>
-                            </form>
+                            <button type="button" class="btn-detail" onclick="openDetailPopup('${pageContext.request.contextPath}/orderDetails?id=${o.id}')">
+                                Chi tiết
+                            </button>
                         </td>
                     </tr>
                 </c:forEach>
@@ -172,7 +202,36 @@
     </main>
 </div>
 
-<script src="${pageContext.request.contextPath}/assets/js/pages/admin-orders.js"></script>
+<div id="orderDetailModal" class="custom-modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeDetailPopup()">&times;</span>
+        <iframe id="detailFrame" src=""></iframe>
+    </div>
+</div>
 
+<script>
+    // Hàm mở Popup
+    function openDetailPopup(url) {
+        document.getElementById("detailFrame").src = url;
+        document.getElementById("orderDetailModal").style.display = "block";
+        document.body.style.overflow = 'hidden'; // Ngăn cuộn trang nền
+    }
+
+    // Hàm đóng Popup
+    function closeDetailPopup() {
+        document.getElementById("orderDetailModal").style.display = "none";
+        document.getElementById("detailFrame").src = "";
+        document.body.style.overflow = 'auto'; // Cho cuộn lại bình thường
+    }
+
+    // Bấm ra ngoài vùng xám thì tắt modal
+    window.onclick = function(e) {
+        if (e.target == document.getElementById("orderDetailModal")) {
+            closeDetailPopup();
+        }
+    }
+</script>
+
+<script src="${pageContext.request.contextPath}/assets/js/pages/admin-orders.js"></script>
 </body>
 </html>
