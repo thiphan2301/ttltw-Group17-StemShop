@@ -11,47 +11,11 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-    <style>
-        .admin-table .btn-success{
-            padding: 5px;
-            border-radius: 5px;
-            border: none;
-            background-color: #4CAF50;
-            color: white;
-        }
-        .admin-table .btn-success:hover{
-            background-color: #35bc3a;
-            transition: ease .4s;
-        }
-        .admin-table .btn-danger{
-            padding: 5px;
-            border-radius: 5px;
-            border: none;
-            background-color:  #df4848;
-            color: white;
-        }
-        .admin-table .btn-danger:hover{
-            background-color: #d9534f;
-            transition: ease .4s;
-        }
-        .admin-table .btn-detail{
-            padding: 5px;
-            border-radius: 5px;
-            border: none;
-            background-color: #eadf21;
-            color: white;
-        }
-        .admin-table .btn-detail:hover{
-            background-color: #eadf21;
-            transition: ease .4s;
-        }
-    </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/admin-orders.css">
 </head>
 <body>
 
 <div class="admin-container">
-    <!-- Sidebar -->
     <aside class="admin-sidebar">
         <div class="admin-sidebar__logo">
             <img src="${pageContext.request.contextPath}/assets/images/logo.png" alt="STEM Logo">
@@ -84,9 +48,7 @@
         </ul>
     </aside>
 
-    <!-- Main content -->
     <main class="admin-main">
-        <!-- Topbar -->
         <header class="admin-topbar">
             <h1>Quản Lý Đơn Hàng</h1>
             <div class="admin-info">
@@ -94,8 +56,31 @@
             </div>
         </header>
 
-        <!-- Users Section -->
         <section class="admin-page admin-page--active">
+
+            <div class="filter-container">
+                <div class="filter-item">
+                    <label for="searchInput"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm:</label>
+                    <input type="text" id="searchInput" placeholder="Nhập ID hoặc tên...">
+                </div>
+                <div class="filter-item">
+                    <label for="statusFilter"><i class="fa-solid fa-filter"></i> Phân loại:</label>
+                    <select id="statusFilter">
+                        <option value="ALL">Tất cả đơn hàng</option>
+                        <option value="PENDING">Đang chờ xử lý</option>
+                        <option value="SHIPPING">Đang giao hàng</option>
+                        <option value="DELIVERED">Đã nhận hàng</option>
+                        <option value="CANCELLED">Đã hủy / Bị trả</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="sortFilter"><i class="fa-solid fa-sort"></i> Sắp xếp:</label>
+                    <select id="sortFilter">
+                        <option value="desc">Mới nhất đến lâu nhất</option>
+                        <option value="asc">Lâu nhất đến mới nhất</option>
+                    </select>
+                </div>
+            </div>
             <table class="admin-table">
                 <thead>
                 <tr>
@@ -107,7 +92,7 @@
                     <th>Thao tác</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="orderTableBody">
                 <c:forEach var="o" items="${orders}">
                     <tr>
                         <td>#${o.id}</td>
@@ -145,21 +130,17 @@
                             </c:choose>
                         </td>
                         <td>
-                            <!-- Chỉ hiển thị nút Xác nhận khi OrderStatus = PENDING -->
                             <c:if test="${o.orderStatus == 'PENDING'}">
                                 <c:set var="canConfirm" value="false" />
 
-                                <!-- Nếu là COD (payment_method_id = 1) thì luôn được xác nhận -->
                                 <c:if test="${o.paymentMethodId == 1}">
                                     <c:set var="canConfirm" value="true" />
                                 </c:if>
 
-                                <!-- Nếu là VNPAY (payment_method_id = 2) thì chỉ xác nhận khi đã thanh toán -->
                                 <c:if test="${o.paymentMethodId == 2 && o.paymentStatus == 'paid'}">
                                     <c:set var="canConfirm" value="true" />
                                 </c:if>
 
-                                <!-- Hiển thị nút Xác nhận nếu đủ điều kiện -->
                                 <c:if test="${canConfirm == true}">
                                     <form method="post" style="display:inline">
                                         <input type="hidden" name="orderId" value="${o.id}">
@@ -168,7 +149,6 @@
                                     </form>
                                 </c:if>
 
-                                <!-- Nút Hủy: Chỉ hiển thị nếu chưa thanh toán hoặc thanh toán thất bại -->
                                 <c:if test="${o.paymentStatus != 'paid'}">
                                     <form method="post" style="display:inline">
                                         <input type="hidden" name="orderId" value="${o.id}">
@@ -178,7 +158,6 @@
                                 </c:if>
                             </c:if>
 
-                            <!-- Nút Chi tiết (luôn hiển thị) -->
                             <form method="post" style="display:inline">
                                 <input type="hidden" name="orderId" value="${o.id}">
                                 <input type="hidden" name="action" value="detail">
@@ -193,7 +172,7 @@
     </main>
 </div>
 
-
+<script src="${pageContext.request.contextPath}/assets/js/pages/admin-orders.js"></script>
 
 </body>
 </html>
