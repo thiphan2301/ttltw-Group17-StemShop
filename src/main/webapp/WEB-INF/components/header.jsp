@@ -41,7 +41,7 @@
                 <a href="https://maps.app.goo.gl/nj1KfxS8ajpDxTni6" target="_blank">
                     <span><i class="fa-solid fa-location-dot"></i> Trường Đại Học Nông Lâm TPHCM</span>
                 </a>
-                <a href=""><span><i class="fa-solid fa-envelope"></i> stemshop.system@gmail.com</span></a>
+                <a href="mailto:stemshop.system@gmail.com"><span><i class="fa-solid fa-envelope"></i> stemshop.system@gmail.com</span></a>
             </div>
             <div class="header__top-right">
                 <div class="header__phone-top">
@@ -153,8 +153,7 @@
                             <span class="user-avatar-icon">
                             <c:choose>
                                 <c:when test="${empty sessionScope.user.avatar}">
-                                    <img src="${pageContext.request.contextPath}/assets/images/user/user-male-circle.jpg"
-                                         alt="Default Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                    <i class="fa-solid fa-circle-user user-avatar-icon" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; display: contents;"></i>
                                 </c:when>
                                 <%-- Ảnh từ Google (Bắt đầu bằng http) --%>
                                 <c:when test="${sessionScope.user.avatar.startsWith('http')}">
