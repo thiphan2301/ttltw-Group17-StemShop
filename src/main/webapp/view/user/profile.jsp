@@ -210,7 +210,7 @@
           <input type="tel" name="phoneNumber" class="form-control" value="${user.phoneNumber}"
                  placeholder="Nhập số điện thoại"
                  required
-                 pattern="^0\\d{9}$"
+                 pattern="^0\d{9}$"
                  title="Số điện thoại gồm 10 số và bắt đầu bằng số 0">
         </div>
 
