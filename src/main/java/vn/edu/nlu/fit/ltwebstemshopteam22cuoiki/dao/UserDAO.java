@@ -275,7 +275,8 @@ public class UserDAO {
             e.printStackTrace();
         }
     }
-    //Cập nhật trạng thái tài khoản (ACTIVE/LOCKED)
+
+    // Admin cập nhật trạng thái tài khoản của người dùng (ACTIVE/LOCKED)
     public boolean updateUserStatus(int userId, String nextStatus) {
         String sql = "UPDATE users SET Status=? WHERE ID=?";
         try (Connection conn = ConnectionDB.getConnection();
@@ -291,6 +292,31 @@ public class UserDAO {
         }
         return false;
     }
+
+    // Admin chỉnh sửa thông tin của người dùng. Có thể chỉnh sửa gồm:
+    // Họ tên, Username, Email, Số điện thoại, Địa chỉ, Vai trò, Trạng thái
+    public boolean adminEditUser(User user){
+        String sql = "UPDATE users SET FullName=?, UserName=?, Email=?, PhoneNumber=?, Address=?, Role=?, Status=? WHERE ID=?";
+        try (Connection conn= ConnectionDB.getConnection();
+            PreparedStatement ps= conn.prepareStatement(sql)){
+
+            ps.setString(1, user.getFullName());
+            ps.setString(2, user.getUserName());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getPhoneNumber());
+            ps.setString(5, user.getAddress());
+            ps.setString(6, user.getRole());
+            ps.setString(7, user.getStatus());
+            ps.setInt(8, user.getId());
+
+            return ps.executeUpdate()>0;
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return  false;
+    }
+
 
 
 
