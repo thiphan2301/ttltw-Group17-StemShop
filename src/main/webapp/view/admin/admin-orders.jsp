@@ -171,8 +171,17 @@
                         </td>
                         <td>
                             <c:if test="${o.orderStatus == 'PENDING'}">
+                                <c:set var="canConfirm" value="false" />
 
-                                <c:if test="${o.paymentMethodId == 1 || (o.paymentMethodId == 2 && o.paymentStatus == 'paid')}">
+                                <c:if test="${o.paymentMethodId == 1}">
+                                    <c:set var="canConfirm" value="true" />
+                                </c:if>
+
+                                <c:if test="${o.paymentMethodId == 2 && o.paymentStatus == 'paid'}">
+                                    <c:set var="canConfirm" value="true" />
+                                </c:if>
+
+                                <c:if test="${canConfirm == true}">
                                     <form method="post" action="${pageContext.request.contextPath}/admin/admin-orders" style="display:inline">
                                         <input type="hidden" name="orderId" value="${o.id}">
                                         <input type="hidden" name="action" value="confirm">
@@ -187,7 +196,6 @@
                                         <button type="submit" class="btn-danger">Hủy</button>
                                     </form>
                                 </c:if>
-
                             </c:if>
 
                             <button type="button" class="btn-detail" onclick="openDetailPopup('${pageContext.request.contextPath}/orderDetails?id=${o.id}')">
