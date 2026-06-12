@@ -22,8 +22,8 @@ public class Reviews {
         this.rating = rating;
         this.comment = comment;
         this.createDate = createDate;
-        this.userName = userName; // Đã thêm gán giá trị
-        this.avatar = avatar;     // Đã thêm gán giá trị
+        this.userName = userName;
+        this.avatar = avatar;
     }
 
     public int getId() {
