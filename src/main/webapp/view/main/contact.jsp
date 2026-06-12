@@ -45,7 +45,7 @@
 
             <div class="contact__group">
                 <label class="contact__label">Email</label>
-                <input type="email" name="email" class="contact__input" required>
+                <input type="email" name="email" class="contact__input" value="${user.email}"required>
             </div>
 
             <div class="contact__group">
