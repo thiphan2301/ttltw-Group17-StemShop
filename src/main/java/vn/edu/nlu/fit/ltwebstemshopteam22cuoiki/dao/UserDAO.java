@@ -317,8 +317,24 @@ public class UserDAO {
         return  false;
     }
 
+    // Kiểm tra khi sửa lại username và email có trùng với user đã tồn tại không
+    public boolean isDuplicateUserOrEmail(String username, String email, int userId){
+        String sql= "SELECT COUNT(*) FROM users WHERE (UserName=? OR Email=?) AND ID!=?";
+        try (Connection conn= ConnectionDB.getConnection();
+             PreparedStatement ps= conn.prepareStatement(sql)){
 
+             ps.setString(1, username);
+             ps.setString(2, email);
+             ps.setInt(3, userId);
 
+             try(ResultSet rs= ps.executeQuery()){
+                 if(rs.next()) return rs.getInt(1)>0;
+             }
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
+        return false;
+    }
 
     // lấy user bằng id
     public User getUserById(int userId) {
