@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi Tiết User </title>
+    <title>Chỉnh Sửa User </title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pages/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -78,6 +78,12 @@
             background: #d5b0ff;
             color: white;
         }
+        .btn-save:hover {
+            background: #ff4a93 !important;
+        }
+        btn-cancel:hover {
+            background: #5e5e5e !important;
+        }
     </style>
 </head>
 <body>
@@ -128,48 +134,90 @@
                 <i class="fas fa-arrow-left"></i> Quay lại
             </button>
 
-            <!-- Thông tin User -->
-            <div class="detail-box">
-                <h3>Chỉnh sửa</h3>
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <label>ID:</label>
-                        <span>${user.id}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Họ tên:</label>
-                        <span>${user.fullName}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Email:</label>
-                        <span>${user.email}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Số điện thoại:</label>
-                        <span>${user.phoneNumber}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Địa chỉ:</label>
-                        <span>${user.address}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Username:</label>
-                        <span>${user.userName}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Vai trò:</label>
-                        <span class="badge badge-${user.role == 'ADMIN' ? 'admin' : 'user'}">
-                            ${user.role}
+            <!-- Form chỉnh sửa thông tin User -->
+            <form class="admin-user-edit" action="${pageContext.request.contextPath}">
+
+                <input type="hidden" name="id" value="${userToEdit.id}">
+
+                <div class="detail-box">
+                    <h3>Chỉnh sửa</h3>
+                    <div class="detail-grid">
+
+                        <div class="detail-item">
+                            <label>ID:</label>
+                                <span>${userToEdit.id}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <label>Họ tên <span style="color:red">*</span>:</label>
+                            <input type="text" class="form-control" value="${userToEdit.fullName}" required>
+                        </div>
+                        <div class="detail-item">
+                            <label>Email <span style="color:red">*</span>:</label>
+                            <input type="email" class="form-control" value="${userToEdit.email}" required>
+                        </div>
+                        <div class="detail-item">
+                            <label>Số điện thoại:</label>
+                            <input type="text" class="form-control" value="${userToEdit.phoneNumber}"
+                                   placeholder="0123456789"
+                                   autocomplete="off"
+                                   oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        </div>
+                        <div class="detail-item">
+                            <label>Địa chỉ:</label>
+                            <input type="text" class="form-control" value="${userToEdit.address}">
+                        </div>
+                        <div class="detail-item">
+                            <label>Username <span style="color:red">*</span>:</label>
+                            <input type="text" class="form-control" value="${userToEdit.userName}" required>
+                        </div>
+                        <div class="detail-item">
+                            <label>Vai trò:</label>
+                            <select class="form-control">
+                                <option value="USER" ${userToEdit.role eq 'USER'? 'select': ''}>USER</option>
+                                <option value="ADMIN" ${userToEdit.role eq 'ADMIN'? 'select': ''}>ADMIN</option>
+                            </select>
+                        </div>
+                        <div class="detail-item">
+                            <label>Ngày tạo:</label>
+                            <span>
+                            <fmt:formatDate value="${userToEdit.createDate}" pattern="dd/MM/yyyy"/>
                         </span>
-                    </div>
-                    <div class="detail-item">
-                        <label>Ngày tạo:</label>
-                        <span>
-                            <fmt:formatDate value="${user.createDate}" pattern="dd/MM/yyyy"/>
-                        </span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Trạng thái hoạt động:</label>
+                            <select class="form-control">
+                                <option value="ACTIVE" ${userToEdit.status eq 'ACTIVE'? 'select': ''}>Đang hoạt động</option>
+                                <option value="LOCKED" ${userToEdit.status eq 'LOCKED'? 'select': ''}>Đã bị khóa</option>
+                            </select>
+                        </div>
+                        <div class="detail-item">
+                            <label>Trạng thái xác thực:</label>
+                            <select class="form-control">
+                                <option value="1" ${userToEdit.isVerified == 1? 'select': ''}>Đã xác thực Email</option>
+                                <option value="0" ${userToEdit.isVerified == 0? 'select': ''}>Chưa xác thực Email</option>
+                            </select>
+                        </div>
+                        <div class="detail-item">
+                            <label>Phương thức đăng nhập:</label>
+                            <select class="form-control">
+                                <option value="LOCAL" ${userToEdit.oauthProvider eq 'LOCAL'? 'select': ''}>LOCAL</option>
+                                <option value="GOOGLE" ${userToEdit.oauthProvider eq 'GOOGLE'? 'select': ''}>GOOGLE</option>
+                            </select>
+                        </div>
+
+                        <div class="btn-actions-group" style="margin-top: 30px; display: flex; gap: 12px;">
+                            <button type="submit" class="btn-save" style="background: #ff69a8; color: white; border: none; padding: 10px 22px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-save"></i> Lưu thay đổi
+                            </button>
+                            <a href="${pageContext.request.contextPath}/admin/admin-user" class="btn-cancel" style="background: #6c757d; color: white; border: none; padding: 10px 22px; border-radius: 6px; cursor: pointer; font-size: 14px; text-decoration: none; align-items: center; gap: 8px; transition: 0.3s;">
+                                Hủy bỏ
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </form>
+
 
             <!-- Lịch sử đơn hàng -->
             <div class="detail-box">
