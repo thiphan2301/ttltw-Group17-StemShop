@@ -151,7 +151,7 @@
                                     </c:otherwise>
                                 </c:choose>
                                 </form>
-                                <a href="" class="btn-action btn-edit">
+                                <a href="${pageContext.request.contextPath}/admin/admin-user-edit?id=${user.id}" class="btn-action btn-edit">
                                     <i class="fas fa-edit"></i> Sửa
                                 </a>
                                 <button class="btn-small lock btn-detail" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-user-detail?id=${user.id}'">Chi tiết</button>
