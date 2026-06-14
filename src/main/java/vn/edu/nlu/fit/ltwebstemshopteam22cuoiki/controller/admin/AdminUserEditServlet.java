@@ -31,7 +31,7 @@ public class AdminUserEditServlet extends HttpServlet {
             }
 
             int id= Integer.parseInt(paramId);
-            User userToEdit= userDAO.getUserById(id);
+            User userToEdit= userDAO.getUserByIdForAdUserEdit(id);
 
             if (userToEdit == null){
                 response.sendRedirect(request.getContextPath()+ "/admin/admin-user");
@@ -60,6 +60,8 @@ public class AdminUserEditServlet extends HttpServlet {
             String address= request.getParameter("address");
             String role= request.getParameter("role");
             String status= request.getParameter("status");
+            boolean isVerified= Boolean.parseBoolean(request.getParameter("isVerified"));
+            String oauthProvider= request.getParameter("oauthProvider");
 
             // Lưu tạm vào user để khi trang tải lại không bị mất thông tin đã nhập
             User user= new User();
@@ -71,6 +73,8 @@ public class AdminUserEditServlet extends HttpServlet {
             user.setAddress(address);
             user.setRole(role);
             user.setStatus(status);
+            user.setVerified(isVerified);
+            user.setOauthProvider(oauthProvider);
 
             String errorMsg= null;
 
