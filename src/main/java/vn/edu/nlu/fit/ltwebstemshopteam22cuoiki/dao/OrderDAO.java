@@ -352,4 +352,52 @@ public class OrderDAO {
 
         return true;
     }
+
+    // #26. 1. Thông tin đơn hàng gồm: id, ngày đặt, trạng thái đơn hàng, trạng thái thanh toán, phương thức thanh toán
+    public Order getOrderBasicInfor(int orderId){
+        Order order= null;
+        String sql= "SELECT ID, OrderDate, OrderStatus, payment_status, payment_method_id FROM orders WHERE ID= ?";
+
+        try (Connection conn= ConnectionDB.getConnection();
+             PreparedStatement ps= conn.prepareStatement(sql)){
+             ps.setInt(1, orderId);
+             try (ResultSet rs= ps.executeQuery()){
+                 if (rs.next()){
+                     order= new Order();
+                     order.setId(rs.getInt("ID"));
+                     order.setOrderDate(rs.getTimestamp("OrderDate"));
+                     order.setOrderStatus(rs.getString("OrderStatus"));
+                     order.setPaymentStatus(rs.getString("payment_status"));
+                     order.setPaymentMethodId(rs.getInt("payment_method_id")); //1: COD, 2: VNPAY
+                 }
+             }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return order;
+    }
+
+    // #26. 2. Thông tin người nhận gồm: họ tên người nhận, sđt, địa chỉ, ghi chú
+    public Order getReceiverInfor(int orderId){
+        Order order= null;
+        String sql= "SELECT ReceiverName, ReceiverPhone, ShippingAddress, Note FROM orders WHERE ID= ?";
+
+        try(Connection conn= ConnectionDB.getConnection();
+            PreparedStatement ps= conn.prepareStatement(sql)){
+
+            ps.setInt(1, orderId);
+            try (ResultSet rs= ps.executeQuery()){
+                if (rs.next()){
+                    order= new Order();
+                    order.setReceiverName(rs.getString("ReceiverName"));
+                    order.setReceiverPhone(rs.getString("ReceiverPhone"));
+                    order.setShippingAddress(rs.getString("ShippingAddress"));
+                    order.setNote(rs.getString("Note"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return order;
+    }
 }
