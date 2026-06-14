@@ -296,7 +296,7 @@ public class UserDAO {
     // Admin chỉnh sửa thông tin của người dùng. Có thể chỉnh sửa gồm:
     // Họ tên, Username, Email, Số điện thoại, Địa chỉ, Vai trò, Trạng thái
     public boolean adminUserEdit(User user){
-        String sql = "UPDATE users SET FullName=?, UserName=?, Email=?, PhoneNumber=?, Address=?, Role=?, Status=? WHERE ID=?";
+        String sql = "UPDATE users SET FullName=?, UserName=?, Email=?, PhoneNumber=?, Address=?, Role=?, Status=?, IsVerified=?, OauthProvider=? WHERE ID=?";
         try (Connection conn= ConnectionDB.getConnection();
             PreparedStatement ps= conn.prepareStatement(sql)){
 
@@ -307,7 +307,9 @@ public class UserDAO {
             ps.setString(5, user.getAddress());
             ps.setString(6, user.getRole());
             ps.setString(7, user.getStatus());
-            ps.setInt(8, user.getId());
+            ps.setBoolean(8, user.isVerified());
+            ps.setString(9, user.getOauthProvider());
+            ps.setInt(10, user.getId());
 
             return ps.executeUpdate()>0;
 
