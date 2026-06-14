@@ -338,7 +338,37 @@ public class UserDAO {
         return false;
     }
 
-    // lấy user bằng id
+    // lấy user bằng id (thêm isVerified và oauthProvider) cho adminUserEdit
+    public User getUserByIdForAdUserEdit(int userId) {
+        String sql = "SELECT * FROM users WHERE ID=?";
+        try (Connection conn = ConnectionDB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("ID"));
+                u.setFullName(rs.getString("FullName"));
+                u.setEmail(rs.getString("Email"));
+                u.setPhoneNumber(rs.getString("PhoneNumber"));
+                u.setAddress(rs.getString("Address"));
+                u.setUserName(rs.getString("UserName"));
+                u.setRole(rs.getString("Role"));
+                u.setStatus(rs.getString("Status"));
+                u.setCreateDate(rs.getDate("CreateAt"));
+                u.setVerified(rs.getBoolean("IsVerified"));
+                u.setOauthProvider(rs.getString("OauthProvider"));
+                return u;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Lấy user bằng id
     public User getUserById(int userId) {
         String sql = "SELECT * FROM users WHERE ID=?";
         try (Connection conn = ConnectionDB.getConnection();
