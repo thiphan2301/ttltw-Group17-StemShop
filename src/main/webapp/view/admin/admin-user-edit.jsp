@@ -134,8 +134,15 @@
                 <i class="fas fa-arrow-left"></i> Quay lại
             </button>
 
+            <!-- Thông báo lỗi-->
+            <c:if test="${not empty error}">
+                <div style="background: #f8d7da; color: #721c24; padding: 12px 20px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #f5c6cb; font-size: 14px; font-weight: 500;">
+                    <i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i> ${error}
+                </div>
+            </c:if>
+
             <!-- Form chỉnh sửa thông tin User -->
-            <form class="admin-user-edit" action="${pageContext.request.contextPath}">
+            <form class="admin-user-edit" action="${pageContext.request.contextPath}/admin/admin-user-edit" method="POST">
 
                 <input type="hidden" name="id" value="${userToEdit.id}">
 
@@ -150,32 +157,32 @@
 
                         <div class="detail-item">
                             <label>Họ tên <span style="color:red">*</span>:</label>
-                            <input type="text" class="form-control" value="${userToEdit.fullName}" required>
+                            <input type="text" class="form-control" name="fullName" value="${userToEdit.fullName}" required>
                         </div>
                         <div class="detail-item">
                             <label>Email <span style="color:red">*</span>:</label>
-                            <input type="email" class="form-control" value="${userToEdit.email}" required>
+                            <input type="email" class="form-control" name="email" value="${userToEdit.email}" required>
                         </div>
                         <div class="detail-item">
                             <label>Số điện thoại:</label>
-                            <input type="text" class="form-control" value="${userToEdit.phoneNumber}"
+                            <input type="text" class="form-control" name="phoneNumber" value="${userToEdit.phoneNumber}"
                                    placeholder="0123456789"
                                    autocomplete="off"
                                    oninput="this.value=this.value.replace(/[^0-9]/g,'')">
                         </div>
                         <div class="detail-item">
                             <label>Địa chỉ:</label>
-                            <input type="text" class="form-control" value="${userToEdit.address}">
+                            <input type="text" class="form-control" name="address" value="${userToEdit.address}">
                         </div>
                         <div class="detail-item">
                             <label>Username <span style="color:red">*</span>:</label>
-                            <input type="text" class="form-control" value="${userToEdit.userName}" required>
+                            <input type="text" class="form-control" name="userName" value="${userToEdit.userName}" required>
                         </div>
                         <div class="detail-item">
                             <label>Vai trò:</label>
-                            <select class="form-control">
-                                <option value="USER" ${userToEdit.role eq 'USER'? 'select': ''}>USER</option>
-                                <option value="ADMIN" ${userToEdit.role eq 'ADMIN'? 'select': ''}>ADMIN</option>
+                            <select class="form-control" name="role">
+                                <option value="USER" ${userToEdit.role eq 'USER'? 'selected': ''}>USER</option>
+                                <option value="ADMIN" ${userToEdit.role eq 'ADMIN'? 'selected': ''}>ADMIN</option>
                             </select>
                         </div>
                         <div class="detail-item">
@@ -186,27 +193,28 @@
                         </div>
                         <div class="detail-item">
                             <label>Trạng thái hoạt động:</label>
-                            <select class="form-control">
-                                <option value="ACTIVE" ${userToEdit.status eq 'ACTIVE'? 'select': ''}>Đang hoạt động</option>
-                                <option value="LOCKED" ${userToEdit.status eq 'LOCKED'? 'select': ''}>Đã bị khóa</option>
+                            <select class="form-control" name="status">
+                                <option value="ACTIVE" ${userToEdit.status eq 'ACTIVE'? 'selected': ''}>Đang hoạt động</option>
+                                <option value="LOCKED" ${userToEdit.status eq 'LOCKED'? 'selected': ''}>Đã bị khóa</option>
                             </select>
                         </div>
+
                         <div class="detail-item">
                             <label>Trạng thái xác thực:</label>
-                            <select class="form-control">
-                                <option value="1" ${userToEdit.isVerified == 1? 'select': ''}>Đã xác thực Email</option>
-                                <option value="0" ${userToEdit.isVerified == 0? 'select': ''}>Chưa xác thực Email</option>
+                            <select class="form-control" name="isVerified">
+                                <option value="true" ${userToEdit.verified? 'selected': ''}>Đã xác thực Email</option>
+                                <option value="false" ${not userToEdit.verified? 'selected': ''}>Chưa xác thực Email</option>
                             </select>
                         </div>
                         <div class="detail-item">
                             <label>Phương thức đăng nhập:</label>
-                            <select class="form-control">
-                                <option value="LOCAL" ${userToEdit.oauthProvider eq 'LOCAL'? 'select': ''}>LOCAL</option>
-                                <option value="GOOGLE" ${userToEdit.oauthProvider eq 'GOOGLE'? 'select': ''}>GOOGLE</option>
+                            <select class="form-control" name="oauthProvider">
+                                <option value="LOCAL" ${userToEdit.oauthProvider eq 'LOCAL'? 'selected': ''}>LOCAL</option>
+                                <option value="GOOGLE" ${userToEdit.oauthProvider eq 'GOOGLE'? 'selected': ''}>GOOGLE</option>
                             </select>
                         </div>
 
-                        <div class="btn-actions-group" style="margin-top: 30px; display: flex; gap: 12px;">
+                        <div class="btn-actions-group" style="margin-top: 30px; display: flex; gap: 12px; grid-column: span 2; justify-content: center;">
                             <button type="submit" class="btn-save" style="background: #ff69a8; color: white; border: none; padding: 10px 22px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;">
                                 <i class="fas fa-save"></i> Lưu thay đổi
                             </button>
