@@ -19,11 +19,12 @@ public class User {
     private String gender;
     private Date birthday;
     private Date tokenExpiry;
+    private String oauthProvider;
 
     public User() {
     }
 
-    public User(int id, String fullName, String email, String phoneNumber, String address, String role, String status, String userName, String password, Date createDate, String verifyToken, boolean isVerified, String avatar, String gender, Date birthday, Date tokenExpiry) {
+    public User(int id, String fullName, String email, String phoneNumber, String address, String role, String status, String userName, String password, Date createDate, String verifyToken, boolean isVerified, String avatar, String gender, Date birthday, Date tokenExpiry, String oauthProvider) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -40,6 +41,7 @@ public class User {
         this.gender = gender;
         this.birthday = birthday;
         this.tokenExpiry = tokenExpiry;
+        this.oauthProvider = oauthProvider;
     }
 
     public int getId() {
@@ -150,4 +152,8 @@ public class User {
     public void setTokenExpiry(Date tokenExpiry) {
         this.tokenExpiry = tokenExpiry;
     }
+
+    public String getOauthProvider() { return oauthProvider; }
+
+    public void setOauthProvider(String oauthProvider) { this.oauthProvider= oauthProvider; }
 }
