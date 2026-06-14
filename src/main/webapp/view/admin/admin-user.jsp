@@ -106,6 +106,15 @@
             </div>
         </header>
 
+        <!-- Thông báo cập nhật thông tin user thành công -->
+        <c:if test="${not empty sessionScope.successMessage}">
+            <div style="background-color: #d4edda; color: #155724; padding: 12px 20px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #c3e6cb; font-size: 14px; font-weight: 500;">
+                <i class="fas fa-check-circle" style="margin-right: 8px"></i> ${sessionScope.successMessage}
+            </div>
+
+            <c:remove var="successMessage" scope="session"/>
+        </c:if>
+
         <!-- Users Section -->
         <section class="admin-page admin-page--active">
             <h2>Người dùng</h2>
