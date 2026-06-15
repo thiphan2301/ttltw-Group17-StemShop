@@ -9,18 +9,21 @@ public class Reviews {
     private double rating;
     private String comment;
     private Timestamp createDate;
-    private String userName; //nữa join với user để hiện thị username người bình luận
+    private String userName;
+    private String avatar;
 
     public Reviews() {
     }
 
-    public Reviews(int id, int userID, int productID, double rating, String comment, Timestamp createDate, String userName) {
+    public Reviews(int id, int userID, int productID, double rating, String comment, Timestamp createDate, String userName, String avatar) {
         this.id = id;
         this.userID = userID;
         this.productID = productID;
         this.rating = rating;
         this.comment = comment;
         this.createDate = createDate;
+        this.userName = userName;
+        this.avatar = avatar;
     }
 
     public int getId() {
@@ -77,5 +80,13 @@ public class Reviews {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

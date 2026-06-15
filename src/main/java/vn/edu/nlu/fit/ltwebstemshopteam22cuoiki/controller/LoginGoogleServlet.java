@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.GoogleUtils.GoogleUtils;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.GoogleUtils;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.UserDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.User;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.GoogleUserDTO;

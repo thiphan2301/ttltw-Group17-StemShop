@@ -53,9 +53,11 @@
 
             <c:forEach var="item" items="${order.items}">
                 <div class="product-item" style="border-bottom: 1px solid #f9f9f9; padding: 10px 0;">
-                    <img src="${pageContext.request.contextPath}/${item.imageUrl}" alt="${item.productName}">
+                    <a href="${pageContext.request.contextPath}/product-detail?id=${item.productId}"><img src="${pageContext.request.contextPath}/${item.imageUrl}" alt="${item.productName}" ></a>
                     <div class="product-info">
-                        <p><strong>${item.productName}</strong></p>
+                        <p><strong>
+                            <a href="${pageContext.request.contextPath}/product-detail?id=${item.productId}">${item.productName}</a>
+                        </strong></p>
                         <p class="text-muted">Số lượng: ${item.quantity}</p>
                         <p>Giá sản phẩm: <strong style="color: var(--accent-color);">
                             <fmt:formatNumber value="${item.price}" type="currency" currencySymbol="₫"/>

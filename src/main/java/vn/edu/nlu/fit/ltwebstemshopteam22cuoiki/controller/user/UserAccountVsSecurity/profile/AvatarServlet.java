@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.AppConfig;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +14,6 @@ import java.io.OutputStream;
 
 @WebServlet("/avatar/*")
 public class AvatarServlet extends HttpServlet {
-    private static final String AVATAR_DIR = "E:/ProejctLapTrinhWeb/Avatar";
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -24,7 +24,8 @@ public class AvatarServlet extends HttpServlet {
             return;
         }
 
-        File file = new File(AVATAR_DIR, fileName);
+        // TẠO FILE : Dùng AppConfig.AVATAR_UPLOAD_DIR
+        File file = new File(AppConfig.AVATAR_UPLOAD_DIR, fileName);
 
         if (!file.exists()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -44,5 +45,4 @@ public class AvatarServlet extends HttpServlet {
             }
         }
     }
-    }
-
+}

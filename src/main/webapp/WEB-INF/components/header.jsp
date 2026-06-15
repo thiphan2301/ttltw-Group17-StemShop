@@ -41,7 +41,7 @@
                 <a href="https://maps.app.goo.gl/nj1KfxS8ajpDxTni6" target="_blank">
                     <span><i class="fa-solid fa-location-dot"></i> Trường Đại Học Nông Lâm TPHCM</span>
                 </a>
-                <a href=""><span><i class="fa-solid fa-envelope"></i> stemshop.system@gmail.com</span></a>
+                <a href="mailto:stemshop.system@gmail.com"><span><i class="fa-solid fa-envelope"></i> stemshop.system@gmail.com</span></a>
             </div>
             <div class="header__top-right">
                 <div class="header__phone-top">
@@ -142,15 +142,31 @@
                     <c:choose>
                         <%-- CHƯA LOGIN --%>
                         <c:when test="${empty sessionScope.user}">
-                            <a href="${pageContext.request.contextPath}/view/user/sign-in.jsp">Đăng nhập</a>
-                            <a href="${pageContext.request.contextPath}/view/user/sign-up.jsp">Đăng ký</a>
+                            <a href="${pageContext.request.contextPath}/dang-nhap">Đăng nhập</a>
+                            <a href="${pageContext.request.contextPath}/dang-ky">Đăng ký</a>
                         </c:when>
                         <%-- ĐÃ LOGIN --%>
                         <c:otherwise>
                             <div class="header__user header__user-logged">
 
                                     <%-- AVATAR ICON --%>
-                                <i class="fa-solid fa-circle-user user-avatar-icon"></i>
+                            <span class="user-avatar-icon">
+                            <c:choose>
+                                <c:when test="${empty sessionScope.user.avatar}">
+                                    <i class="fa-solid fa-circle-user user-avatar-icon" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; display: contents;"></i>
+                                </c:when>
+                                <%-- Ảnh từ Google (Bắt đầu bằng http) --%>
+                                <c:when test="${sessionScope.user.avatar.startsWith('http')}">
+                                    <img src="${sessionScope.user.avatar}"
+                                         alt="Google Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                </c:when>
+                                <%-- Ảnh tự upload (Gọi qua AvatarServlet) --%>
+                                <c:otherwise>
+                                    <img src="${pageContext.request.contextPath}/avatar/${sessionScope.user.avatar}"
+                                         alt="User Avatar" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                                </c:otherwise>
+                            </c:choose>
+                        </span>
 
                                     <%-- TÊN --%>
                                 <span class="user-short-name">

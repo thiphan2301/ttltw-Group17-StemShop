@@ -187,7 +187,7 @@
   </c:if>
 
   <div class="profile-body">
-    <form class="profile-form" method="post" action="${pageContext.request.contextPath}/profile" enctype="multipart/form-data">
+      <form id="profile-form" class="profile-form" method="post" action="${pageContext.request.contextPath}/profile" enctype="multipart/form-data">
       <div class="form-grid">
 
         <div class="form-group">
@@ -210,7 +210,7 @@
           <input type="tel" name="phoneNumber" class="form-control" value="${user.phoneNumber}"
                  placeholder="Nhập số điện thoại"
                  required
-                 pattern="^0\\d{9}$"
+                 pattern="^0\d{9}$"
                  title="Số điện thoại gồm 10 số và bắt đầu bằng số 0">
         </div>
 
@@ -265,16 +265,28 @@
     </form>
 
     <div class="profile-avatar-sec">
-      <div class="avatar-wrapper">
-        <img id="avatarPreview" src="${pageContext.request.contextPath}/avatar/${empty user.avatar ? 'default.png' : user.avatar}" class="avatar-img" alt="Avatar">
-        <label for="avatarInput" class="avatar-btn" title="Chọn ảnh mới">
-          <i class="fa-solid fa-camera"></i>
-        </label>
-      </div>
-      <p class="avatar-desc">
-        Dung lượng file tối đa 1MB<br>
-        Định dạng: .JPEG, .PNG
-      </p>
+        <div class="avatar-wrapper">
+            <c:choose>
+                <%-- Nếu chưa có ảnh thì hiện ảnh mặc định --%>
+                <c:when test="${empty user.avatar}">
+                    <img id="avatarPreview" src="${pageContext.request.contextPath}/assets/images/user/user-male-circle.jpg" class="avatar-img" alt="Avatar">
+                </c:when>
+
+                <%-- Nếu đăng nhập Google (link có chữ http) --%>
+                <c:when test="${user.avatar.startsWith('http')}">
+                    <img id="avatarPreview" src="${user.avatar}" class="avatar-img" alt="Avatar">
+                </c:when>
+
+                <%-- Nếu là ảnh tự upload --%>
+                <c:otherwise>
+                    <img id="avatarPreview" src="${pageContext.request.contextPath}/avatar/${user.avatar}" class="avatar-img" alt="Avatar">
+                </c:otherwise>
+            </c:choose>
+
+            <label for="avatarInput" class="avatar-btn" title="Chọn ảnh mới">
+                <i class="fa-solid fa-camera"></i>
+            </label>
+        </div>
     </div>
   </div>
 

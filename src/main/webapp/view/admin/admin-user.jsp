@@ -51,7 +51,7 @@
             font-size: 12px;
             margin-left: 5px;
         }
-        btn-unlock:hover{
+        .btn-unlock:hover{
             background-color: #45a049;
             color: white;
         }
@@ -126,7 +126,6 @@
                         <th>ID</th>
                         <th>Tên</th>
                         <th>Email</th>
-                        <th>Số điện thoại</th>
                         <th>Vai trò</th>
                         <th>Tác vụ</th>
                     </tr>
@@ -135,9 +134,8 @@
                     <c:forEach var="user" items="${users}">
                         <tr>
                             <td>${user.id}</td>
-                            <td>${user.fullName}</td>
+                            <td>${not empty user.fullName ? user.fullName : "[Người dùng chưa cập nhật Họ Tên]"}</td>
                             <td>${user.email}</td>
-                            <td>${user.phoneNumber}</td>
                             <td>${user.role}</td>
                             <td>
                                 <form action="${pageContext.request.contextPath}/admin/admin-user" method="POST" style="display:inline;">
@@ -154,7 +152,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <button type="submit" class="btn-action btn-unlock"
-                                                onclick="alert('Đã mở khóa tài khoản của ${user.fullName}');">
+                                                onclick="return confirm('Xác nhận MỞ KHÓA tài khoản của ${user.fullName}?');">
                                                 <i class="fas fa-key"></i> Mở khóa
                                         </button>
                                     </c:otherwise>

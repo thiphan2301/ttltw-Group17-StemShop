@@ -116,7 +116,8 @@ public class OrderDAO {
     public Order getOrderById(int orderId) throws Exception {
         Order order = null;
         String sqlOrder = "SELECT * FROM orders WHERE ID = ?";
-        String sqlItems = "SELECT od.ProductID, p.ProductName, pi.ImageURL, od.Quantity, od.Price " +
+        // Dùng MAX() là cách an toàn và tương thích mọi phiên bản MySQL nhất
+        String sqlItems = "SELECT od.ProductID, p.ProductName, MAX(pi.ImageURL) AS ImageURL, od.Quantity, od.Price " +
                 "FROM order_detail od " +
                 "JOIN products p ON od.ProductID = p.ID " +
                 "LEFT JOIN product_image pi ON p.ID = pi.ProductID " +

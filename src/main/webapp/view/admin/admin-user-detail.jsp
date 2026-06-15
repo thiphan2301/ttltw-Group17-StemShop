@@ -92,7 +92,7 @@
             <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/admin/dashboard'">
                 <i class="fa-solid fa-chart-line"></i> Dashboard
             </li>
-            <li class="admin-menu__item">
+            <li class="admin-menu__item active">
                 <i class="fa-solid fa-users active"></i> Quản lý Người Dùng
             </li>
             <li class="admin-menu__item" onclick="window.location.href='${pageContext.request.contextPath}/admin/admin-products'">
@@ -134,38 +134,78 @@
                 <div class="detail-grid">
                     <div class="detail-item">
                         <label>ID:</label>
-                        <span>${user.id}</span>
+                        <span>${userDetail.id}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Avatar: </label>
+                        <span>
+                            <c:choose>
+                                <c:when test="${empty userDetail.avatar}">
+                                    <img src="${pageContext.request.contextPath}/assets/images/user/user-male-circle.jpg"
+                                         alt="Default Avatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                                    <br><small>[Người dùng chưa thêm ảnh đại diện]</small>
+                                </c:when>
+                                <%-- Ảnh từ Google (Bắt đầu bằng http) --%>
+                                <c:when test="${userDetail.avatar.startsWith('http')}">
+                                    <img src="${userDetail.avatar}"
+                                         alt="Google Avatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                                </c:when>
+                                <%-- Ảnh tự upload (Gọi qua AvatarServlet) --%>
+                                <c:otherwise>
+                                    <img src="${pageContext.request.contextPath}/avatar/${userDetail.avatar}"
+                                         alt="User Avatar" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                                </c:otherwise>
+                            </c:choose>
+                        </span>
                     </div>
                     <div class="detail-item">
                         <label>Họ tên:</label>
-                        <span>${user.fullName}</span>
+                        <span>${not empty userDetail.fullName ? userDetail.fullName : "[Ngời dùng chưa cập nhật Họ Tên]"}</span>
                     </div>
                     <div class="detail-item">
                         <label>Email:</label>
-                        <span>${user.email}</span>
+                        <span>${userDetail.email}</span>
                     </div>
                     <div class="detail-item">
                         <label>Số điện thoại:</label>
-                        <span>${user.phoneNumber}</span>
+                        <span>${not empty userDetail.phoneNumber ? userDetail.phoneNumber : "[Người dùng chưa cập nhật SDT]"}</span>
                     </div>
                     <div class="detail-item">
                         <label>Địa chỉ:</label>
-                        <span>${user.address}</span>
+                        <span>${not empty userDetail.address ? userDetail.address : "[Người dùng chưa cập nhật Địa Chỉ]"}</span>
                     </div>
                     <div class="detail-item">
                         <label>Username:</label>
-                        <span>${user.userName}</span>
+                        <span>${userDetail.userName}</span>
                     </div>
                     <div class="detail-item">
                         <label>Vai trò:</label>
-                        <span class="badge badge-${user.role == 'ADMIN' ? 'admin' : 'user'}">
-                            ${user.role}
+                        <span class="badge badge-${userDetail.role == 'ADMIN' ? 'admin' : 'user'}">
+                            ${userDetail.role}
                         </span>
                     </div>
                     <div class="detail-item">
                         <label>Ngày tạo:</label>
                         <span>
-                            <fmt:formatDate value="${user.createDate}" pattern="dd/MM/yyyy"/>
+                            <fmt:formatDate value="${userDetail.createDate}" pattern="dd/MM/yyyy"/>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Trạng thái tài khoản: </label>
+                        <span>
+                            ${userDetail.status == "ACTIVE" ? "Đang hoạt động" : "Bị khóa"}
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Trạng thái xác thực: </label>
+                        <span>
+                            ${userDetail.verified ? "Đã xác thực email" : "Chưa xác thực email"}
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Phương thức đăng nhập: </label>
+                        <span>
+                            ${userDetail.oauthProvider == "GOOGLE" ? "Google" : "Tài khoản đăng ký hệ thống"}
                         </span>
                     </div>
                 </div>

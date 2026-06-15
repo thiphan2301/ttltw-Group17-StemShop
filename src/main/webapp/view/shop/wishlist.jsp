@@ -84,5 +84,7 @@
 
 <jsp:include page="/WEB-INF/components/footer.jsp"/>
 
+<script src="${pageContext.request.contextPath}/assets/js/pages/shop.js"></script>
+
 </body>
 </html>
