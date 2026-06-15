@@ -220,10 +220,6 @@
                                     <span><fmt:formatNumber value="${finalShippingFee}" type="currency" currencySymbol="₫"/></span>
                                 </div>
 
-                                <div class="summary-row">
-                                    <button type="submit" name="action" value="updateShipping" class="btn-update-ship">Cập nhật phí ship</button>
-                                </div>
-
                                 <div class="summary-row summary-total">
                                     <span>Tổng cộng</span>
                                     <span>
@@ -253,6 +249,6 @@
     <jsp:include page="/WEB-INF/components/footer.jsp"/>
 
 <script src="${pageContext.request.contextPath}/assets/js/components.js"></script>
-<%--<script src="${pageContext.request.contextPath}/assets/js/pages/checkout.js"></script>--%>
+<script src="${pageContext.request.contextPath}/assets/js/pages/checkout.js"></script>
 </body>
 </html>
