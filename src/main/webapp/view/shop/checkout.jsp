@@ -33,8 +33,8 @@
 
                 <!--Thêm hiển thị lỗi-->
                 <c:if test="${not empty error}">
-                    <div style="color: white; background-color: #f44336; padding: 12px; margin-bottom: 20px; border-radius: 4px; font-weight: bold; text-align: center;">
-                        <i class="fa-solid fa-triangle-exclamation"></i> ${error}
+                    <div class="alert alert-danger" style="color: red; margin-bottom: 15px; border: 1px solid red; padding: 10px;">
+                            ${error}
                     </div>
                 </c:if>
 

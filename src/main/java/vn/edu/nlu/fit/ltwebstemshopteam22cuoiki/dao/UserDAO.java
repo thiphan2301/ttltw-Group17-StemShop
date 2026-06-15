@@ -296,7 +296,7 @@ public class UserDAO {
     // Admin chỉnh sửa thông tin của người dùng. Có thể chỉnh sửa gồm:
     // Họ tên, Username, Email, Số điện thoại, Địa chỉ, Vai trò, Trạng thái
     public boolean adminUserEdit(User user){
-        String sql = "UPDATE users SET FullName=?, UserName=?, Email=?, PhoneNumber=?, Address=?, Role=?, Status=?, IsVerified=?, OauthProvider=? WHERE ID=?";
+        String sql = "UPDATE users SET FullName=?, UserName=?, Email=?, PhoneNumber=?, Address=?, Role=?, Status=?, IsVerified=?, oauth_provider=? WHERE ID=?";
         try (Connection conn= ConnectionDB.getConnection();
             PreparedStatement ps= conn.prepareStatement(sql)){
 
@@ -338,7 +338,7 @@ public class UserDAO {
         return false;
     }
 
-    // lấy user bằng id (thêm isVerified và oauthProvider) cho adminUserEdit
+    // lấy user bằng id (thêm isVerified và oauth_provider) cho adminUserEdit
     public User getUserByIdForAdUserEdit(int userId) {
         String sql = "SELECT * FROM users WHERE ID=?";
         try (Connection conn = ConnectionDB.getConnection();
@@ -359,7 +359,7 @@ public class UserDAO {
                 u.setStatus(rs.getString("Status"));
                 u.setCreateDate(rs.getDate("CreateAt"));
                 u.setVerified(rs.getBoolean("IsVerified"));
-                u.setOauthProvider(rs.getString("OauthProvider"));
+                u.setOauthProvider(rs.getString("oauth_provider"));
                 return u;
             }
         } catch (Exception e) {
