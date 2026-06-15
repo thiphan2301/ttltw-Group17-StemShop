@@ -78,9 +78,9 @@ public class AdminUserEditServlet extends HttpServlet {
 
             String errorMsg= null;
 
-            // Kiểm tra thông tin chỉnh sửa có hợp lệ không
-            if (fullName == null || fullName.trim().isEmpty() || userName == null || userName.trim().isEmpty()){
-                errorMsg= "Họ tên và Tên đăng nhập không được thể trống!";
+            // Kiểm tra thông tin chỉnh sửa có hợp lệ không (ko cần check username vì login gg ko có username)
+            if (fullName == null || fullName.trim().isEmpty()){
+                errorMsg= "Họ tên không được thể trống!";
             } else if (phoneNumber != null && !phoneNumber.trim().isEmpty() && !phoneNumber.matches("^0\\d{9}$")) {
                 errorMsg= "Số điện thoại phải bắt đầu bằng 0 và có 10 chữ số!";
             } else if (userDAO.isDuplicateUserOrEmail(userName, email, id)) {

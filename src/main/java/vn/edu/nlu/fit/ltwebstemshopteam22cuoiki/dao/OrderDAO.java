@@ -6,7 +6,9 @@ import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.OrderItem;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderDAO {
 
@@ -400,5 +402,28 @@ public class OrderDAO {
             e.printStackTrace();
         }
         return order;
+    }
+
+    // Hàm lấy danh sách Voucher đã áp dụng cho 1 đơn hàng
+    public Map<String, Double> getOrderPromotions(int orderId) {
+        Map<String, Double> promos = new HashMap<>();
+        String sql = "SELECT p.Code, op.applied_discount_amount " +
+                "FROM order_promotions op " +
+                "JOIN promotions p ON op.promotion_id = p.ID " +
+                "WHERE op.order_id = ?";
+
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String code = rs.getString("Code");
+                double discount = rs.getDouble("applied_discount_amount");
+                promos.put(code, discount);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return promos;
     }
 }

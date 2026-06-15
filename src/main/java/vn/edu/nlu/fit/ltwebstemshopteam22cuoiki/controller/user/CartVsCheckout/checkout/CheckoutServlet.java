@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.OrderDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.OrderDetailDAO;
+import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.ProductDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.dao.Promotions.PromotionDAO;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.*;
 import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.utils.VNPayConfig;
@@ -103,14 +104,52 @@ public class CheckoutServlet extends HttpServlet {
 
             // Xử lý cập nhật phí ship
             if ("updateShipping".equals(action)) {
+                // Tính phí ship gốc theo thành phố
                 double subTotal = cart.getTotalPrice();
-                double shippingFee = calculateShippingFee(subTotal, city);
+                double baseShippingFee = calculateShippingFee(subTotal, city);
+
+                // lấy lại voucher đã áp dụng từ session
+                Double pd = (Double) session.getAttribute("savedProductDiscount");
+                double finalProductDiscount = (pd != null) ? pd : 0;
+
+                Double sd = (Double) session.getAttribute("savedShipDiscount");
+                double finalShipDiscount = (sd != null) ? sd : 0;
+
+                // Nếu trước đó có áp voucher ship, thì phải tính lại số tiền được giảm
+                // (Vì đổi thành phố -> Phí ship gốc thay đổi -> Số tiền giảm cũng có thể thay đổi nếu là giảm theo %)
+                String savedVoucherShip = (String) session.getAttribute("savedVoucherShip");
+                if (savedVoucherShip != null && promotionDAO.getCode().contains(savedVoucherShip)) {
+                    String discountType = promotionDAO.getDiscountType(savedVoucherShip);
+                    double val = promotionDAO.getDiscountValue(savedVoucherShip, discountType);
+
+                    finalShipDiscount = "percent".equals(discountType) ? baseShippingFee * (val / 100) : val;
+                    if (finalShipDiscount > baseShippingFee) finalShipDiscount = baseShippingFee;
+
+                    // Cập nhật lại tiền giảm ship mới vào session
+                    session.setAttribute("savedShipDiscount", finalShipDiscount);
+                }
+
+                // Tính lại tổng tiền
+                double finalShippingFee = baseShippingFee - finalShipDiscount;
+                if (finalShippingFee < 0) finalShippingFee = 0;
+
+                double finalTotalAmount = (subTotal - finalProductDiscount) + finalShippingFee;
+
+                // Trả dữ liệu về giao diện
                 req.setAttribute("subTotal", subTotal);
-                req.setAttribute("productDiscount", 0.0);
-                req.setAttribute("finalShippingFee", shippingFee);
-                req.setAttribute("finalTotalAmount", subTotal + shippingFee);
+                req.setAttribute("productDiscount", finalProductDiscount);
+                req.setAttribute("finalShippingFee", finalShippingFee);
+                req.setAttribute("finalTotalAmount", finalTotalAmount);
                 req.setAttribute("user", user);
                 req.setAttribute("cart", cart);
+
+                // Trả lại các trường đang nhập dở để không bị mất chữ trên form
+                req.setAttribute("receiverName", receiverName);
+                req.setAttribute("receiverPhone", receiverPhone);
+                req.setAttribute("address", address);
+                req.setAttribute("city", city);
+                req.setAttribute("note", note);
+
                 req.getRequestDispatcher("/view/shop/checkout.jsp").forward(req, resp);
                 return;
             }
@@ -181,6 +220,62 @@ public class CheckoutServlet extends HttpServlet {
                     return;
                 }
 
+                // Kiểm tra số lượng tồn kho trước khi tạo đơn
+                ProductDAO productDAO = new ProductDAO();
+                for (CartItem item : cart.getItems()) {
+                    Product p = productDAO.findById(item.getProduct().getId());
+
+                    if (p == null) {
+                        req.setAttribute("error", "Sản phẩm không tồn tại trên hệ thống!");
+                        req.setAttribute("isErrorPage", true);
+                        req.getRequestDispatcher("/view/shop/checkout.jsp").forward(req, resp);
+                        return;
+                    }
+
+                    // Nếu hết hàng
+                    if (p.getQuantity() <= 0) {
+                        req.setAttribute("error", "Chúng tôi xin lỗi, hiện tại Sản phẩm '" + p.getProductName() + "' đã hết hàng.");
+
+                        // Giữ lại form
+                        req.setAttribute("receiverName", receiverName);
+                        req.setAttribute("receiverPhone", receiverPhone);
+                        req.setAttribute("address", address);
+                        req.setAttribute("city", city);
+                        req.setAttribute("note", note);
+                        req.setAttribute("cart", cart);
+                        req.setAttribute("subTotal", subTotal);
+                        req.setAttribute("productDiscount", finalProductDiscount);
+                        req.setAttribute("finalShippingFee", finalShippingFee);
+                        req.setAttribute("finalTotalAmount", finalTotalAmount);
+                        req.setAttribute("isErrorPage", true);
+
+                        req.getRequestDispatcher("/view/shop/checkout.jsp").forward(req, resp);
+                        return;
+                    }
+
+                    // nếu số lượng đặt lớn hơn số lượng hiện có
+                    if (p.getQuantity() < item.getQuantity()) {
+                        req.setAttribute("error", "Sản phẩm '" + p.getProductName() + "' không đủ số lượng. (Hiện chỉ còn " + p.getQuantity() + " sản phẩm).");
+
+                        // Giữ lại form
+                        req.setAttribute("receiverName", receiverName);
+                        req.setAttribute("receiverPhone", receiverPhone);
+                        req.setAttribute("address", address);
+                        req.setAttribute("city", city);
+                        req.setAttribute("note", note);
+                        req.setAttribute("cart", cart);
+                        req.setAttribute("subTotal", subTotal);
+                        req.setAttribute("productDiscount", finalProductDiscount);
+                        req.setAttribute("finalShippingFee", finalShippingFee);
+                        req.setAttribute("finalTotalAmount", finalTotalAmount);
+                        req.setAttribute("isErrorPage", true);
+
+                        req.getRequestDispatcher("/view/shop/checkout.jsp").forward(req, resp);
+                        return;
+                    }
+                }
+
+                // Nếu đã đủ sản phẩm thì tạo đơn và trừ kho
                 String paymentMethod = req.getParameter("paymentMethod");
                 int paymentMethodId = "VNPAY".equals(paymentMethod) ? 2 : 1;
                 String paymentStatus = "COD".equals(paymentMethod) ? "unpaid" : "pending";
@@ -204,6 +299,9 @@ public class CheckoutServlet extends HttpServlet {
                 for (CartItem item : cart.getItems()) {
                     OrderDetail detail = new OrderDetail(orderId, item.getProduct().getId(), item.getQuantity(), item.getProduct().getPrice());
                     detailDAO.insert(detail);
+
+                    // CHỐT CHẶN 2: GỌI HÀM TRỪ KHO SAU KHI LƯU CHI TIẾT ĐƠN HÀNG THÀNH CÔNG
+                    productDAO.deductStock(item.getProduct().getId(), item.getQuantity());
                 }
 
                 // Lưu thông tin khuyến mãi (voucher) đã áp dụng

@@ -175,8 +175,8 @@
                             <input type="text" class="form-control" name="address" value="${userToEdit.address}">
                         </div>
                         <div class="detail-item">
-                            <label>Username <span style="color:red">*</span>:</label>
-                            <input type="text" class="form-control" name="userName" value="${userToEdit.userName}" required>
+                            <label>Username:</label>
+                            <input type="text" class="form-control" name="userName" value="${userToEdit.userName}">
                         </div>
                         <div class="detail-item">
                             <label>Vai trò:</label>

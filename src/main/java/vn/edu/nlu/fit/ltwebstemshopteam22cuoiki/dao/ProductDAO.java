@@ -633,4 +633,23 @@ public class ProductDAO {
         return list;
     }
 
+
+    // Hàm giảm số lượng sản phẩm trong kho khi mua hàng thành công
+    public boolean deductStock(int productId, int quantityBought) {
+        //Quantity >= ? đảm bảo kho phải đủ sp thì mới thực hiện trừ
+        String sql = "UPDATE products SET Quantity = Quantity - ? WHERE ID = ? AND Quantity >= ?";
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, quantityBought);
+            ps.setInt(2, productId);
+            ps.setInt(3, quantityBought);
+
+            return ps.executeUpdate() > 0; // Trả về true nếu trừ kho thành công
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }
