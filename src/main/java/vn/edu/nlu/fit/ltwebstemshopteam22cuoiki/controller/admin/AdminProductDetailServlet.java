@@ -31,23 +31,22 @@ public class AdminProductDetailServlet extends HttpServlet {
         try {
             int productId = Integer.parseInt(idParam);
 
-            // Lấy thông tin sản phẩm và ảnh bằng hàm bạn đã có
             ProductDAO productDAO = new ProductDAO();
             Product product = productDAO.findByIdWithImage(productId);
 
             if (product != null) {
-                // Lấy thông tin Reviews
+                // ---> GỌI HÀM NÀY ĐỂ LẤY DATA TỒN KHO & LÔ HÀNG <---
+                productDAO.setInventoryAndBatchDetails(product);
+
                 List<Reviews> reviews = ReviewDAO.getByProductId(productId);
                 double avgRating = ReviewDAO.getAverageRating(productId);
                 int totalReviews = ReviewDAO.getTotalReviews(productId);
 
-                // Set attributes cho JSP sử dụng
                 request.setAttribute("product", product);
                 request.setAttribute("reviews", reviews);
                 request.setAttribute("avgRating", avgRating);
                 request.setAttribute("totalReviews", totalReviews);
 
-                // Forward tới trang JSP hiển thị UI
                 request.getRequestDispatcher("/view/admin/admin-product-detail.jsp").forward(request, response);
             } else {
                 response.sendRedirect(request.getContextPath() + "/admin/admin-products");

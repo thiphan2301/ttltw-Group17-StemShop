@@ -106,6 +106,10 @@
                 </form>
 
                 <div class="action-btn-group" style="display: flex; gap: 10px;">
+                    <a href="${pageContext.request.contextPath}/admin/admin-import-history" class="btn-action" style="background: #17a2b8;">
+                        <i class="fas fa-history"></i> Lịch sử nhập
+                    </a>
+
                     <a href="${pageContext.request.contextPath}/admin/admin-product-import" class="btn-action" style="background: #28a745; padding: 10px 20px;">
                         <i class="fas fa-truck-loading"></i> Nhập hàng
                     </a>
@@ -147,7 +151,7 @@
                                 </button>
                             </form>
 
-                            <a href="javascript:void(0)" onclick="openProductDetail(${product.id})" class="btn-product-detail">
+                            <a href="${pageContext.request.contextPath}/admin/admin-product-detail?id=${product.id}" class="btn-product-detail">
                                 <i class="fas fa-eye"></i> Chi tiết
                             </a>
                         </td>
@@ -171,43 +175,6 @@
     </div>
 </div>
 
-<script>
-    function openProductDetail(productId) {
-        const modal = document.getElementById('productDetailModal');
-        const iframe = document.getElementById('detailIframe');
 
-        // Gọi đến Servlet xử lý lấy thông tin chi tiết
-        iframe.src = "${pageContext.request.contextPath}/admin/admin-product-detail?id=" + productId;
-        modal.style.display = "block";
-        document.body.style.overflow = "hidden"; // Tắt cuộn trang phía sau
-
-        // Ẩn Header, Footer, Breadcrumb, các nút mua hàng khi view dưới quyền admin
-        iframe.onload = function() {
-            try {
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                const elementsToHide = ['header', 'footer', '.back', '.product-actions', '.review-form-container'];
-                elementsToHide.forEach(selector => {
-                    const elements = iframeDoc.querySelectorAll(selector);
-                    elements.forEach(el => el.style.display = 'none');
-                });
-                const mainEl = iframeDoc.querySelector('main');
-                if (mainEl) mainEl.style.paddingTop = '10px';
-            } catch (e) {
-                console.error("Lỗi ẩn phần tử:", e);
-            }
-        };
-    }
-
-    function closeProductDetail() {
-        document.getElementById('productDetailModal').style.display = "none";
-        document.getElementById('detailIframe').src = "";
-        document.body.style.overflow = "auto";
-    }
-
-    window.onclick = function(event) {
-        const modal = document.getElementById('productDetailModal');
-        if (event.target == modal) closeProductDetail();
-    }
-</script>
 </body>
 </html>
