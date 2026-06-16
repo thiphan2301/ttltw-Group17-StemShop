@@ -65,7 +65,21 @@
                     <select name="productId" class="form-control" required>
                         <option value="">-- Chọn sản phẩm --</option>
                         <c:forEach var="p" items="${products}">
-                            <option value="${p[0]}">[ID: ${p[0]}] - ${p[1]}</option>
+
+                            <c:choose>
+                                <c:when test="${p[2] >= 20}">
+                                    <option value="${p[0]}" disabled style="color: #adb5bd; background-color: #f8f9fa;">
+                                        [ID: ${p[0]}] - ${p[1]} (Còn ${p[2]} SP - Số lượng còn nhiều, chưa cần nhập)
+                                    </option>
+                                </c:when>
+
+                                <c:otherwise>
+                                    <option value="${p[0]}" style="color: #28a745; font-weight: bold;">
+                                        [ID: ${p[0]}] - ${p[1]} (Đang sắp hết - Còn ${p[2]} SP)
+                                    </option>
+                                </c:otherwise>
+                            </c:choose>
+
                         </c:forEach>
                     </select>
                 </div>
