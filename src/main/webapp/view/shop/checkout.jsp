@@ -33,8 +33,8 @@
 
                 <!--Thêm hiển thị lỗi-->
                 <c:if test="${not empty error}">
-                    <div style="color: white; background-color: #f44336; padding: 12px; margin-bottom: 20px; border-radius: 4px; font-weight: bold; text-align: center;">
-                        <i class="fa-solid fa-triangle-exclamation"></i> ${error}
+                    <div class="alert alert-danger" style="color: red; margin-bottom: 15px; border: 1px solid red; padding: 10px;">
+                            ${error}
                     </div>
                 </c:if>
 
@@ -220,10 +220,6 @@
                                     <span><fmt:formatNumber value="${finalShippingFee}" type="currency" currencySymbol="₫"/></span>
                                 </div>
 
-                                <div class="summary-row">
-                                    <button type="submit" name="action" value="updateShipping" class="btn-update-ship">Cập nhật phí ship</button>
-                                </div>
-
                                 <div class="summary-row summary-total">
                                     <span>Tổng cộng</span>
                                     <span>
@@ -253,6 +249,6 @@
     <jsp:include page="/WEB-INF/components/footer.jsp"/>
 
 <script src="${pageContext.request.contextPath}/assets/js/components.js"></script>
-<%--<script src="${pageContext.request.contextPath}/assets/js/pages/checkout.js"></script>--%>
+<script src="${pageContext.request.contextPath}/assets/js/pages/checkout.js"></script>
 </body>
 </html>

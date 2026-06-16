@@ -6,7 +6,9 @@ import vn.edu.nlu.fit.ltwebstemshopteam22cuoiki.model.OrderItem;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderDAO {
 
@@ -352,5 +354,76 @@ public class OrderDAO {
         }
 
         return true;
+    }
+
+    // #26. 1. Thông tin đơn hàng gồm: id, ngày đặt, trạng thái đơn hàng, trạng thái thanh toán, phương thức thanh toán
+    public Order getOrderBasicInfor(int orderId){
+        Order order= null;
+        String sql= "SELECT ID, OrderDate, OrderStatus, payment_status, payment_method_id FROM orders WHERE ID= ?";
+
+        try (Connection conn= ConnectionDB.getConnection();
+             PreparedStatement ps= conn.prepareStatement(sql)){
+             ps.setInt(1, orderId);
+             try (ResultSet rs= ps.executeQuery()){
+                 if (rs.next()){
+                     order= new Order();
+                     order.setId(rs.getInt("ID"));
+                     order.setOrderDate(rs.getTimestamp("OrderDate"));
+                     order.setOrderStatus(rs.getString("OrderStatus"));
+                     order.setPaymentStatus(rs.getString("payment_status"));
+                     order.setPaymentMethodId(rs.getInt("payment_method_id")); //1: COD, 2: VNPAY
+                 }
+             }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return order;
+    }
+
+    // #26. 2. Thông tin người nhận gồm: họ tên người nhận, sđt, địa chỉ, ghi chú
+    public Order getReceiverInfor(int orderId){
+        Order order= null;
+        String sql= "SELECT ReceiverName, ReceiverPhone, ShippingAddress, Note FROM orders WHERE ID= ?";
+
+        try(Connection conn= ConnectionDB.getConnection();
+            PreparedStatement ps= conn.prepareStatement(sql)){
+
+            ps.setInt(1, orderId);
+            try (ResultSet rs= ps.executeQuery()){
+                if (rs.next()){
+                    order= new Order();
+                    order.setReceiverName(rs.getString("ReceiverName"));
+                    order.setReceiverPhone(rs.getString("ReceiverPhone"));
+                    order.setShippingAddress(rs.getString("ShippingAddress"));
+                    order.setNote(rs.getString("Note"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return order;
+    }
+
+    // Hàm lấy danh sách Voucher đã áp dụng cho 1 đơn hàng
+    public Map<String, Double> getOrderPromotions(int orderId) {
+        Map<String, Double> promos = new HashMap<>();
+        String sql = "SELECT p.Code, op.applied_discount_amount " +
+                "FROM order_promotions op " +
+                "JOIN promotions p ON op.promotion_id = p.ID " +
+                "WHERE op.order_id = ?";
+
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String code = rs.getString("Code");
+                double discount = rs.getDouble("applied_discount_amount");
+                promos.put(code, discount);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return promos;
     }
 }
