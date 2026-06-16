@@ -101,8 +101,10 @@
                     <button class="action-btn btn-red" onclick="cancelOrder('${order.id}')">Hủy đơn</button>
                 </c:if>
 
-                <c:if test="${order.orderStatus == 'DELIVERED'}">
-                    <button class="action-btn btn-green" onclick="confirmReceived('${order.id}')">Đã nhận được hàng</button>
+                <c:if test="${order.orderStatus == 'SHIPPING'}">
+                    <button class="action-btn btn-green" onclick="confirmReceived('${order.id}')">
+                        Đã nhận được hàng
+                    </button>
                 </c:if>
 
                 <c:if test="${order.orderStatus == 'DELIVERED'}">
