@@ -14,7 +14,7 @@ public class OrderDAO {
 
     // 1. Tạo đơn hàng mới
     public int insert(Order order) throws Exception {
-        String sql = "INSERT INTO orders (UserID, TotalAmount, ShippingFee, Note, ShippingAddress, ReceiverName, ReceiverPhone, OrderStatus, payment_method_id, payment_status, OrderDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,NOW())";
+        String sql = "INSERT INTO orders (UserID, TotalAmount, ShippingFee, Note, ShippingAddress, ReceiverName, ReceiverPhone, OrderStatus, payment_method_id, payment_status, district_id, ward_code, OrderDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
         try (Connection conn = ConnectionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -29,6 +29,8 @@ public class OrderDAO {
             stmt.setString(8, order.getOrderStatus());
             stmt.setInt(9, order.getPaymentMethodId());
             stmt.setString(10, order.getPaymentStatus());
+            stmt.setInt(11, order.getDistrictId());
+            stmt.setString(12, order.getWardCode());
 
             stmt.executeUpdate();
 
@@ -145,6 +147,8 @@ public class OrderDAO {
                         order.setPaymentStatus(rs.getString("payment_status"));
                         order.setPaymentMethodId(rs.getInt("payment_method_id"));
                         order.setTransactionId(rs.getString("transaction_id"));
+                        order.setDistrictId(rs.getInt("district_id"));
+                        order.setWardCode(rs.getString("ward_code"));
                     }
                 }
             }
@@ -425,5 +429,19 @@ public class OrderDAO {
             e.printStackTrace();
         }
         return promos;
+    }
+
+    // ập nhật trạng thái thành Đang Giao và lưu Mã Vận Đơn
+    public void updateStatusAndTrackingCode(int orderId, String status, String trackingCode) {
+        String sql = "UPDATE orders SET OrderStatus = ?, tracking_code = ? WHERE ID = ?";
+        try (Connection con = ConnectionDB.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setString(2, trackingCode);
+            ps.setInt(3, orderId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

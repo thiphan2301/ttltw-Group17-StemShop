@@ -91,15 +91,29 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="city">Tỉnh/Thành phố</label>
-                                <select id="city" name="city" class="input-text" required>
-                                    <option value="Hồ Chí Minh" ${city == 'Hồ Chí Minh' ? 'selected' : ''}>Hồ Chí Minh</option>
-                                    <option value="Hà Nội" ${city == 'Hà Nội' ? 'selected' : ''}>Hà Nội</option>
-                                    <option value="Đà Nẵng" ${city == 'Đà Nẵng' ? 'selected' : ''}>Đà Nẵng</option>
-                                    <option value="Cần Thơ" ${city == 'Cần Thơ' ? 'selected' : ''}>Cần Thơ</option>
-                                    <option value="Khác" ${city == 'Khác' ? 'selected' : ''}>Tỉnh khác</option>
+                                <label for="province">Tỉnh/Thành phố</label>
+                                <select id="province" name="province" class="input-text" required>
+                                    <option value="">-- Chọn Tỉnh/Thành phố --</option>
                                 </select>
                             </div>
+
+                            <div class="form-group">
+                                <label for="district">Quận/Huyện</label>
+                                <select id="district" name="district" class="input-text" required disabled>
+                                    <option value="">-- Chọn Quận/Huyện --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ward">Phường/Xã</label>
+                                <select id="ward" name="ward" class="input-text" required disabled>
+                                    <option value="">-- Chọn Phường/Xã --</option>
+                                </select>
+                            </div>
+
+                            <input type="hidden" id="fullAddress" name="city" value="">
+                            <input type="hidden" id="hiddenDistrictId" name="districtId" value="">
+                            <input type="hidden" id="hiddenWardCode" name="wardCode" value="">
 
                             <div class="form-group">
                                 <label for="note">Ghi chú</label>
